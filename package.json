@@ -1,0 +1,39 @@
+{
+  "name": "js-gpiozero",
+  "version": "0.1.0",
+  "description": "A port of python gpiozero to node.js",
+  "main": "./gpiozero/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/i-am-digital/js-gpiozero.git"
+  },
+  "bugs": {
+    "url": "https://github.com/i-am-digital/js-gpiozero/issues"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "dependencies": {
+    "wiring-pi": "2.2.0",
+    "mocha": "3.1.2",
+    "chia": "3.5.0",
+    "rwlock": "5.0.0"
+  },
+  "keywords": [
+    "wiringPi",
+    "gpio",
+    "raspberry",
+    "pi",
+    "raspberrypi",
+    "bcm2835"
+  ],
+  "author": "Mike Trebilcock <mike@iamdigital.uk>",
+  "contributors": [],
+  "license": "BSD-2-Clause",
+  "homepage": "https://github.com/i-am-digital/js-gpiozero#readme",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "devDependencies": {}
+}
