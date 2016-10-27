@@ -16,7 +16,7 @@
   "dependencies": {
     "wiring-pi": "2.2.0",
     "mocha": "3.1.2",
-    "chia": "3.5.0",
+    "chai": "3.5.0",
     "rwlock": "5.0.0"
   },
   "keywords": [
