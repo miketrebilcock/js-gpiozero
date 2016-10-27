@@ -10,7 +10,7 @@ js.gpiozero
     :target: https://codecov.io/github/i-am-digital/js-gpiozero
     :alt: Code Coverage
 
-A port of the fanastic 'python gpiozero' to javascript creating simple interface to everyday GPIO components used with Raspberry Pi on node.js.
+A port of the fanastic 'python gpiozero'_ to javascript creating simple interface to everyday GPIO components used with Raspberry Pi on node.js.
 
 It's early days and a work in progress!
 
