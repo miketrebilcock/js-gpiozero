@@ -38,5 +38,5 @@
   "directories": {
     "doc": "docs",
     "test": "tests"
-  },
+  }
 }
