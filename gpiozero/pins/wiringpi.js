@@ -1,9 +1,21 @@
-var wpi = require("wiring-pi");
+var wpi = require("wiring-pi"),
+    p = require ("./index.js"),
+    exc = require("../exc.js");;
+
+var _PINS = {};
+var WIRING_PI;
+var PI_INFO = undefined;
+
+function inherit(proto) {
+  function F() {}
+  F.prototype = proto;
+  return new F;
+}
 
 function WiringPiPin(LocalPin) {
     /*
-    Uses the `RPi.GPIO`_ library to interface to the Pi's GPIO pins. This is
-    the default pin implementation if the RPi.GPIO library is installed.
+    Uses the `wiringPi`_ library to interface to the Pi's GPIO pins. This is
+    the default pin implementation.
     Supports all features including PWM (via software).
 
     Because this is the default pin implementation you can use it simply by
@@ -20,30 +32,29 @@ function WiringPiPin(LocalPin) {
 
         led = LED(RPiGPIOPin(12))
 
-    .. _RPi.GPIO: https://pypi.python.org/pypi/RPi.GPIO
+    
     */
-    if (WIRING_PI==undefined) {
-    	wpi.setup('wpi');
+    if (WIRING_PI==undefined) {       
+    	wpi.setup('gpio');
     	WIRING_PI = true;
     }
 
-    _PINS = {}
-
     GPIO_FUNCTIONS = {
-        'input':   GPIO.IN,
-        'output':  GPIO.OUT,
-        'i2c':     GPIO.I2C,
-        'spi':     GPIO.SPI,
-        'pwm':     GPIO.HARD_PWM,
-        'serial':  GPIO.SERIAL,
-        'unknown': GPIO.UNKNOWN,
+        'input':   wpi.INPUT,
+        'output':  wpi.OUTPUT,
+        //'i2c':     GPIO.I2C,
+        //'spi':     GPIO.SPI,
+        'pwm':     wpi.PWM_OUTPUT,
+        //'serial':  GPIO.SERIAL,
+        //'unknown': GPIO.UNKNOWN,
         }
 
     GPIO_PULL_UPS = {
-        'up':       GPIO.PUD_UP,
-        'down':     GPIO.PUD_DOWN,
-        'floating': GPIO.PUD_OFF,
+        'up':       wpi.PUD_UP,
+        'down':     wpi.PUD_DOWN,
+        'floating': wpi.PUD_OFF,
         }
+        /*
 
     GPIO_EDGES = {
         'both':    GPIO.BOTH,
@@ -54,107 +65,115 @@ function WiringPiPin(LocalPin) {
     GPIO_FUNCTION_NAMES = {v: k for (k, v) in GPIO_FUNCTIONS.items()}
     GPIO_PULL_UP_NAMES = {v: k for (k, v) in GPIO_PULL_UPS.items()}
     GPIO_EDGES_NAMES = {v: k for (k, v) in GPIO_EDGES.items()}
+*/
 
-    PI_INFO = None
 
-    def __new__(cls, number):
-        if not cls._PINS:
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setwarnings(False)
-        if cls.PI_INFO is None:
-            cls.PI_INFO = pi_info()
-        try:
-            return cls._PINS[number]
-        except KeyError:
-            self = super(RPiGPIOPin, cls).__new__(cls)
-            try:
-                cls.PI_INFO.physical_pin('GPIO%d' % number)
-            except PinNoPins:
-                warnings.warn(
-                    PinNonPhysical(
-                        'no physical pins exist for GPIO%d' % number))
-            self._number = number
-            self._pull = 'up' if cls.PI_INFO.pulled_up('GPIO%d' % number) else 'floating'
-            self._pwm = None
-            self._frequency = None
-            self._duty_cycle = None
-            self._bounce = -666
-            self._when_changed = None
-            self._edges = GPIO.BOTH
-            GPIO.setup(self._number, GPIO.IN, self.GPIO_PULL_UPS[self._pull])
-            cls._PINS[number] = self
-            return self
 
-    def __repr__(self):
-        return "GPIO%d" % self._number
+    if (PI_INFO == undefined) {
+        PI_INFO = wpi.piBoardRev();
+    }
+    if(_PINS[number] != undefined)
+    {
+        return _PINS[number];
+    }
+    p.Pin.call(this);
+    this._number = number;
+    this._pwm = undefined;
+    this._frequency = undefined;
+    this._duty_cycle = undefined;
+    this._bounce = -666
+    this._when_changed = undefined;
+    this._function = 'input';
+    this._state = false;
+    this._pull = 'floating';
+    this._bounce = undefined;
+    this._edges = 'both';
 
-    @property
-    def number(self):
-        return self._number
+    wpi.pinMode(number, wpi.INPUT);
+    PINS[number] = this;
+    return this;
+}
 
-    def close(self):
-        self.frequency = None
-        self.when_changed = None
-        GPIO.cleanup(self._number)
+WiringPiPin.prototype = inherit (p.LocalPin.prototype);
+WiringPiPin.prototype.constructor = WiringPiPin;
 
-    def output_with_state(self, state):
-        self._pull = 'floating'
-        GPIO.setup(self._number, GPIO.OUT, initial=state)
+WiringPiPin.prototype.toString = function () {
+    return "GPIO " + this._number.toString();
+}
 
-    def input_with_pull(self, pull):
-        if pull != 'up' and self.PI_INFO.pulled_up('GPIO%d' % self._number):
+WiringPiPin.prototype.number = function () {
+    return this._number();
+}
+
+WiringPiPin.prototype.close = function () {
+    this._frequency = undefined;
+    this._when_changed = undefined;
+    wpi.pullUpDnControl(pin, wpi.PUD_OFF);
+}
+
+WiringPiPin.prototype.output_with_state = function (state) {
+    this._pull = 'floating'
+    wpi.pinMode(_number, wpi.OUT);
+    wpi.digitalWrite(_number, state);
+}
+
+WiringPiPin.prototype.input_with_pull = function (pull) {
+   // if (pull != 'up' and self.PI_INFO.pulled_up('GPIO%d' % self._number):
+    //    raise PinFixedPull('%r has a physical pull-up resistor' % self)
+    //try:
+    wpi.pinMode(_number, wpi.IN);
+        //GPIO.setup(self._number, GPIO.IN, self.GPIO_PULL_UPS[pull])
+    wpi.pullUpDnControl(pin, wpi.PUD_UP);
+    this._pull = pull
+    //except KeyError:
+    //    raise PinInvalidPull('invalid pull "%s" for pin %r' % (pull, self))
+}
+
+WiringPiPin.prototype.pin_function = function (value) {
+    if ( value == undefined) {
+        return this._function;   
+    }
+    if (value != 'input') {
+        this._pull = 'floating';
+    }
+    if (value == 'input' || value == 'output') {
+         wpi.pinMode(_number, this.GPIO_FUNCTIONS[value])
+         wpi.pullUpDnControl(pin, this.GPIO_PULL_UPS[this._pull]);
+    } else {
+        throw exc.PinInvalidFunction('invalid function " + value + " for pin ' + this._number.toString());
+    }
+}
+
+WiringPiPin.prototype.state = function (value) {
+    if ( value == undefined) {
+        if (this._pwm != undefined) {
+            return this._duty_cycle;
+        } else {
+            return wpi.digitalRead(this._number);
+        }        
+    }
+    if (this._pwm != undefined) {
+        wpi.pwmWrite(this._number, value);
+        this._duty_cycle = value;
+    } else {
+        wpi.digitalWrite (this._number, value);
+    }
+}
+
+WiringPiPin.prototype.pull = function (value) {
+    if (value == undefined) {
+        return this._pull;
+    }
+    if (this.function != 'input') {
+        throw new exc.PinFixedPull('cannot set pull on non-input pin ' + this._number.toString());
+    }
+    /*if value != 'up' and self.PI_INFO.pulled_up('GPIO%d' % self._number):
             raise PinFixedPull('%r has a physical pull-up resistor' % self)
-        try:
-            GPIO.setup(self._number, GPIO.IN, self.GPIO_PULL_UPS[pull])
-            self._pull = pull
-        except KeyError:
-            raise PinInvalidPull('invalid pull "%s" for pin %r' % (pull, self))
-
-    def _get_function(self):
-        return self.GPIO_FUNCTION_NAMES[GPIO.gpio_function(self._number)]
-
-    def _set_function(self, value):
-        if value != 'input':
-            self._pull = 'floating'
-        if value in ('input', 'output') and value in self.GPIO_FUNCTIONS:
-            GPIO.setup(self._number, self.GPIO_FUNCTIONS[value], self.GPIO_PULL_UPS[self._pull])
-        else:
-            raise PinInvalidFunction('invalid function "%s" for pin %r' % (value, self))
-
-    def _get_state(self):
-        if self._pwm:
-            return self._duty_cycle
-        else:
-            return GPIO.input(self._number)
-
-    def _set_state(self, value):
-        if self._pwm:
-            try:
-                self._pwm.ChangeDutyCycle(value * 100)
-            except ValueError:
-                raise PinInvalidState('invalid state "%s" for pin %r' % (value, self))
-            self._duty_cycle = value
-        else:
-            try:
-                GPIO.output(self._number, value)
-            except ValueError:
-                raise PinInvalidState('invalid state "%s" for pin %r' % (value, self))
-            except RuntimeError:
-                raise PinSetInput('cannot set state of pin %r' % self)
-
-    def _get_pull(self):
-        return self._pull
-
-    def _set_pull(self, value):
-        if self.function != 'input':
-            raise PinFixedPull('cannot set pull on non-input pin %r' % self)
-        if value != 'up' and self.PI_INFO.pulled_up('GPIO%d' % self._number):
-            raise PinFixedPull('%r has a physical pull-up resistor' % self)
-        try:
-            GPIO.setup(self._number, GPIO.IN, self.GPIO_PULL_UPS[value])
-            self._pull = value
-        except KeyError:
-            raise PinInvalidPull('invalid pull "%s" for pin %r' % (value, self))
+    }*/
+    this._pull = value;
+    wpi.pullUpDnControl(pin, this.GPIO_PULL_UPS[this._pull]);
+}
+/*
 
     def _get_frequency(self):
         return self._frequency
@@ -217,3 +236,4 @@ function WiringPiPin(LocalPin) {
         else:
             self._when_changed = value
 
+*/

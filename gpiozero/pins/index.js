@@ -1,5 +1,11 @@
 require ("../exc.js");
 
+function inherit(proto) {
+  function F() {}
+  F.prototype = proto;
+  return new F;
+}
+
 function Pin() {
     /*
     Abstract base class representing a GPIO pin or a pin from an IO extender.
@@ -123,6 +129,25 @@ Pin.prototype = {
     }
 
 
+}
+
+var _PI_REVISION = undefined;
+
+function LocalPin(){
+    /*
+    Abstract base class representing pins attached locally to a Pi. This forms
+    the base class for local-only pin interfaces (:class:`RPiGPIOPin`,
+    :class:`RPIOPin`, and :class:`NativePin`).
+    */
+    Pin.call(this);
+
+}
+
+LocalPin.prototype = inherit(Pin.prototype);
+LocalPin.prototype.constructor = LocalPin;
+
+LocalPin.prototype.pi_info = function (){
+    throw new NotImplementedError();
 }
 /*
 
@@ -271,3 +296,4 @@ class LocalPin(Pin):
 */
 
 exports.Pin = Pin;
+exports.LocalPin = LocalPin;

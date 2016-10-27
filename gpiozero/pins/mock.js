@@ -20,7 +20,7 @@ function MockPin(number) {
     }    
     old_pin = _PINS[number];
     if (old_pin == undefined) {
-
+        p.Pin.call(this);
         _PINS[number] = this;
         this._number = number;
         this._function = 'input';

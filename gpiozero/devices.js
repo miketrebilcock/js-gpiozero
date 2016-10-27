@@ -1,7 +1,8 @@
 
 
 var ReadWriteLock = require('rwlock'),
-    exc = require('./exc.js');
+    exc = require('./exc.js'),
+    wiringpi = require('./pins/wiringpi.js').wiringpi;
 
 _PINS = new Set();
 _PINS_LOCK =  new ReadWriteLock();//Yes, this needs to be re-entrant
@@ -92,9 +93,9 @@ function GPIODevice (pin) {
     if (pin == undefined){
         throw new exc.GPIOPinMissing('No pin given');
     }
-    /*if (Number.isInteger(pin)) {
-        pin = pin_factory(pin);
-    }*/
+    if (Number.isInteger(pin)) {
+        pin = new wiringpi(pin);
+    }
 
     _PINS_LOCK.readLock(function (release) {
         if(_PINS.has(pin)) {            
