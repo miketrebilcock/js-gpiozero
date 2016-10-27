@@ -1,4 +1,4 @@
 test:
-	./node_modules/.bin/mocha --reporter spec
+	istanbul cover ./node_modules/mocha/bin/_mocha && codecov
 
 .PHONY:	test

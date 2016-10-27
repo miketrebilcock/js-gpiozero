@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for gpiozero/output_devices.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">gpiozero/</a> output_devices.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">98.08% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>51/52</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.75% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>15/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>14/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">98.08% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>51/52</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var Lock = require('rwlock'),
+    GPIODevice = require('./devices.js').GPIODevice;
+&nbsp;
+exports.OutputDevice = OutputDevice;
+&nbsp;
+function OutputDevice (pin, active_high, initial_value){
+    /*
+    Represents a generic GPIO output device.
+&nbsp;
+    This class extends :class:`GPIODevice` to add facilities common to GPIO
+    output devices: an :meth:`on` method to switch the device on, a
+    corresponding :meth:`off` method, and a :meth:`toggle` method.
+&nbsp;
+    :param int pin:
+        The GPIO pin (in BCM numbering) that the device is connected to. If
+        this is ``None`` a :exc:`GPIOPinMissing` will be raised.
+&nbsp;
+    :param bool active_high:
+        If ``True`` (the default), the :meth:`on` method will set the GPIO to
+        HIGH. If ``False``, the :meth:`on` method will set the GPIO to LOW (the
+        :meth:`off` method always does the opposite).
+&nbsp;
+    :param bool initial_value:
+        If ``False`` (the default), the device will be off initially.  If
+        ``None``, the device will be left in whatever state the pin is found in
+        when configured for output (warning: this can be on).  If ``True``, the
+        device will be switched on initially.*/
+&nbsp;
+    GPIODevice.call(this, pin);
+    this._lock = new Lock();
+    this.active_high( (active_high == undefined) ? true : active_high );
+    if (initial_value == undefined) {        
+        this._pin.pin_function('output');
+    } else {
+        this._pin.output_with_state(this._value_to_state(initial_value));
+    } 
+}
+&nbsp;
+function inherit(proto) {
+  function F() {}
+  F.prototype = proto;
+  return new F;
+}
+&nbsp;
+&nbsp;
+OutputDevice.prototype = inherit(GPIODevice.prototype);
+OutputDevice.prototype.constructor = OutputDevice;
+&nbsp;
+OutputDevice.prototype._value_to_state = function (value) {
+    return (value)?this._active_state : this._inactive_state;
+}
+&nbsp;
+OutputDevice.prototype._write = function (value) {    
+    this._check_open(this);
+    this._pin.state (this._value_to_state(value));
+}
+&nbsp;
+OutputDevice.prototype.on = function () {
+    /*
+    Turns the device on.
+    */
+    this._write(true);
+}
+&nbsp;
+OutputDevice.prototype.off = function() {
+        /*
+        Turns the device off.
+        */
+    this._write(false);
+}
+&nbsp;
+OutputDevice.prototype.active_high = function  active_high(value) {
+    /*
+    When ``True``, the :attr:`value` property is ``True`` when the device's
+    :attr:`pin` is high. When ``False`` the :attr:`value` property is
+    ``True`` when the device's pin is low (i.e. the value is inverted).
+&nbsp;
+    This property can be set after construction; be warned that changing it
+    will invert :attr:`value` (i.e. changing this property doesn't change
+    the device's pin state - it just changes how that state is
+    interpreted).
+    */
+    <span class="missing-if-branch" title="if path not taken" >I</span>if(value == undefined)
+    {
+<span class="cstat-no" title="statement not covered" >        return _active_state;</span>
+    }
+    this._active_state = value ? true : false;
+    this._inactive_state = value ? false : true;
+}
+&nbsp;
+OutputDevice.prototype.value = function (value) {
+    if (value == undefined) {
+        return this._read();
+    }
+    this._write(value);
+}
+&nbsp;
+OutputDevice.prototype.toggle = function () {
+    /*
+    Reverse the state of the device. If it's on, turn it off; if it's off,
+        turn it on.
+    */
+    var that = this;
+    this._lock.readLock(function (release) {
+        if (that.is_active()) {
+            that.off();
+        } else {
+            that.on();
+        }
+        release();
+    });
+}
+&nbsp;
+&nbsp;
+&nbsp;
+exports.DigitalOutputDevice = DigitalOutputDevice;
+&nbsp;
+function DigitalOutputDevice (pin, active_high, initial_value) {
+    OutputDevice.call(this, pin, active_high, initial_value);    
+}
+&nbsp;
+DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
+DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
+&nbsp;
+exports.LED = LED;
+&nbsp;
+function LED(pin, active_high, initial_value){ 
+/*
+    Extends :class:`DigitalOutputDevice` and represents a light emitting diode
+    (LED).
+&nbsp;
+    Connect the cathode (short leg, flat side) of the LED to a ground pin;
+    connect the anode (longer leg) to a limiting resistor; connect the other
+    side of the limiting resistor to a GPIO pin (the limiting resistor can be
+    placed either side of the LED).
+&nbsp;
+    The following example will light the LED::
+&nbsp;
+        from gpiozero import LED
+&nbsp;
+        led = LED(17)
+        led.on()
+&nbsp;
+    :param int pin:
+        The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
+        valid pin numbers.
+&nbsp;
+    :param bool active_high:
+        If ``True`` (the default), the LED will operate normally with the
+        circuit described above. If ``False`` you should wire the cathode to
+        the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
+&nbsp;
+    :param bool initial_value:
+        If ``False`` (the default), the LED will be off initially.  If
+        ``None``, the LED will be left in whatever state the pin is found in
+        when configured for output (warning: this can be on).  If ``True``, the
+        LED will be switched on initially.
+    """
+    pass
+*/
+    DigitalOutputDevice.call(this, pin, active_high, initial_value);
+}
+&nbsp;
+LED.prototype = inherit(DigitalOutputDevice.prototype);
+LED.prototype.constructor = LED;
+&nbsp;
+LED.prototype.is_lit = function () {
+    return this.is_active();
+}
+&nbsp;
+/*
+&nbsp;
+    @property
+    def active_high(self):
+        """
+        When ``True``, the :attr:`value` property is ``True`` when the device's
+        :attr:`pin` is high. When ``False`` the :attr:`value` property is
+        ``True`` when the device's pin is low (i.e. the value is inverted).
+&nbsp;
+        This property can be set after construction; be warned that changing it
+        will invert :attr:`value` (i.e. changing this property doesn't change
+        the device's pin state - it just changes how that state is
+        interpreted).
+        """
+        return self._active_state
+&nbsp;
+    @active_high.setter
+    def active_high(self, value):
+        self._active_state = True if value else False
+        self._inactive_state = False if value else True
+&nbsp;
+    def __repr__(self):
+        try:
+            return '&lt;gpiozero.%s object on pin %r, active_high=%s, is_active=%s&gt;' % (
+                self.__class__.__name__, self.pin, self.active_high, self.is_active)
+        except:
+            return super(OutputDevice, self).__repr__()
+&nbsp;
+&nbsp;
+class DigitalOutputDevice(OutputDevice):
+    """
+    Represents a generic output device with typical on/off behaviour.
+&nbsp;
+    This class extends :class:`OutputDevice` with a :meth:`blink` method which
+    uses an optional background thread to handle toggling the device state
+    without further interaction.
+    """
+    def __init__(self, pin=None, active_high=True, initial_value=False):
+        self._blink_thread = None
+        super(DigitalOutputDevice, self).__init__(pin, active_high, initial_value)
+        self._controller = None
+&nbsp;
+    @property
+    def value(self):
+        return self._read()
+&nbsp;
+    @value.setter
+    def value(self, value):
+        self._stop_blink()
+        self._write(value)
+&nbsp;
+    def close(self):
+        self._stop_blink()
+        super(DigitalOutputDevice, self).close()
+&nbsp;
+    def on(self):
+        self._stop_blink()
+        self._write(True)
+&nbsp;
+    def off(self):
+        self._stop_blink()
+        self._write(False)
+&nbsp;
+    def blink(self, on_time=1, off_time=1, n=None, background=True):
+        """
+        Make the device turn on and off repeatedly.
+&nbsp;
+        :param float on_time:
+            Number of seconds on. Defaults to 1 second.
+&nbsp;
+        :param float off_time:
+            Number of seconds off. Defaults to 1 second.
+&nbsp;
+        :param int n:
+            Number of times to blink; ``None`` (the default) means forever.
+&nbsp;
+        :param bool background:
+            If ``True`` (the default), start a background thread to continue
+            blinking and return immediately. If ``False``, only return when the
+            blink is finished (warning: the default value of *n* will result in
+            this method never returning).
+        """
+        self._stop_blink()
+        self._blink_thread = GPIOThread(
+            target=self._blink_device, args=(on_time, off_time, n)
+        )
+        self._blink_thread.start()
+        if not background:
+            self._blink_thread.join()
+            self._blink_thread = None
+&nbsp;
+    def _stop_blink(self):
+        if self._controller:
+            self._controller._stop_blink(self)
+            self._controller = None
+        if self._blink_thread:
+            self._blink_thread.stop()
+            self._blink_thread = None
+&nbsp;
+    def _blink_device(self, on_time, off_time, n):
+        iterable = repeat(0) if n is None else repeat(0, n)
+        for _ in iterable:
+            self._write(True)
+            if self._blink_thread.stopping.wait(on_time):
+                break
+            self._write(False)
+            if self._blink_thread.stopping.wait(off_time):
+                break
+&nbsp;
+&nbsp;
+class LED(DigitalOutputDevice):
+    """
+    Extends :class:`DigitalOutputDevice` and represents a light emitting diode
+    (LED).
+&nbsp;
+    Connect the cathode (short leg, flat side) of the LED to a ground pin;
+    connect the anode (longer leg) to a limiting resistor; connect the other
+    side of the limiting resistor to a GPIO pin (the limiting resistor can be
+    placed either side of the LED).
+&nbsp;
+    The following example will light the LED::
+&nbsp;
+        from gpiozero import LED
+&nbsp;
+        led = LED(17)
+        led.on()
+&nbsp;
+    :param int pin:
+        The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
+        valid pin numbers.
+&nbsp;
+    :param bool active_high:
+        If ``True`` (the default), the LED will operate normally with the
+        circuit described above. If ``False`` you should wire the cathode to
+        the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
+&nbsp;
+    :param bool initial_value:
+        If ``False`` (the default), the LED will be off initially.  If
+        ``None``, the LED will be left in whatever state the pin is found in
+        when configured for output (warning: this can be on).  If ``True``, the
+        LED will be switched on initially.
+    """
+    pass
+&nbsp;
+LED.is_lit = LED.is_active
+&nbsp;
+&nbsp;
+class Buzzer(DigitalOutputDevice):
+    """
+    Extends :class:`DigitalOutputDevice` and represents a digital buzzer
+    component.
+&nbsp;
+    Connect the cathode (negative pin) of the buzzer to a ground pin; connect
+    the other side to any GPIO pin.
+&nbsp;
+    The following example will sound the buzzer::
+&nbsp;
+        from gpiozero import Buzzer
+&nbsp;
+        bz = Buzzer(3)
+        bz.on()
+&nbsp;
+    :param int pin:
+        The GPIO pin which the buzzer is attached to. See :ref:`pin_numbering`
+        for valid pin numbers.
+&nbsp;
+    :param bool active_high:
+        If ``True`` (the default), the buzzer will operate normally with the
+        circuit described above. If ``False`` you should wire the cathode to
+        the GPIO pin, and the anode to a 3V3 pin.
+&nbsp;
+    :param bool initial_value:
+        If ``False`` (the default), the buzzer will be silent initially.  If
+        ``None``, the buzzer will be left in whatever state the pin is found in
+        when configured for output (warning: this can be on).  If ``True``, the
+        buzzer will be switched on initially.
+    """
+    pass
+&nbsp;
+Buzzer.beep = Buzzer.blink
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+function LED (thePin) {
+	var pin = thePin;
+	wpi.pinMode(pin, wpi.OUTPUT);
+	
+	this.getPin = function () {return pin;};
+}
+&nbsp;
+LED.prototype.On = function () {
+	wpi.digitalWrite(this.getPin(), 1);
+}
+&nbsp;
+LED.prototype.Off = function () {
+	wpi.digitalWrite(this.getPin(), 0);
+}*/
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Oct 27 2016 23:19:38 GMT+0100 (BST)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
