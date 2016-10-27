@@ -5,7 +5,7 @@
   "main": "./gpiozero/index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/i-am-digital/js-gpiozero.git"
+    "url": "https://github.com/i-am-digital/js-gpiozero.git"
   },
   "bugs": {
     "url": "https://github.com/i-am-digital/js-gpiozero/issues"
