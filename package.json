@@ -11,7 +11,7 @@
     "url": "https://github.com/i-am-digital/js-gpiozero/issues"
   },
   "scripts": {
-    "test": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly && codecov"
+    "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov"
   },
   "dependencies": {
     "wiring-pi": "2.2.0",
@@ -39,5 +39,4 @@
     "doc": "docs",
     "test": "tests"
   },
-  "devDependencies": {}
 }

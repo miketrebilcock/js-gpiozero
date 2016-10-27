@@ -6,7 +6,9 @@ node_js:
   - "node"
   - "iojs"
 install:
-  npm install -g codecov istanbul
+  - npm install
+script:
+  - npm test
 env:
   - CXX=g++-4.8
 addons:
