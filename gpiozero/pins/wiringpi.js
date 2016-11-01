@@ -96,7 +96,7 @@ function WiringPiPin(number) {
     this._edges = 'both';
 
     wpi.pinMode(number, wpi.INPUT);
-    PINS[number] = this;
+    _PINS[number] = this;
     return this;
 }
 
