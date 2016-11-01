@@ -2,7 +2,7 @@
 
 var ReadWriteLock = require('rwlock'),
     exc = require('./exc.js'),
-    wiringpi = require('./pins/wiringpi.js').wiringpi;
+    wiringpi = require('./pins/wiringpi.js').WiringPiPin;
 
 _PINS = new Set();
 _PINS_LOCK =  new ReadWriteLock();//Yes, this needs to be re-entrant

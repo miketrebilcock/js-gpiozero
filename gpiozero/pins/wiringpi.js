@@ -12,7 +12,9 @@ function inherit(proto) {
   return new F;
 }
 
-function WiringPiPin(LocalPin) {
+exports.WiringPiPin = WiringPiPin;
+
+function WiringPiPin() {
     /*
     Uses the `wiringPi`_ library to interface to the Pi's GPIO pins. This is
     the default pin implementation.
