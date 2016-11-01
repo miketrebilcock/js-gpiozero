@@ -141,8 +141,8 @@ WiringPiPin.prototype.pin_function = function (value) {
         this._pull = 'floating';
     }
     if (value == 'input' || value == 'output') {
-         wpi.pinMode(this._number, this.GPIO_FUNCTIONS[value])
-         wpi.pullUpDnControl(this._number, this.GPIO_PULL_UPS[this._pull]);
+         wpi.pinMode(this._number, GPIO_FUNCTIONS[value])
+         wpi.pullUpDnControl(this._number, GPIO_PULL_UPS[this._pull]);
     } else {
         throw exc.PinInvalidFunction('invalid function " + value + " for pin ' + this._number.toString());
     }
