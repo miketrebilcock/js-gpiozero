@@ -144,7 +144,7 @@ DigitalOutputDevice.prototype.blink = function (self, on_time, off_time, n) {
     this.on_time = (on_time==undefined ? 1 : on_time);
     this.off_time = (off_time==undefined ? 1 : off_time);
     this.number_of_blinks = n;
-    this._stop_blink();;
+    this._stop_blink();
     this._blink_device (this.on_time, this.off_time, this.number_of_blinks);
 }
 
@@ -336,3 +336,4 @@ class DigitalOutputDevice(OutputDevice):
                 break
 
 
+*/
