@@ -141,12 +141,12 @@ DigitalOutputDevice.prototype.blink = function (self, on_time, off_time, n) {
         blink is finished (warning: the default value of *n* will result in
         this method never returning).
     */
-    this.on_time = (on_time==undefined ? 1 : on_time);
-    this.off_time = (off_time==undefined ? 1 : off_time);
-    this.number_of_blinks = n;
+    this.on_time = (on_time==undefined ? 1000 : on_time);
+    this.off_time = (off_time==undefined ? 1000 : off_time);
+    this.number_of_blinks = n*2;
     this._stop_blink();
-    this.on();
-    this._blink_device (this.on_time, this.off_time, this.number_of_blinks);
+    this.off();
+    this._blink_device (this, this.on_time, this.off_time, this.number_of_blinks);
 }
 
 DigitalOutputDevice.prototype._stop_blink = function() {
@@ -156,12 +156,14 @@ DigitalOutputDevice.prototype._stop_blink = function() {
     }
 }
 
-DigitalOutputDevice.prototype._blink_device = function (on_time, off_time, n) {
+DigitalOutputDevice.prototype._blink_device = function (that, on_time, off_time, n) {
     if (n != undefined) {
         n --;
     }
-    this.toggle(); 
-    this._blink_thread = setTimeout ( this._blink_device, on_time * 1000, off_time, on_time, n);   
+    that.toggle();
+    if (n>0) { 
+        this._blink_thread = setTimeout ( that._blink_device, on_time * 1000, off_time, on_time, n);   
+    }
 }
 
 exports.LED = LED;
