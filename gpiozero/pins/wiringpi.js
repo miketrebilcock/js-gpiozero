@@ -14,7 +14,7 @@ function inherit(proto) {
 
 exports.WiringPiPin = WiringPiPin;
 
-function WiringPiPin() {
+function WiringPiPin(number) {
     /*
     Uses the `wiringPi`_ library to interface to the Pi's GPIO pins. This is
     the default pin implementation.
@@ -74,6 +74,10 @@ function WiringPiPin() {
     if (PI_INFO == undefined) {
         PI_INFO = wpi.piBoardRev();
     }
+    if ( number < 0 || number > 54){
+        throw new Error('invalid pin ' + number.toString() + ' specified (must be 0..53)' );
+    }    
+
     if(_PINS[number] != undefined)
     {
         return _PINS[number];
