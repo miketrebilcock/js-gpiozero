@@ -160,7 +160,7 @@ WiringPiPin.prototype.state = function (value) {
         wpi.pwmWrite(this._number, value);
         this._duty_cycle = value;
     } else {
-        wpi.digitalWrite (this._number, value);
+        wpi.digitalWrite (this._number, value?1:0);
     }
 }
 
