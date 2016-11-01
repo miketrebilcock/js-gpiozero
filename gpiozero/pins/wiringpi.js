@@ -1,10 +1,24 @@
 var wpi = require("wiring-pi"),
     p = require ("./index.js"),
-    exc = require("../exc.js");;
+    exc = require("../exc.js");
 
-var _PINS = {};
-var WIRING_PI;
-var PI_INFO = undefined;
+var _PINS = {},
+    WIRING_PI,
+    PI_INFO = undefined,
+    GPIO_FUNCTIONS = {
+        'input':   wpi.INPUT,
+        'output':  wpi.OUTPUT,
+        //'i2c':     GPIO.I2C,
+        //'spi':     GPIO.SPI,
+        'pwm':     wpi.PWM_OUTPUT,
+        //'serial':  GPIO.SERIAL,
+        //'unknown': GPIO.UNKNOWN,
+        },
+    GPIO_PULL_UPS = {
+        'up':       wpi.PUD_UP,
+        'down':     wpi.PUD_DOWN,
+        'floating': wpi.PUD_OFF,
+        };
 
 function inherit(proto) {
   function F() {}
@@ -40,22 +54,6 @@ function WiringPiPin(number) {
     	wpi.setup('gpio');
     	WIRING_PI = true;
     }
-
-    GPIO_FUNCTIONS = {
-        'input':   wpi.INPUT,
-        'output':  wpi.OUTPUT,
-        //'i2c':     GPIO.I2C,
-        //'spi':     GPIO.SPI,
-        'pwm':     wpi.PWM_OUTPUT,
-        //'serial':  GPIO.SERIAL,
-        //'unknown': GPIO.UNKNOWN,
-        }
-
-    GPIO_PULL_UPS = {
-        'up':       wpi.PUD_UP,
-        'down':     wpi.PUD_DOWN,
-        'floating': wpi.PUD_OFF,
-        }
         /*
 
     GPIO_EDGES = {
