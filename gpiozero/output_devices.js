@@ -122,6 +122,47 @@ function DigitalOutputDevice (pin, active_high, initial_value) {
 DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
 DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
 
+DigitalOutputDevice.prototype.blink = function (self, on_time, off_time, n) {
+    /*
+    Make the device turn on and off repeatedly.
+
+    :param float on_time:
+        Number of seconds on. Defaults to 1 second.
+
+    :param float off_time:
+        Number of seconds off. Defaults to 1 second.
+
+    :param int n:
+        Number of times to blink; ``None`` (the default) means forever.
+
+    :param bool background:
+        If ``True`` (the default), start a background thread to continue
+        blinking and return immediately. If ``False``, only return when the
+        blink is finished (warning: the default value of *n* will result in
+        this method never returning).
+    */
+    this.on_time = (on_time==undefined ? 1 : on_time);
+    this.off_time = (off_time==undefined ? 1 : off_time);
+    this.number_of_blinks = n;
+    this._stop_blink();;
+    this._blink_device (this.on_time, this.off_time, this.number_of_blinks);
+}
+
+DigitalOutputDevice.prototype._stop_blink = function() {
+    if (this._blink_timeout != undefined ) {
+        clearTimeout(this._blink_timeout);
+        this._blink_timeout = undefined;
+    }
+}
+
+DigitalOutputDevice.prototype._blink_device = function (on_time, off_time, n) {
+    if (n != undefined) {
+        n --;
+    }
+    this.toggle(); 
+    this._blink_thread = setTimeOut ( this._blink_device, on_time * 1000, off_time, on_time, n);   
+}
+
 exports.LED = LED;
 
 function LED(pin, active_high, initial_value){ 
@@ -168,33 +209,50 @@ LED.prototype.is_lit = function () {
     return this.is_active();
 }
 
+
+exports.Buzzer = Buzzer;
+
+function Buzzer (pin, active_high, initial_value){ 
 /*
+Extends :class:`DigitalOutputDevice` and represents a digital buzzer
+    component.
 
-    @property
-    def active_high(self):
-        """
-        When ``True``, the :attr:`value` property is ``True`` when the device's
-        :attr:`pin` is high. When ``False`` the :attr:`value` property is
-        ``True`` when the device's pin is low (i.e. the value is inverted).
+    Connect the cathode (negative pin) of the buzzer to a ground pin; connect
+    the other side to any GPIO pin.
 
-        This property can be set after construction; be warned that changing it
-        will invert :attr:`value` (i.e. changing this property doesn't change
-        the device's pin state - it just changes how that state is
-        interpreted).
-        """
-        return self._active_state
+    The following example will sound the buzzer::
 
-    @active_high.setter
-    def active_high(self, value):
-        self._active_state = True if value else False
-        self._inactive_state = False if value else True
+        from gpiozero import Buzzer
 
-    def __repr__(self):
-        try:
-            return '<gpiozero.%s object on pin %r, active_high=%s, is_active=%s>' % (
-                self.__class__.__name__, self.pin, self.active_high, self.is_active)
-        except:
-            return super(OutputDevice, self).__repr__()
+        bz = Buzzer(3)
+        bz.on()
+
+    :param int pin:
+        The GPIO pin which the buzzer is attached to. See :ref:`pin_numbering`
+        for valid pin numbers.
+
+    :param bool active_high:
+        If ``True`` (the default), the buzzer will operate normally with the
+        circuit described above. If ``False`` you should wire the cathode to
+        the GPIO pin, and the anode to a 3V3 pin.
+
+    :param bool initial_value:
+        If ``False`` (the default), the buzzer will be silent initially.  If
+        ``None``, the buzzer will be left in whatever state the pin is found in
+        when configured for output (warning: this can be on).  If ``True``, the
+        buzzer will be switched on initially.
+*/
+    DigitalOutputDevice.call(this, pin, active_high, initial_value);
+}
+
+Buzzer.prototype = inherit (DigitalOutputDevice.prototype);
+Buzzer.prototype.constructor = Buzzer;
+
+Buzzer.prototype.beep = function(){
+    return this.blink();
+}
+
+/*
 
 
 class DigitalOutputDevice(OutputDevice):
@@ -278,93 +336,3 @@ class DigitalOutputDevice(OutputDevice):
                 break
 
 
-class LED(DigitalOutputDevice):
-    """
-    Extends :class:`DigitalOutputDevice` and represents a light emitting diode
-    (LED).
-
-    Connect the cathode (short leg, flat side) of the LED to a ground pin;
-    connect the anode (longer leg) to a limiting resistor; connect the other
-    side of the limiting resistor to a GPIO pin (the limiting resistor can be
-    placed either side of the LED).
-
-    The following example will light the LED::
-
-        from gpiozero import LED
-
-        led = LED(17)
-        led.on()
-
-    :param int pin:
-        The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
-        valid pin numbers.
-
-    :param bool active_high:
-        If ``True`` (the default), the LED will operate normally with the
-        circuit described above. If ``False`` you should wire the cathode to
-        the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
-
-    :param bool initial_value:
-        If ``False`` (the default), the LED will be off initially.  If
-        ``None``, the LED will be left in whatever state the pin is found in
-        when configured for output (warning: this can be on).  If ``True``, the
-        LED will be switched on initially.
-    """
-    pass
-
-LED.is_lit = LED.is_active
-
-
-class Buzzer(DigitalOutputDevice):
-    """
-    Extends :class:`DigitalOutputDevice` and represents a digital buzzer
-    component.
-
-    Connect the cathode (negative pin) of the buzzer to a ground pin; connect
-    the other side to any GPIO pin.
-
-    The following example will sound the buzzer::
-
-        from gpiozero import Buzzer
-
-        bz = Buzzer(3)
-        bz.on()
-
-    :param int pin:
-        The GPIO pin which the buzzer is attached to. See :ref:`pin_numbering`
-        for valid pin numbers.
-
-    :param bool active_high:
-        If ``True`` (the default), the buzzer will operate normally with the
-        circuit described above. If ``False`` you should wire the cathode to
-        the GPIO pin, and the anode to a 3V3 pin.
-
-    :param bool initial_value:
-        If ``False`` (the default), the buzzer will be silent initially.  If
-        ``None``, the buzzer will be left in whatever state the pin is found in
-        when configured for output (warning: this can be on).  If ``True``, the
-        buzzer will be switched on initially.
-    """
-    pass
-
-Buzzer.beep = Buzzer.blink
-
-
-
-
-
-
-function LED (thePin) {
-	var pin = thePin;
-	wpi.pinMode(pin, wpi.OUTPUT);
-	
-	this.getPin = function () {return pin;};
-}
-
-LED.prototype.On = function () {
-	wpi.digitalWrite(this.getPin(), 1);
-}
-
-LED.prototype.Off = function () {
-	wpi.digitalWrite(this.getPin(), 0);
-}*/
