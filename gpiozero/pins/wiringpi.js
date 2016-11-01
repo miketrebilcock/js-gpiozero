@@ -114,22 +114,22 @@ WiringPiPin.prototype.number = function () {
 WiringPiPin.prototype.close = function () {
     this._frequency = undefined;
     this._when_changed = undefined;
-    wpi.pullUpDnControl(pin, wpi.PUD_OFF);
+    wpi.pullUpDnControl(this._number, wpi.PUD_OFF);
 }
 
 WiringPiPin.prototype.output_with_state = function (state) {
     this._pull = 'floating'
-    wpi.pinMode(_number, wpi.OUT);
-    wpi.digitalWrite(_number, state);
+    wpi.pinMode(this._number, wpi.OUT);
+    wpi.digitalWrite(this._number, state);
 }
 
 WiringPiPin.prototype.input_with_pull = function (pull) {
    // if (pull != 'up' and self.PI_INFO.pulled_up('GPIO%d' % self._number):
     //    raise PinFixedPull('%r has a physical pull-up resistor' % self)
     //try:
-    wpi.pinMode(_number, wpi.IN);
+    wpi.pinMode(this._number, wpi.IN);
         //GPIO.setup(self._number, GPIO.IN, self.GPIO_PULL_UPS[pull])
-    wpi.pullUpDnControl(pin, wpi.PUD_UP);
+    wpi.pullUpDnControl(this._number, wpi.PUD_UP);
     this._pull = pull
     //except KeyError:
     //    raise PinInvalidPull('invalid pull "%s" for pin %r' % (pull, self))
@@ -143,8 +143,8 @@ WiringPiPin.prototype.pin_function = function (value) {
         this._pull = 'floating';
     }
     if (value == 'input' || value == 'output') {
-         wpi.pinMode(_number, this.GPIO_FUNCTIONS[value])
-         wpi.pullUpDnControl(pin, this.GPIO_PULL_UPS[this._pull]);
+         wpi.pinMode(this._number, this.GPIO_FUNCTIONS[value])
+         wpi.pullUpDnControl(this._number, this.GPIO_PULL_UPS[this._pull]);
     } else {
         throw exc.PinInvalidFunction('invalid function " + value + " for pin ' + this._number.toString());
     }
@@ -177,7 +177,7 @@ WiringPiPin.prototype.pull = function (value) {
             raise PinFixedPull('%r has a physical pull-up resistor' % self)
     }*/
     this._pull = value;
-    wpi.pullUpDnControl(pin, this.GPIO_PULL_UPS[this._pull]);
+    wpi.pullUpDnControl(this._number, this.GPIO_PULL_UPS[this._pull]);
 }
 /*
 
