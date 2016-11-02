@@ -59,13 +59,15 @@ OutputDevice.prototype.on = function () {
     /*
     Turns the device on.
     */
+    this._pin._stop_blink();
     this._write(true);
 }
 
 OutputDevice.prototype.off = function() {
-        /*
-        Turns the device off.
-        */
+    /*
+    Turns the device off.
+    */
+    this._pin._stop_blink();
     this._write(false);
 }
 
@@ -92,6 +94,7 @@ OutputDevice.prototype.value = function (value) {
     if (value == undefined) {
         return this._read();
     }
+    this._pin._stop_blink();
     this._write(value);
 }
 
@@ -111,8 +114,6 @@ OutputDevice.prototype.toggle = function () {
     });
 }
 
-
-
 exports.DigitalOutputDevice = DigitalOutputDevice;
 
 function DigitalOutputDevice (pin, active_high, initial_value) {
@@ -122,7 +123,7 @@ function DigitalOutputDevice (pin, active_high, initial_value) {
 DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
 DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
 
-DigitalOutputDevice.prototype.blink = function (self, on_time, off_time, n) {
+DigitalOutputDevice.prototype.blink = function (on_time, off_time, n) {
     /*
     Make the device turn on and off repeatedly.
 
@@ -141,29 +142,7 @@ DigitalOutputDevice.prototype.blink = function (self, on_time, off_time, n) {
         blink is finished (warning: the default value of *n* will result in
         this method never returning).
     */
-    this.on_time = (on_time==undefined ? 1000 : on_time);
-    this.off_time = (off_time==undefined ? 1000 : off_time);
-    this.number_of_blinks = n*2;
-    this._stop_blink();
-    this.off();
-    this._blink_device (this, this.on_time, this.off_time, this.number_of_blinks);
-}
-
-DigitalOutputDevice.prototype._stop_blink = function() {
-    if (this._blink_timeout != undefined ) {
-        clearTimeout(this._blink_timeout);
-        this._blink_timeout = undefined;
-    }
-}
-
-DigitalOutputDevice.prototype._blink_device = function (that, on_time, off_time, n) {
-    if (n != undefined) {
-        n --;
-    }
-    that.toggle();
-    if (n>0) { 
-        this._blink_thread = setTimeout ( that._blink_device, on_time * 1000, off_time, on_time, n);   
-    }
+    this._pin.blink(on_time,off_time, n);
 }
 
 exports.LED = LED;
@@ -254,89 +233,3 @@ Buzzer.prototype.constructor = Buzzer;
 Buzzer.prototype.beep = function(){
     return this.blink();
 }
-
-/*
-
-
-class DigitalOutputDevice(OutputDevice):
-    """
-    Represents a generic output device with typical on/off behaviour.
-
-    This class extends :class:`OutputDevice` with a :meth:`blink` method which
-    uses an optional background thread to handle toggling the device state
-    without further interaction.
-    """
-    def __init__(self, pin=None, active_high=True, initial_value=False):
-        self._blink_thread = None
-        super(DigitalOutputDevice, self).__init__(pin, active_high, initial_value)
-        self._controller = None
-
-    @property
-    def value(self):
-        return self._read()
-
-    @value.setter
-    def value(self, value):
-        self._stop_blink()
-        self._write(value)
-
-    def close(self):
-        self._stop_blink()
-        super(DigitalOutputDevice, self).close()
-
-    def on(self):
-        self._stop_blink()
-        self._write(True)
-
-    def off(self):
-        self._stop_blink()
-        self._write(False)
-
-    def blink(self, on_time=1, off_time=1, n=None, background=True):
-        """
-        Make the device turn on and off repeatedly.
-
-        :param float on_time:
-            Number of seconds on. Defaults to 1 second.
-
-        :param float off_time:
-            Number of seconds off. Defaults to 1 second.
-
-        :param int n:
-            Number of times to blink; ``None`` (the default) means forever.
-
-        :param bool background:
-            If ``True`` (the default), start a background thread to continue
-            blinking and return immediately. If ``False``, only return when the
-            blink is finished (warning: the default value of *n* will result in
-            this method never returning).
-        """
-        self._stop_blink()
-        self._blink_thread = GPIOThread(
-            target=self._blink_device, args=(on_time, off_time, n)
-        )
-        self._blink_thread.start()
-        if not background:
-            self._blink_thread.join()
-            self._blink_thread = None
-
-    def _stop_blink(self):
-        if self._controller:
-            self._controller._stop_blink(self)
-            self._controller = None
-        if self._blink_thread:
-            self._blink_thread.stop()
-            self._blink_thread = None
-
-    def _blink_device(self, on_time, off_time, n):
-        iterable = repeat(0) if n is None else repeat(0, n)
-        for _ in iterable:
-            self._write(True)
-            if self._blink_thread.stopping.wait(on_time):
-                break
-            self._write(False)
-            if self._blink_thread.stopping.wait(off_time):
-                break
-
-
-*/

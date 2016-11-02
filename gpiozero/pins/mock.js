@@ -1,4 +1,4 @@
-var p = require ("./index.js"),
+var Pin = require ("./index.js").Pin,
 exc = require("../exc.js");
 //PinState = namedtuple('PinState', ('timestamp', 'state'));
 
@@ -20,7 +20,7 @@ function MockPin(number) {
     }    
     old_pin = _PINS[number];
     if (old_pin == undefined) {
-        p.Pin.call(this);
+        Pin.call(this);
         _PINS[number] = this;
         this._number = number;
         this._function = 'input';
@@ -37,12 +37,16 @@ function MockPin(number) {
     //    raise ValueError('pin %d is already in use as a %s' % (number, old_pin.__class__.__name__))
     return old_pin;   
 }
-MockPin.prototype = inherit(p.Pin.prototype);
+MockPin.prototype = inherit(Pin.prototype);
 MockPin.prototype.constructor = MockPin;
 
 MockPin.prototype.clear_states = function() {        
-    this._last_change = new Date().getTime();
+    this._last_change = (new Date()).getTime();
     this.states = [{time:0.0, state: this._state}];
+}
+
+MockPin.prototype.state_history = function() {        
+    return this.states;
 }
 
 MockPin.prototype.state = function (value) {
@@ -55,13 +59,12 @@ MockPin.prototype.state = function (value) {
     if (value != 0 && value != 1) {
         throw new exc.PinSetInput('Invalid Value - must be 1 or 0 not ' + value.toString());
     }
-
     this._change_state(Boolean(value)) ;
 }
 
 MockPin.prototype._change_state = function (value) {
     if (this._state != value) {
-        t = new Date().getTime();
+        t = (new Date()).getTime();
         this._state = value;
         this.states.push({time:t - this._last_change, state: value});
         this._last_change = t;

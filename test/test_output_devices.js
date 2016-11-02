@@ -113,6 +113,34 @@ describe('output_devices', function() {
 		    expect(device.is_lit()).to.equal(false);		    
 		});		
 	});
+
+    it('test_output_blink_background', done => {            
+        pin = new mp.MockPin(2);    
+        var device = new gz.DigitalOutputDevice(pin);
+
+        device.blink(0.2, 0.1, 2);
+        var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false},{time:101, state: true},{time:201, state: false}];
+        setTimeout(function () {
+            try{
+                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
+                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
+                    if (expected[i].time==0) {
+                        expect (pin.state_history()[i].time).to.equal(expected[i].time);
+                    } else if (expected[i].time!=1) {                        
+                        expect (pin.state_history()[i].time * 1.05).to.be.above(expected[i].time);
+                        expect (pin.state_history()[i].time * 0.95).to.be.below(expected[i].time);
+                    }
+                }
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 1500);
+              
+          
+    });
 });
 
 /*

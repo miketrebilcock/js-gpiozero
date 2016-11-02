@@ -44,6 +44,7 @@ function Pin() {
         shutdown.
     """
 	*/
+    this._blink_timer = undefined;
 }
 
 Pin.prototype = {
@@ -54,6 +55,7 @@ Pin.prototype = {
         called, this :class:`Pin` instance may no longer be used to query or
         control the pin's state.
         */
+        this._stop_blink();
 	},
 	output_with_state: function (state) {
 		/*
@@ -98,10 +100,10 @@ Pin.prototype = {
         specified, for this attribute, :exc:`PinInvalidFunction` will be
         raised.
     */
-	pin_function: function () {
-		return "input";
-	},
 	pin_function: function (value) {
+        if (value == undefined) {
+            return "input";
+        }
         if (value != "input") {
             throw new exc.PinInvalidFunction(
                 "Cannot set the function of pin " + this + " to " + value);
@@ -121,15 +123,59 @@ Pin.prototype = {
         raised.
 
     */
-    state: function () {
-        return 0;
-    },
-    state: function (value) {        
+    state: function (value) {
+        if (value == undefined) {
+            return 0;
+        }  
         throw new PinSetInput("Cannot set the state of input pin " + this);
+    },
+    blink: function (on_time, off_time, loops) {
+        this.on_time = (on_time==undefined ? 1000 : on_time*1000);
+        this.off_time = (off_time==undefined ? 1000 : off_time*1000);
+        this.number_of_blinks = loops;
+        
+        this._stop_blink();
+        if(loops==undefined) {
+            this._blink_timer = setInterval(function(that) {
+                that.state(1);
+                setTimeout (function() {
+                    that.state(0);
+                }, that.off_time);
+            }, this.on_time + this.off_time, this);
+
+            this.state(1);
+            setTimeout (function(that) {
+                    that.state(0);
+                }, that.off_time, this);
+
+        } else {
+            this._blink_timer = setInterval(function(that) {
+                if(that.number_of_blinks>0) {
+                    that.state(1);
+                    setTimeout (function() {
+                        that.state(0);
+                        that.number_of_blinks --;
+                    }, that.on_time);
+                } else {
+                    that._stop_blink();
+                }
+            }, this.on_time + this.off_time, this)
+            this.state(1);
+            setTimeout (function(that) {
+                    that.state(0);
+                    that.number_of_blinks --;
+                }, this.on_time, this);
+        }
+    },
+    _stop_blink : function() {
+        if (this._blink_timer != undefined ) {
+
+            clearInterval(this._blink_timer);
+            this._blink_timer = undefined;
+        }
     }
-
-
 }
+
 
 var _PI_REVISION = undefined;
 
