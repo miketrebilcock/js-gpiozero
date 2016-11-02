@@ -146,7 +146,7 @@ Pin.prototype = {
             this.state(1);
             setTimeout (function(that) {
                     that.state(0);
-                }, that.off_time, this);
+                }, this.off_time, this);
 
         } else {
             this._blink_timer = setInterval(function(that) {
