@@ -94,15 +94,71 @@ MockPin.prototype.close = function () {
 
 };
 
+MockPin.prototype.frequency = function (value) {
+    if (value == undefined) {
+        return;
+    }
+    throw new exc.PinPWMUnsupported();
+}
+
 MockPin.__defineGetter__( 'number', function(){ return this._number; } );
+
+
+exports.MockPin = MockPin;
+
 
 function clear_pins () {
     _PINS = {};
 }
 
-
-exports.MockPin = MockPin;
 exports.clear_pins = clear_pins;
+
+
+function MockPWMPin(number) {
+    MockPin.call(this, number);
+    this._state = 0.0;
+    this.clear_states();
+    this._frequency = undefined;
+}
+
+MockPWMPin.prototype = inherit(MockPin.prototype);
+MockPWMPin.prototype.constructor = MockPWMPin;
+
+exports.MockPWMPin = MockPWMPin;
+
+MockPWMPin.prototype.close = function () {
+    this.frequency(undefined);
+    MockPin.prototype.close.call(this);
+}
+
+MockPWMPin.prototype.frequency = function (value) {
+    if (value == undefined) {
+        return this._frequency;
+    }
+    if (this._function!='output') {
+        throw new exc.PinSetInput("Pin is not set for output function");
+    }
+    if (value == -1) {
+        this._frequency = undefined;
+        this._change_state(0.0);
+    } else {
+        this._frequency = value;
+    }
+}
+
+MockPWMPin.prototype.state = function (value) {
+    if (value == undefined) {
+        return this._state;
+    }
+    if (this._function!='output') {
+        throw new exc.PinSetInput("Pin is not set for output function");
+    }
+    if (value<0 || value>1) {
+            throw new exc.OutputDeviceBadValue("initial_value must be between 0 and 1, actual=:"+value);
+    }
+    this._change_state(parseFloat(value));
+}
+
     
 /*    
     def pi_info(cls):
@@ -266,34 +322,7 @@ class MockTriggerPin(MockPin):
         self.echo_pin.drive_low()
 
 
-class MockPWMPin(MockPin):
-    """
-    This derivative of :class:`MockPin` adds PWM support.
-    """
-    def __init__(self, number):
-        super(MockPWMPin, self).__init__()
-        self._frequency = None
 
-    def close(self):
-        self.frequency = None
-        super(MockPWMPin, self).close()
-
-    def _set_state(self, value):
-        if self._function == 'input':
-            raise PinSetInput('cannot set state of pin %r' % self)
-        assert self._function == 'output'
-        assert 0 <= value <= 1
-        self._change_state(float(value))
-
-    def _get_frequency(self):
-        return self._frequency
-
-    def _set_frequency(self, value):
-        if value is not None:
-            assert self._function == 'output'
-        self._frequency = value
-        if value is None:
-            self._change_state(0.0)
 
 
 class MockSPIClockPin(MockPin):

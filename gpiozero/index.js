@@ -7,6 +7,8 @@ module.exports = {
 	
 	GPIOPinMissing: exc.GPIOPinMissing,
 	GPIOPinInUse : exc.GPIOPinInUse,
+	OutputDeviceBadValue : exc.OutputDeviceBadValue,
+	PinPWMUnsupported : exc.PinPWMUnsupported,
 	pins : pins,
 
 	
@@ -15,6 +17,7 @@ module.exports = {
 
 	OutputDevice: output_devices.OutputDevice,
 	DigitalOutputDevice: output_devices.DigitalOutputDevice,
+	PWMOutputDevice : output_devices.PWMOutputDevice,
 	LED : output_devices.LED,
 	Buzzer : output_devices.Buzzer
 

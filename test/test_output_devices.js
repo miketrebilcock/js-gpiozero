@@ -198,7 +198,7 @@ describe('output_devices', function() {
             var expected = [{time:0, state: false},{time:1, state: true},{time:1000, state: false}];
         setTimeout(function () {
             try{
-                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
+                for (var i = 0, len = expected.length; i<len; i++ ){
                     expect (pin.state_history()[i].state).to.equal(expected[i].state);
                     if (expected[i].time==0) {
                         expect (pin.state_history()[i].time).to.equal(expected[i].time);
@@ -216,45 +216,84 @@ describe('output_devices', function() {
         }, 1500);           
         });     
     });
+
+    it('output_pwm_bad_initial_value', function() {          
+        pin = new mp.MockPin(2);
+        expect(function(){
+               new gz.PWMOutputDevice(pin,undefined, 2);
+            }).to.throw(gz.OutputDeviceBadValue);    
+    });
+
+    it('test_output_pwm_not_supported', function() {          
+        pin = new mp.MockPin(2);
+        expect(function(){
+               new gz.PWMOutputDevice(pin);
+            }).to.throw(gz.PinPWMUnsupported);    
+    });
+
+    it('output_pwm_states', function() {            
+        pin = new mp.MockPWMPin(2);
+
+        var expected = [0.0, 0.1, 0.2, 0.0];    
+        with_close(new gz.PWMOutputDevice(pin), function(device){       
+            device.value (0.1);
+            device.value (0.2);
+            device.value (0.0);
+            for (var i = 0, len = expected.length; i<len; i++ ){
+                expect (pin.state_history()[i].state).to.equal(expected[i]);  
+            }           
+        });     
+    });
+
+    it('output_pwm_read', function() {            
+        pin = new mp.MockPWMPin(2);
+  
+        with_close(new gz.PWMOutputDevice(pin, undefined, undefined, 100), function(device){       
+            expect(device.frequency()).to.equal(100);
+            device.value(0.1);
+            expect(device.value()).to.equal(0.1);
+            expect(pin.state()).to.equal(0.1);
+            expect(device.is_active()).to.equal(true);
+            device.frequency(-1);
+            expect(device.value()).to.equal(0.0);
+            expect(device.is_active()).equal(false);
+            expect(device.frequency()).to.equal(undefined);
+                     
+        });     
+    });
+
+    it('output_pwm_write', function() {            
+        pin = new mp.MockPWMPin(2);
+
+        var expected = [0.0, 1.0, 0.0];    
+        with_close(new gz.PWMOutputDevice(pin), function(device){       
+            device.on();
+            device.off();
+            for (var i = 0, len = expected.length; i<len; i++ ){
+                expect (pin.state_history()[i].state).to.equal(expected[i]);  
+            }           
+        });     
+    });
+
+    it('output_pwm_toggle', function() {            
+        pin = new mp.MockPWMPin(2);
+
+        var expected = [0.0, 1.0, 0.5, 0.1, 0.9,0.0];    
+        with_close(new gz.PWMOutputDevice(pin), function(device){       
+            device.toggle();
+            device.value(0.5);
+            device.value(0.1);
+            device.toggle();
+            device.off();
+            for (var i = 0, len = expected.length; i<len; i++ ){
+                expect (pin.state_history()[i].state).to.equal(expected[i]);  
+            }           
+        });     
+    });
 });
 
 /*
 
-def test_output_pwm_bad_initial_value():
-    with pytest.raises(ValueError):
-        PWMOutputDevice(MockPin(2), initial_value=2)
-
-def test_output_pwm_not_supported():
-    with pytest.raises(AttributeError):
-        PWMOutputDevice(MockPin(2))
-
-def test_output_pwm_states():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        device.value = 0.1
-        device.value = 0.2
-        device.value = 0.0
-        pin.assert_states([0.0, 0.1, 0.2, 0.0])
-
-def test_output_pwm_read():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin, frequency=100) as device:
-        assert device.frequency == 100
-        device.value = 0.1
-        assert isclose(device.value, 0.1)
-        assert isclose(pin.state, 0.1)
-        assert device.is_active
-        device.frequency = None
-        assert not device.value
-        assert not device.is_active
-        assert device.frequency is None
-
-def test_output_pwm_write():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        device.on()
-        device.off()
-        pin.assert_states([False, True, False])
 
 def test_output_pwm_toggle():
     pin = MockPWMPin(2)
