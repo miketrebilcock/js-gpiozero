@@ -15,6 +15,7 @@ module.exports = {
 
 	OutputDevice: output_devices.OutputDevice,
 	DigitalOutputDevice: output_devices.DigitalOutputDevice,
-	LED : output_devices.LED
+	LED : output_devices.LED,
+	Buzzer : output_devices.Buzzer
 
 }

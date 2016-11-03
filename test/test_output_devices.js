@@ -141,57 +141,84 @@ describe('output_devices', function() {
               
           
     });
+
+    it('test_output_blink_interrupt_while_on', done => {            
+        pin = new mp.MockPin(2);    
+        var device = new gz.DigitalOutputDevice(pin);
+
+        device.blink(1, 0.1);
+        var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false}];
+        setTimeout(function () {
+            try{
+                device.off()
+                
+                expect(pin._blink_thread).to.equal(undefined);
+
+                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
+                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
+                }
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 200);
+    });
+
+    it('test_output_blink_interrupt_while_off', done => {            
+        pin = new mp.MockPin(2);    
+        var device = new gz.DigitalOutputDevice(pin);
+
+        device.blink(0.1, 1);
+        var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false}];
+        setTimeout(function () {
+            try{
+                device.off()
+                
+                expect(pin._blink_thread).to.equal(undefined);
+
+                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
+                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
+                }
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 200);
+    });
+
+    it('output_Buzzer_has_buzz', function() {            
+        pin = new mp.MockPin(2);    
+        with_close(new gz.Buzzer(pin), function(device){  
+            device.beep();
+
+            var expected = [{time:0, state: false},{time:1, state: true},{time:1000, state: false}];
+        setTimeout(function () {
+            try{
+                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
+                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
+                    if (expected[i].time==0) {
+                        expect (pin.state_history()[i].time).to.equal(expected[i].time);
+                    } else if (expected[i].time!=1) {                        
+                        expect (pin.state_history()[i].time * 1.05).to.be.above(expected[i].time);
+                        expect (pin.state_history()[i].time * 0.95).to.be.below(expected[i].time);
+                    }
+                }
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 1500);           
+        });     
+    });
 });
 
 /*
-
-def test_output_blink_background():
-    pin = MockPin(2)
-    with DigitalOutputDevice(pin) as device:
-        start = time()
-        device.blink(0.1, 0.1, n=2)
-        assert isclose(time() - start, 0, abs_tol=0.05)
-        device._blink_thread.join() # naughty, but ensures no arbitrary waits in the test
-        assert isclose(time() - start, 0.4, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, False),
-            (0.0, True),
-            (0.1, False),
-            (0.1, True),
-            (0.1, False)
-            ])
-
-@pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
-                    reason='timing is too random on pypy')
-def test_output_blink_foreground():
-    pin = MockPin(2)
-    with DigitalOutputDevice(pin) as device:
-        start = time()
-        device.blink(0.1, 0.1, n=2, background=False)
-        assert isclose(time() - start, 0.4, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, False),
-            (0.0, True),
-            (0.1, False),
-            (0.1, True),
-            (0.1, False)
-            ])
-
-def test_output_blink_interrupt_on():
-    pin = MockPin(2)
-    with DigitalOutputDevice(pin) as device:
-        device.blink(1, 0.1)
-        sleep(0.2)
-        device.off() # should interrupt while on
-        pin.assert_states([False, True, False])
-
-def test_output_blink_interrupt_off():
-    pin = MockPin(2)
-    with DigitalOutputDevice(pin) as device:
-        device.blink(0.1, 1)
-        sleep(0.2)
-        device.off() # should interrupt while off
-        pin.assert_states([False, True, False])
 
 def test_output_pwm_bad_initial_value():
     with pytest.raises(ValueError):
