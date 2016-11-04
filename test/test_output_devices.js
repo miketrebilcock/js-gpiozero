@@ -122,15 +122,7 @@ describe('output_devices', function() {
         var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false},{time:101, state: true},{time:201, state: false}];
         setTimeout(function () {
             try{
-                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
-                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
-                    if (expected[i].time==0) {
-                        expect (pin.state_history()[i].time).to.equal(expected[i].time);
-                    } else if (expected[i].time!=1) {                        
-                        expect (pin.state_history()[i].time * 1.05).to.be.above(expected[i].time);
-                        expect (pin.state_history()[i].time * 0.95).to.be.below(expected[i].time);
-                    }
-                }
+                pin.assert_states_and_times(expected);
                 device.close();
                 done(); // success: call done with no parameter to indicate that it() is done()
               } catch( e ) {
@@ -147,16 +139,14 @@ describe('output_devices', function() {
         var device = new gz.DigitalOutputDevice(pin);
 
         device.blink(1, 0.1);
-        var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false}];
+        var expected = [false,true,false];
         setTimeout(function () {
             try{
                 device.off()
                 
                 expect(pin._blink_thread).to.equal(undefined);
 
-                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
-                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
-                }
+                pin.assert_states(expected);
                 device.close();
                 done(); // success: call done with no parameter to indicate that it() is done()
               } catch( e ) {
@@ -171,16 +161,14 @@ describe('output_devices', function() {
         var device = new gz.DigitalOutputDevice(pin);
 
         device.blink(0.1, 1);
-        var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false}];
+        var expected = [false, true, false];
         setTimeout(function () {
             try{
                 device.off()
                 
                 expect(pin._blink_thread).to.equal(undefined);
 
-                for (var i = 0, len = pin.state_history().length; i<len; i++ ){
-                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
-                }
+                pin.assert_states(expected);
                 device.close();
                 done(); // success: call done with no parameter to indicate that it() is done()
               } catch( e ) {
@@ -198,15 +186,7 @@ describe('output_devices', function() {
             var expected = [{time:0, state: false},{time:1, state: true},{time:1000, state: false}];
         setTimeout(function () {
             try{
-                for (var i = 0, len = expected.length; i<len; i++ ){
-                    expect (pin.state_history()[i].state).to.equal(expected[i].state);
-                    if (expected[i].time==0) {
-                        expect (pin.state_history()[i].time).to.equal(expected[i].time);
-                    } else if (expected[i].time!=1) {                        
-                        expect (pin.state_history()[i].time * 1.05).to.be.above(expected[i].time);
-                        expect (pin.state_history()[i].time * 0.95).to.be.below(expected[i].time);
-                    }
-                }
+                pin.assert_states_and_times(expected);
                 device.close();
                 done(); // success: call done with no parameter to indicate that it() is done()
               } catch( e ) {
@@ -239,9 +219,7 @@ describe('output_devices', function() {
             device.value (0.1);
             device.value (0.2);
             device.value (0.0);
-            for (var i = 0, len = expected.length; i<len; i++ ){
-                expect (pin.state_history()[i].state).to.equal(expected[i]);  
-            }           
+            pin.assert_states(expected);          
         });     
     });
 
@@ -269,9 +247,7 @@ describe('output_devices', function() {
         with_close(new gz.PWMOutputDevice(pin), function(device){       
             device.on();
             device.off();
-            for (var i = 0, len = expected.length; i<len; i++ ){
-                expect (pin.state_history()[i].state).to.equal(expected[i]);  
-            }           
+            pin.assert_states(expected);          
         });     
     });
 
@@ -285,9 +261,7 @@ describe('output_devices', function() {
             device.value(0.1);
             device.toggle();
             device.off();
-            for (var i = 0, len = expected.length; i<len; i++ ){
-                expect (pin.state_history()[i].state).to.equal(expected[i]);  
-            }           
+            pin.assert_states(expected);          
         });     
     });
 });

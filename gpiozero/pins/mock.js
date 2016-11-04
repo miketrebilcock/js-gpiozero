@@ -1,6 +1,6 @@
 var Pin = require ("./index.js").Pin,
-exc = require("../exc.js");
-//PinState = namedtuple('PinState', ('timestamp', 'state'));
+exc = require("../exc.js"),
+ expect = require('chai').expect;
 
 var _PINS = [];
 
@@ -101,7 +101,32 @@ MockPin.prototype.frequency = function (value) {
     throw new exc.PinPWMUnsupported();
 }
 
-MockPin.__defineGetter__( 'number', function(){ return this._number; } );
+MockPin.prototype.number = function(){ 
+    return this._number; 
+}
+
+MockPin.prototype.assert_states = function (expected) {
+    // Tests that the pin went through the expected states (a list of values)
+    for (var i = 0, len = expected.length; i<len; i++ ){
+        expect (this.state_history()[i].state).to.equal(expected[i]);  
+    } 
+}
+
+MockPin.prototype.assert_states_and_times = function (expected) {
+    // Tests that the pin went through the expected states at the expected
+    // times (times are compared with a tolerance of tens-of-milliseconds as
+    // that's about all we can reasonably expect in a non-realtime
+    // environment on a Pi 1)
+    for (var i = 0, len = expected.length; i<len; i++ ){
+        expect (this.state_history()[i].state).to.equal(expected[i].state);
+        if (expected[i].time==0) {
+            expect (this.state_history()[i].time).to.equal(expected[i].time);
+        } else if (expected[i].time!=1) {                        
+            expect (this.state_history()[i].time * 1.05).to.be.above(expected[i].time);
+            expect (this.state_history()[i].time * 0.95).to.be.below(expected[i].time);
+        }
+    }
+}
 
 
 exports.MockPin = MockPin;
@@ -158,6 +183,7 @@ MockPWMPin.prototype.state = function (value) {
     }
     this._change_state(parseFloat(value));
 }
+
 
     
 /*    
