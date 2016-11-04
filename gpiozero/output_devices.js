@@ -72,7 +72,7 @@ OutputDevice.prototype.off = function() {
     this._write(false);
 }
 
-OutputDevice.prototype.active_high = function  active_high(value) {
+OutputDevice.prototype.active_high = function (value) {
     /*
     When ``True``, the :attr:`value` property is ``True`` when the device's
     :attr:`pin` is high. When ``False`` the :attr:`value` property is
@@ -85,7 +85,7 @@ OutputDevice.prototype.active_high = function  active_high(value) {
     */
     if(value == undefined)
     {
-        return _active_state;
+        return this._active_state;
     }
     this._active_state = value ? true : false;
     this._inactive_state = value ? false : true;
@@ -296,7 +296,7 @@ PWMOutputDevice.prototype.value = function (value) {
 
 PWMOutputDevice.prototype._read = function () {
     this._check_open();
-    if (this.active_high) {
+    if (this.active_high()) {
         return this._pin.state();
     } else {
         return 1 - this._pin.state();
@@ -304,7 +304,7 @@ PWMOutputDevice.prototype._read = function () {
 }
 
 PWMOutputDevice.prototype._write = function (value) {
-    if (!this.active_high) {
+    if (!this.active_high()) {
         value = 1 - value;
     }
     if (value<0 || value >1) {
@@ -345,6 +345,12 @@ PWMOutputDevice.prototype.toggle = function () {
     this._pin._stop_blink();
     var newValue = 1 - this.value();
     this.value(newValue);
+}
+
+PWMOutputDevice.prototype.close = function() {
+    this._pin._stop_blink();
+    this._pin.frequency (-1);
+    OutputDevice.prototype.close.call(this);
 }
 
 /*

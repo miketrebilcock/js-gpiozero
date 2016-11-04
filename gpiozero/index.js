@@ -9,6 +9,7 @@ module.exports = {
 	GPIOPinInUse : exc.GPIOPinInUse,
 	OutputDeviceBadValue : exc.OutputDeviceBadValue,
 	PinPWMUnsupported : exc.PinPWMUnsupported,
+	PinInputState : exc.PinInputState,
 	pins : pins,
 
 	

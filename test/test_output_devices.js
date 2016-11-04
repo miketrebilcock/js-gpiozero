@@ -2,7 +2,10 @@
 var expect = require('chai').expect,
 	assert = require('chai').assert,
 	gz = require('../gpiozero/'),
-	mp = require('../gpiozero/pins/mock.js');
+	mp = require('../gpiozero/pins/mock.js')
+    isclose = require('../gpiozero/compat.js').isclose;
+
+
     
 
 function with_close (device, method) {
@@ -71,7 +74,7 @@ describe('output_devices', function() {
 	    	pin.pin_function('input');	    	    	
 		    expect(function(){
 	    		device.on();
-	    	}).to.throw(gz.DeviceClosed);
+	    	}).to.throw(gz.PinSetInput);
 		});		
 	});
 
@@ -264,46 +267,55 @@ describe('output_devices', function() {
             pin.assert_states(expected);          
         });     
     });
+
+    it('output_pwm_active_high_read', function() {            
+        pin = new mp.MockPWMPin(2);
+
+        var expected = [0.0, 1.0, 0.5, 0.1, 0.9,0.0];    
+        with_close(new gz.PWMOutputDevice(pin, false), function(device){       
+            device.value(0.1);
+            assert(isclose(device.value(),0.1));
+            expect(pin.state()).to.equal(0.9);
+            device.frequency(-1);
+            expect(device.value()).to.equal(1.0);
+        });     
+    });
+
+    it('output_pwm_bad_value', function() {            
+        pin = new mp.MockPWMPin(2);
+        with_close(new gz.PWMOutputDevice(pin), function(device){ 
+            expect(function(){
+               device.value(2);
+            }).to.throw(gz.ValueError); 
+        });
+    });
+
+    it('output_pwm_write_closed', function() { 
+        pin = new mp.MockPWMPin(2);
+        device =  new gz.PWMOutputDevice(pin);
+        device.close();
+
+        expect(function(){
+              device.on();
+            }).to.throw(gz.GPIODeviceClosed);      
+    });
+
+    /*it('output_pwm_write_silly', function() {            
+        pin = new mp.MockPWMPin(2);
+        with_close(new gz.OutputDevice(pin), function(device){          
+            pin.pin_function('input');                  
+            expect(function(){
+                device.off();
+            }).to.throw(gz.PinSetInput);
+        });             
+    });*/
 });
 
 /*
 
 
-def test_output_pwm_toggle():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        device.toggle()
-        device.value = 0.5
-        device.value = 0.1
-        device.toggle()
-        device.off()
-        pin.assert_states([False, True, 0.5, 0.1, 0.9, False])
 
-def test_output_pwm_active_high_read():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin, active_high=False) as device:
-        device.value = 0.1
-        assert isclose(device.value, 0.1)
-        assert isclose(pin.state, 0.9)
-        device.frequency = None
-        assert device.value
 
-def test_output_pwm_bad_value():
-    with pytest.raises(ValueError):
-        PWMOutputDevice(MockPWMPin(2)).value = 2
-
-def test_output_pwm_write_closed():
-    device = PWMOutputDevice(MockPWMPin(2))
-    device.close()
-    with pytest.raises(GPIODeviceClosed):
-        device.on()
-
-def test_output_pwm_write_silly():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        pin.function = 'input'
-        with pytest.raises(AttributeError):
-            device.off()
 
 @pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
                     reason='timing is too random on pypy')

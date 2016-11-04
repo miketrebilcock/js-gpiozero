@@ -1,8 +1,9 @@
 var Pin = require ("./index.js").Pin,
-exc = require("../exc.js"),
- expect = require('chai').expect;
-
-var _PINS = [];
+    exc = require("../exc.js"),
+    expect = require('chai').expect,
+    assert = require('chai').assert,
+    isclose = require('../compat.js').isclose,
+    _PINS = [];
 
 function inherit(proto) {
   function F() {}
@@ -84,7 +85,7 @@ MockPin.prototype.pin_function = function (value) {
             //self._set_pull(self._get_pull())
         }
     } else {
-        throw new exc.PinSetInput('Invalid Value - must be 1 or 0 not ' + value.toString());
+        throw new exc.PinSetInput('Invalid Value - must be input or output not ' + value.toString());
     }        
 }
 
@@ -121,10 +122,10 @@ MockPin.prototype.assert_states_and_times = function (expected) {
         expect (this.state_history()[i].state).to.equal(expected[i].state);
         if (expected[i].time==0) {
             expect (this.state_history()[i].time).to.equal(expected[i].time);
-        } else if (expected[i].time!=1) {                        
-            expect (this.state_history()[i].time * 1.05).to.be.above(expected[i].time);
-            expect (this.state_history()[i].time * 0.95).to.be.below(expected[i].time);
-        }
+        } else if (expected[i].time!=1) {
+            var actual = this.state_history()[i].time;
+            assert(isclose(actual, expected[i].time , undefined, 10),actual + " not equal to " + expected[i].time )  ;             
+        }                     
     }
 }
 
@@ -175,8 +176,8 @@ MockPWMPin.prototype.state = function (value) {
     if (value == undefined) {
         return this._state;
     }
-    if (this._function!='output') {
-        throw new exc.PinSetInput("Pin is not set for output function");
+    if (this._function != 'output') {
+       throw new exc.PinSetInput('cannot set state of pin ' + this);
     }
     if (value<0 || value>1) {
             throw new exc.OutputDeviceBadValue("initial_value must be between 0 and 1, actual=:"+value);
