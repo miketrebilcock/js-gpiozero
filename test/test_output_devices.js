@@ -336,113 +336,33 @@ describe('output_devices', function() {
             done();
         });
     });
+
+    it('output_pwm_blink_interrupt', function(done) { 
+        var fade_in_time = 1,
+            fade_out_time = 1,
+            on_time = 1, 
+            off_time = 1,
+            n = 1;
+
+        pin = new mp.MockPWMPin(2);
+        var device = new gz.PWMOutputDevice(pin); 
+        device.blink(on_time, off_time, fade_in_time, fade_out_time, n);
+        setTimeout(function () {
+            try{
+                device.off()
+                
+                expect(pin._blink_thread).to.equal(undefined);               
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 200); 
+    });
 });
 
 /*
-
-
-
-
-
-@pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
-                    reason='timing is too random on pypy')
-def test_output_pwm_blink_background():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        start = time()
-        device.blink(0.1, 0.1, n=2)
-        assert isclose(time() - start, 0, abs_tol=0.05)
-        device._blink_thread.join()
-        assert isclose(time() - start, 0.4, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, 0),
-            (0.0, 1),
-            (0.1, 0),
-            (0.1, 1),
-            (0.1, 0)
-            ])
-
-@pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
-                    reason='timing is too random on pypy')
-def test_output_pwm_blink_foreground():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        start = time()
-        device.blink(0.1, 0.1, n=2, background=False)
-        assert isclose(time() - start, 0.4, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, 0),
-            (0.0, 1),
-            (0.1, 0),
-            (0.1, 1),
-            (0.1, 0)
-            ])
-
-@pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
-                    reason='timing is too random on pypy')
-def test_output_pwm_fade_background():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        start = time()
-        device.blink(0, 0, 0.2, 0.2, n=2)
-        assert isclose(time() - start, 0, abs_tol=0.05)
-        device._blink_thread.join()
-        assert isclose(time() - start, 0.8, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            ])
-
-@pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
-                    reason='timing is too random on pypy')
-def test_output_pwm_fade_foreground():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        start = time()
-        device.blink(0, 0, 0.2, 0.2, n=2, background=False)
-        assert isclose(time() - start, 0.8, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            ])
 
 @pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
                     reason='timing is too random on pypy')

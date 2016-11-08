@@ -230,7 +230,10 @@ MockPWMPin.prototype._run_blink = function (sequence, that){
         that.state (nextStep.value);
         that._blink_timer = setTimeout(that._run_blink, nextStep.delay, sequence, that);
     } else {
-        that.blink_callback();
+        if(that.blink_callback != undefined)
+        {
+            that.blink_callback();
+        }
     }
 }
 
