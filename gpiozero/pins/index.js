@@ -126,14 +126,14 @@ Pin.prototype = {
     state: function (value) {
         if (value == undefined) {
             return 0;
-        }  
+        }
         throw new PinSetInput("Cannot set the state of input pin " + this);
     },
-    blink: function (on_time, off_time, loops) {
+    blink: function (on_time, off_time, loops, callback) {
         this.on_time = (on_time==undefined ? 1000 : on_time*1000);
         this.off_time = (off_time==undefined ? 1000 : off_time*1000);
         this.number_of_blinks = loops;
-        
+        this.callback = callback;
         this._stop_blink();
         if(loops==undefined) {
             this._blink_timer = setInterval(function(that) {
@@ -142,7 +142,6 @@ Pin.prototype = {
                     that.state(0);
                 }, that.off_time);
             }, this.on_time + this.off_time, this);
-
             this.state(1);
             setTimeout (function(that) {
                     that.state(0);
@@ -158,6 +157,10 @@ Pin.prototype = {
                     }, that.on_time);
                 } else {
                     that._stop_blink();
+                    if(that.callback != undefined)
+                    {
+                        that.callback();
+                    }
                 }
             }, this.on_time + this.off_time, this)
             this.state(1);
@@ -169,7 +172,6 @@ Pin.prototype = {
     },
     _stop_blink : function() {
         if (this._blink_timer != undefined ) {
-
             clearInterval(this._blink_timer);
             this._blink_timer = undefined;
         }

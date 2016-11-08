@@ -109,7 +109,8 @@ MockPin.prototype.number = function(){
 MockPin.prototype.assert_states = function (expected) {
     // Tests that the pin went through the expected states (a list of values)
     for (var i = 0, len = expected.length; i<len; i++ ){
-        expect (this.state_history()[i].state).to.equal(expected[i]);  
+        var actual = this.state_history()[i].state;
+        assert(isclose(actual, expected[i] , undefined, 10),actual + " not equal to " + expected[i] )  ;
     } 
 }
 
@@ -118,10 +119,13 @@ MockPin.prototype.assert_states_and_times = function (expected) {
     // times (times are compared with a tolerance of tens-of-milliseconds as
     // that's about all we can reasonably expect in a non-realtime
     // environment on a Pi 1)
+    assert(expected.length<=this.state_history().length, 'Expected length:'+expected.length+' Actual length:' + this.state_history().length);
     for (var i = 0, len = expected.length; i<len; i++ ){
-        expect (this.state_history()[i].state).to.equal(expected[i].state);
+        var actual = this.state_history()[i].state;
+        expect (actual).to.equal(expected[i].state);
         if (expected[i].time==0) {
-            expect (this.state_history()[i].time).to.equal(expected[i].time);
+            var actual = this.state_history()[i].time;
+            expect (actual).to.equal(expected[i].time);
         } else if (expected[i].time!=1) {
             var actual = this.state_history()[i].time;
             assert(isclose(actual, expected[i].time , undefined, 10),actual + " not equal to " + expected[i].time )  ;             
@@ -185,6 +189,50 @@ MockPWMPin.prototype.state = function (value) {
     this._change_state(parseFloat(value));
 }
 
+MockPWMPin.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, fps, callback) {
+    this.on_time = (on_time == undefined ? 1 : on_time);
+    this.off_time = (off_time == undefined ? 1 : off_time);
+    this.fade_in_time = (fade_in_time == undefined ? 0 : fade_in_time);
+    this.fade_out_time = (fade_out_time == undefined ? 0 : fade_out_time);
+    this.fps = (fps == undefined ? 50 : fps);
+    this.n = (n == undefined ? 0 : n);
+    this.sequence = [];
+    this.blink_callback = callback;
+
+    if (this.fade_in_time > 0) {
+        for (var i = 0; i<this.fps*this.fade_in_time; i++ ) {
+            this.sequence.push({value: i * (1 / this.fps) / this.fade_in_time, delay: 1/this.fps});
+        }
+    }
+    this.sequence.push({value: 1, delay: this.on_time});
+    if (this.fade_out_time > 0) {
+        for (var i = 0; i<this.fps*this.fade_in_time; i++ ) {
+            this.sequence.push({value:  1 - (i * (1 / this.fps)) / this.fade_in_time, delay: 1/ this.fps});
+        }
+    }
+    this.sequence.push({value: 0, delay: this.off_time});
+
+    if (this.n>0) {
+        for (var i = 0; i<(this.n-1); i++) {
+            this.sequence = this.sequence.concat(this.sequence);
+        }
+
+        var nextStep = this.sequence.pop();
+        this.state(nextStep.value);
+        var that = this;
+        this._blink_timer = setTimeout(that._run_blink, nextStep.delay, this.sequence, this);
+    }
+}
+
+MockPWMPin.prototype._run_blink = function (sequence, that){
+    if(sequence.length>0) {
+        var nextStep = sequence.pop();
+        that.state (nextStep.value);
+        that._blink_timer = setTimeout(that._run_blink, nextStep.delay, sequence, that);
+    } else {
+        that.blink_callback();
+    }
+}
 
     
 /*    

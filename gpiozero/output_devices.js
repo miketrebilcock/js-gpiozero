@@ -124,7 +124,7 @@ function DigitalOutputDevice (pin, active_high, initial_value) {
 DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
 DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
 
-DigitalOutputDevice.prototype.blink = function (on_time, off_time, n) {
+DigitalOutputDevice.prototype.blink = function (on_time, off_time, n, callback) {
     /*
     Make the device turn on and off repeatedly.
 
@@ -143,7 +143,7 @@ DigitalOutputDevice.prototype.blink = function (on_time, off_time, n) {
         blink is finished (warning: the default value of *n* will result in
         this method never returning).
     */
-    this._pin.blink(on_time,off_time, n);
+    this._pin.blink(on_time,off_time, n, callback);
 }
 
 exports.LED = LED;
@@ -232,7 +232,7 @@ Buzzer.prototype = inherit (DigitalOutputDevice.prototype);
 Buzzer.prototype.constructor = Buzzer;
 
 Buzzer.prototype.beep = function(){
-    return this.blink();
+    this.blink();
 }
 
 exports.PWMOutputDevice = PWMOutputDevice;
@@ -351,6 +351,31 @@ PWMOutputDevice.prototype.close = function() {
     this._pin._stop_blink();
     this._pin.frequency (-1);
     OutputDevice.prototype.close.call(this);
+}
+
+
+PWMOutputDevice.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, callback) {
+
+    /*
+    Make the device turn on and off repeatedly.
+
+    :param float on_time:
+        Number of seconds on. Defaults to 1 second.
+
+    :param float off_time:
+        Number of seconds off. Defaults to 1 second.
+
+    :param float fade_in_time:
+        Number of seconds to spend fading in. Defaults to 0.
+
+    :param float fade_out_time:
+        Number of seconds to spend fading out. Defaults to 0.
+
+    :param int n:
+        Number of times to blink; ``None`` (the default) means forever.
+
+    */
+    this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
 }
 
 /*
@@ -510,34 +535,8 @@ class PWMOutputDevice(OutputDevice):
             on_time, off_time, fade_in_time, fade_out_time, n, background
         )
 
-    def _stop_blink(self):
-        if self._blink_thread:
-            self._blink_thread.stop()
-            self._blink_thread = None
 
-    def _blink_device(
-            self, on_time, off_time, fade_in_time, fade_out_time, n, fps=50):
-        sequence = []
-        if fade_in_time > 0:
-            sequence += [
-                (i * (1 / fps) / fade_in_time, 1 / fps)
-                for i in range(int(fps * fade_in_time))
-                ]
-        sequence.append((1, on_time))
-        if fade_out_time > 0:
-            sequence += [
-                (1 - (i * (1 / fps) / fade_out_time), 1 / fps)
-                for i in range(int(fps * fade_out_time))
-                ]
-        sequence.append((0, off_time))
-        sequence = (
-                cycle(sequence) if n is None else
-                chain.from_iterable(repeat(sequence, n))
-                )
-        for value, delay in sequence:
-            self._write(value)
-            if self._blink_thread.stopping.wait(delay):
-                break
+   
 
 
 

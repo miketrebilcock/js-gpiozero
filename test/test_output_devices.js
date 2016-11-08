@@ -16,11 +16,12 @@ function with_close (device, method) {
 describe('output_devices', function() { 
 
 	before(function() {
-      // ...
+      
     });
 
- 	afterEach(function() { 		
-    	mp.clear_pins();  
+ 	afterEach(function() { 
+        mp.clear_pins();
+    	  
     });	
 
 	it('output_initial_values', function() {
@@ -79,7 +80,7 @@ describe('output_devices', function() {
 	});
 
 	it('output_value', function() {			
-		pin = new mp.MockPin(2);	
+		var pin = new mp.MockPin(2);	
 	    with_close(new gz.OutputDevice(pin), function(device){   	
 		    expect(device.value()).to.equal(false);
 		    expect(pin.state()).to.equal(false);
@@ -181,14 +182,18 @@ describe('output_devices', function() {
         }, 200);
     });
 
-    it('output_Buzzer_has_buzz', function() {            
+    it('output_Buzzer_has_buzz', done => {  
         pin = new mp.MockPin(2);    
-        with_close(new gz.Buzzer(pin), function(device){  
-            device.beep();
+        var device = new gz.Buzzer(pin);
 
-            var expected = [{time:0, state: false},{time:1, state: true},{time:1000, state: false}];
+        device.beep();
+        //var expected = [false, true, false];
+        var expected = [{time:0, state: false},{time:1, state: true},{time:200, state: false}];
         setTimeout(function () {
             try{
+                device.off()
+                
+                expect(pin._blink_thread).to.equal(undefined);
                 pin.assert_states_and_times(expected);
                 device.close();
                 done(); // success: call done with no parameter to indicate that it() is done()
@@ -196,8 +201,7 @@ describe('output_devices', function() {
                 device.close();
                 done( e ); // failure: call done with an error Object to indicate that it() failed
               }
-        }, 1500);           
-        });     
+        }, 200);           
     });
 
     it('output_pwm_bad_initial_value', function() {          
@@ -300,7 +304,7 @@ describe('output_devices', function() {
             }).to.throw(gz.GPIODeviceClosed);      
     });
 
-    /*it('output_pwm_write_silly', function() {            
+    it('output_pwm_write_silly', function() {            
         pin = new mp.MockPWMPin(2);
         with_close(new gz.OutputDevice(pin), function(device){          
             pin.pin_function('input');                  
@@ -308,7 +312,30 @@ describe('output_devices', function() {
                 device.off();
             }).to.throw(gz.PinSetInput);
         });             
-    });*/
+    });
+
+    it('output_pwm_blink_callback', function(done) { 
+        var fade_in_time = 0.5,
+            fade_out_time = 0.5,
+            on_time = 0.1, 
+            off_time = 0.1,
+            n = 1,
+            expected = [];
+
+        for (var i=0; i< 50 * fade_in_time ; i++) {
+            expected.push(i * (1 / 50) / fade_in_time);
+        }
+        for (var i=0; i< 50 * fade_out_time ; i++) {
+            expected.push(1-(i * (1 / 50)) / fade_out_time);
+        }
+
+        pin = new mp.MockPWMPin(2);
+        var device = new gz.PWMOutputDevice(pin); 
+        device.blink(on_time, off_time, fade_in_time, fade_out_time, n,()=>{
+            pin.assert_states(expected);
+            done();
+        });
+    });
 });
 
 /*
