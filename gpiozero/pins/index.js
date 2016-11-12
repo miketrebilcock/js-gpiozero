@@ -44,7 +44,7 @@ function Pin() {
         shutdown.
     """
 	*/
-    this._blink_timer = undefined;
+    this._blink_timer = undefined;    
 }
 
 Pin.prototype = {

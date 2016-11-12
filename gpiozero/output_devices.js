@@ -378,6 +378,24 @@ PWMOutputDevice.prototype.blink = function(on_time, off_time, fade_in_time, fade
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
 }
 
+PWMOutputDevice.prototype.pulse = function (fade_in_time, fade_out_time, n, callback) {
+    /*
+    Make the device fade in and out repeatedly.
+
+    :param float fade_in_time:
+        Number of seconds to spend fading in. Defaults to 1.
+
+    :param float fade_out_time:
+        Number of seconds to spend fading out. Defaults to 1.
+
+    :param int n:
+        Number of times to blink; ``None`` (the default) means forever.
+    */
+    var on_time =0,  off_time = 0;
+
+    this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
+}   
+
 /*
     
  
@@ -470,47 +488,7 @@ class PWMOutputDevice(OutputDevice):
         """
         return self.pin.frequency
 
-    @frequency.setter
-    def frequency(self, value):
-        self.pin.frequency = value
-
-    def blink(
-            self, on_time=1, off_time=1, fade_in_time=0, fade_out_time=0,
-            n=None, background=True):
-        """
-        Make the device turn on and off repeatedly.
-
-        :param float on_time:
-            Number of seconds on. Defaults to 1 second.
-
-        :param float off_time:
-            Number of seconds off. Defaults to 1 second.
-
-        :param float fade_in_time:
-            Number of seconds to spend fading in. Defaults to 0.
-
-        :param float fade_out_time:
-            Number of seconds to spend fading out. Defaults to 0.
-
-        :param int n:
-            Number of times to blink; ``None`` (the default) means forever.
-
-        :param bool background:
-            If ``True`` (the default), start a background thread to continue
-            blinking and return immediately. If ``False``, only return when the
-            blink is finished (warning: the default value of *n* will result in
-            this method never returning).
-        """
-        self._stop_blink()
-        self._blink_thread = GPIOThread(
-            target=self._blink_device,
-            args=(on_time, off_time, fade_in_time, fade_out_time, n)
-        )
-        self._blink_thread.start()
-        if not background:
-            self._blink_thread.join()
-            self._blink_thread = None
-
+    
     def pulse(self, fade_in_time=1, fade_out_time=1, n=None, background=True):
         """
         Make the device fade in and out repeatedly.

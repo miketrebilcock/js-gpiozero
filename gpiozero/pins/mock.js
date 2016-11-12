@@ -120,12 +120,14 @@ MockPin.prototype.assert_states_and_times = function (expected) {
     // that's about all we can reasonably expect in a non-realtime
     // environment on a Pi 1)
     assert(expected.length<=this.state_history().length, 'Expected length:'+expected.length+' Actual length:' + this.state_history().length);
-    for (var i = 0, len = expected.length; i<len; i++ ){
+
+    for (var i = 0; i<expected.length; i++ ){
         var actual = this.state_history()[i].state;
-        expect (actual).to.equal(expected[i].state);
+        assert(isclose(actual, expected[i].state , 0.05, undefined),actual + " not equal to " + expected[i].state )  ;             
+
         if (expected[i].time==0) {
             var actual = this.state_history()[i].time;
-            expect (actual).to.equal(expected[i].time);
+            assert (actual == expected[i].time, "Times are not equal Expected:" + expected[i].time+" Actual:"+actual );
         } else if (expected[i].time!=1) {
             var actual = this.state_history()[i].time;
             assert(isclose(actual, expected[i].time , undefined, 10),actual + " not equal to " + expected[i].time )  ;             
@@ -205,9 +207,10 @@ MockPWMPin.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_
         }
     }
     this.sequence.push({value: 1, delay: this.on_time});
+
     if (this.fade_out_time > 0) {
-        for (var i = 0; i<this.fps*this.fade_in_time; i++ ) {
-            this.sequence.push({value:  1 - (i * (1 / this.fps)) / this.fade_in_time, delay: 1/ this.fps});
+        for (var i = 0; i<this.fps*this.fade_out_time; i++ ) {
+            this.sequence.push({value:  1 - (i * (1 / this.fps)) / this.fade_out_time, delay: 1/ this.fps});
         }
     }
     this.sequence.push({value: 0, delay: this.off_time});
@@ -227,7 +230,7 @@ MockPWMPin.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_
 MockPWMPin.prototype._run_blink = function (sequence, that){
     if(sequence.length>0) {
         var nextStep = sequence.pop();
-        that.state (nextStep.value);
+        that.state (nextStep.value);        
         that._blink_timer = setTimeout(that._run_blink, nextStep.delay, sequence, that);
     } else {
         if(that.blink_callback != undefined)

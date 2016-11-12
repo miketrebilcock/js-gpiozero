@@ -360,6 +360,47 @@ describe('output_devices', function() {
               }
         }, 200); 
     });
+
+    it('output_pwm_pulse_interrupt', function(done) { 
+        var fade_in_time = 0.1, 
+            fade_out_time = 0.1,
+            n = 2,
+            expected = [{time:0.0, state: 0},
+            			{time:0.04, state: 0.2},
+            			{time:0.04, state: 0.4},
+            			{time:0.04, state: 0.6},
+            			{time:0.04, state: 0.8},
+            			{time:0.04, state: 1.0},
+            			{time:0.04, state: 0.8},
+            			{time:0.04, state: 0.6},
+            			{time:0.04, state: 0.4},
+            			{time:0.04, state: 0.2},
+            			{time:0.04, state: 0},
+            			{time:0.04, state: 0.2},
+            			{time:0.04, state: 0.4},
+            			{time:0.04, state: 0.6},
+            			{time:0.04, state: 0.8},
+            			{time:0.04, state: 1.0},
+            			{time:0.04, state: 0.8},
+            			{time:0.04, state: 0.6},
+            			{time:0.04, state: 0.4},
+            			{time:0.04, state: 0.2},
+            			{time:0.04, state: 0}];
+
+        pin = new mp.MockPWMPin(2);
+        var device = new gz.PWMOutputDevice(pin); 
+        device.pulse(fade_in_time, fade_out_time, n);
+        setTimeout(function () {
+            try{
+                pin.assert_states_and_times(expected) ;            
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 200); 
+    });
 });
 
 /*
