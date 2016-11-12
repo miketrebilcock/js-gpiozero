@@ -394,128 +394,150 @@ PWMOutputDevice.prototype.pulse = function (fade_in_time, fade_out_time, n, call
     var on_time =0,  off_time = 0;
 
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
+}
+
+exports.Motor = Motor;
+
+function Motor (forward, backward, pwm) {
+    /*
+    Extends :class:`CompositeDevice` and represents a generic motor
+    connected to a bi-directional motor driver circuit (i.e.  an `H-bridge`_).
+
+    Attach an `H-bridge`_ motor controller to your Pi; connect a power source
+    (e.g. a battery pack or the 5V pin) to the controller; connect the outputs
+    of the controller board to the two terminals of the motor; connect the
+    inputs of the controller board to two GPIO pins.
+
+    .. _H-bridge: https://en.wikipedia.org/wiki/H_bridge
+
+    The following code will make the motor turn "forwards"::
+
+        from gpiozero import Motor
+
+        motor = Motor(17, 18)
+        motor.forward()
+
+    :param int forward:
+        The GPIO pin that the forward input of the motor driver chip is
+        connected to.
+
+    :param int backward:
+        The GPIO pin that the backward input of the motor driver chip is
+        connected to.
+
+    :param bool pwm:
+        If ``True`` (the default), construct :class:`PWMOutputDevice`
+        instances for the motor controller pins, allowing both direction and
+        variable speed control. If ``False``, construct
+        :class:`DigitalOutputDevice` instances, allowing only direction
+        control.
+    */
+
+    if(forward == undefined || backward == undefined) {
+        throw new exc.GPIOPinMissing('Forward and Backward pins must be provided');
+    }
 }   
 
 /*
     
  
-/*
-class PWMOutputDevice(OutputDevice):
-    def __init__(self, pin=None, active_high=True, initial_value=0, frequency=100):
-        self._blink_thread = None
-        if not 0 <= initial_value <= 1:
-            raise OutputDeviceBadValue("initial_value must be between 0 and 1")
-        super(PWMOutputDevice, self).__init__(pin, active_high)
-        try:
-            # XXX need a way of setting these together
-            self.pin.frequency = frequency
-            self.value = initial_value
-        except:
-            self.close()
-            raise
-
-    def close(self):
-        self._stop_blink()
-        try:
-            self.pin.frequency = None
-        except AttributeError:
-            # If the pin's already None, ignore the exception
-            pass
-        super(PWMOutputDevice, self).close()
-
-    def _read(self):
-        self._check_open()
-        if self.active_high:
-            return self.pin.state
-        else:
-            return 1 - self.pin.state
-
-    def _write(self, value):
-        if not self.active_high:
-            value = 1 - value
-        if not 0 <= value <= 1:
-            raise OutputDeviceBadValue("PWM value must be between 0 and 1")
-        try:
-            self.pin.state = value
-        except AttributeError:
-            self._check_open()
-            raise
+class Motor(SourceMixin, CompositeDevice):
+    """
+    
+    """
+    def __init__(self, forward=None, backward=None, pwm=True):
+        if not all(p is not None for p in [forward, backward]):
+            raise GPIOPinMissing(
+                'forward and backward pins must be provided'
+            )
+        PinClass = PWMOutputDevice if pwm else DigitalOutputDevice
+        super(Motor, self).__init__(
+                forward_device=PinClass(forward),
+                backward_device=PinClass(backward),
+                _order=('forward_device', 'backward_device'))
 
     @property
     def value(self):
         """
-        The duty cycle of the PWM device. 0.0 is off, 1.0 is fully on. Values
-        in between may be specified for varying levels of power in the device.
+        Represents the speed of the motor as a floating point value between -1
+        (full speed backward) and 1 (full speed forward), with 0 representing
+        stopped.
         """
-        return self._read()
+        return self.forward_device.value - self.backward_device.value
 
     @value.setter
     def value(self, value):
-        self._stop_blink()
-        self._write(value)
-
-    def on(self):
-        self._stop_blink()
-        self._write(1)
-
-    def off(self):
-        self._stop_blink()
-        self._write(0)
-
-    def toggle(self):
-        """
-        Toggle the state of the device. If the device is currently off
-        (:attr:`value` is 0.0), this changes it to "fully" on (:attr:`value` is
-        1.0).  If the device has a duty cycle (:attr:`value`) of 0.1, this will
-        toggle it to 0.9, and so on.
-        """
-        self._stop_blink()
-        self.value = 1 - self.value
+        if not -1 <= value <= 1:
+            raise OutputDeviceBadValue("Motor value must be between -1 and 1")
+        if value > 0:
+            try:
+                self.forward(value)
+            except ValueError as e:
+                raise OutputDeviceBadValue(e)
+        elif value < 0:
+            try:
+               self.backward(-value)
+            except ValueError as e:
+                raise OutputDeviceBadValue(e)
+        else:
+            self.stop()
 
     @property
     def is_active(self):
         """
-        Returns ``True`` if the device is currently active (:attr:`value` is
-        non-zero) and ``False`` otherwise.
+        Returns ``True`` if the motor is currently running and ``False``
+        otherwise.
         """
         return self.value != 0
 
-    @property
-    def frequency(self):
+    def forward(self, speed=1):
         """
-        The frequency of the pulses used with the PWM device, in Hz. The
-        default is 100Hz.
+        Drive the motor forwards.
+
+        :param float speed:
+            The speed at which the motor should turn. Can be any value between
+            0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
+            ``True`` when the class was constructed (and only 0 or 1 if not).
         """
-        return self.pin.frequency
+        if not 0 <= speed <= 1:
+            raise ValueError('forward speed must be between 0 and 1')
+        if isinstance(self.forward_device, DigitalOutputDevice):
+            if speed not in (0, 1):
+                raise ValueError('forward speed must be 0 or 1 with non-PWM Motors')
+        self.backward_device.off()
+        self.forward_device.value = speed
 
-    
-    def pulse(self, fade_in_time=1, fade_out_time=1, n=None, background=True):
+    def backward(self, speed=1):
         """
-        Make the device fade in and out repeatedly.
+        Drive the motor backwards.
 
-        :param float fade_in_time:
-            Number of seconds to spend fading in. Defaults to 1.
-
-        :param float fade_out_time:
-            Number of seconds to spend fading out. Defaults to 1.
-
-        :param int n:
-            Number of times to blink; ``None`` (the default) means forever.
-
-        :param bool background:
-            If ``True`` (the default), start a background thread to continue
-            blinking and return immediately. If ``False``, only return when the
-            blink is finished (warning: the default value of *n* will result in
-            this method never returning).
+        :param float speed:
+            The speed at which the motor should turn. Can be any value between
+            0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
+            ``True`` when the class was constructed (and only 0 or 1 if not).
         """
-        on_time = off_time = 0
-        self.blink(
-            on_time, off_time, fade_in_time, fade_out_time, n, background
-        )
+        if not 0 <= speed <= 1:
+            raise ValueError('backward speed must be between 0 and 1')
+        if isinstance(self.backward_device, DigitalOutputDevice):
+            if speed not in (0, 1):
+                raise ValueError('backward speed must be 0 or 1 with non-PWM Motors')
+        self.forward_device.off()
+        self.backward_device.value = speed
 
+    def reverse(self):
+        """
+        Reverse the current direction of the motor. If the motor is currently
+        idle this does nothing. Otherwise, the motor's direction will be
+        reversed at the current speed.
+        """
+        self.value = -self.value
 
-   
-
+    def stop(self):
+        """
+        Stop the motor.
+        """
+        self.forward_device.off()
+        self.backward_device.off()
 
 
 

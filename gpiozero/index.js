@@ -20,6 +20,7 @@ module.exports = {
 	DigitalOutputDevice: output_devices.DigitalOutputDevice,
 	PWMOutputDevice : output_devices.PWMOutputDevice,
 	LED : output_devices.LED,
-	Buzzer : output_devices.Buzzer
+	Buzzer : output_devices.Buzzer,
+	Motor: output_devices.Motor
 
 }

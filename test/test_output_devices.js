@@ -401,83 +401,151 @@ describe('output_devices', function() {
               }
         }, 200); 
     });
+
+    it('motor_missing_pins', function() {            
+        expect(function(){
+            var test = new gz.Motor();
+        }).to.throw(gz.GPIOPinMissing);           
+    });
+
 });
 
 /*
+def test_motor_missing_pins():
+    with pytest.raises(ValueError):
+        Motor()
 
-@pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
-                    reason='timing is too random on pypy')
-def test_output_pwm_pulse_background():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        start = time()
-        device.pulse(0.2, 0.2, n=2)
-        assert isclose(time() - start, 0, abs_tol=0.05)
-        device._blink_thread.join()
-        assert isclose(time() - start, 0.8, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            ])
+def test_motor_pins():
+    f = MockPWMPin(1)
+    b = MockPWMPin(2)
+    with Motor(f, b) as device:
+        assert device.forward_device.pin is f
+        assert isinstance(device.forward_device, PWMOutputDevice)
+        assert device.backward_device.pin is b
+        assert isinstance(device.backward_device, PWMOutputDevice)
 
-@pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
-                    reason='timing is too random on pypy')
-def test_output_pwm_pulse_foreground():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        start = time()
-        device.pulse(0.2, 0.2, n=2, background=False)
-        assert isclose(time() - start, 0.8, abs_tol=0.05)
-        pin.assert_states_and_times([
-            (0.0, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            (0.04, 0.2),
-            (0.04, 0.4),
-            (0.04, 0.6),
-            (0.04, 0.8),
-            (0.04, 1),
-            (0.04, 0.8),
-            (0.04, 0.6),
-            (0.04, 0.4),
-            (0.04, 0.2),
-            (0.04, 0),
-            ])
+def test_motor_pins_nonpwm():
+    f = MockPin(1)
+    b = MockPin(2)
+    with Motor(f, b, pwm=False) as device:
+        assert device.forward_device.pin is f
+        assert isinstance(device.forward_device, DigitalOutputDevice)
+        assert device.backward_device.pin is b
+        assert isinstance(device.backward_device, DigitalOutputDevice)
 
-def test_output_pwm_blink_interrupt():
-    pin = MockPWMPin(2)
-    with PWMOutputDevice(pin) as device:
-        device.blink(1, 0.1)
-        sleep(0.2)
-        device.off() # should interrupt while on
-        pin.assert_states([0, 1, 0])
+def test_motor_close():
+    f = MockPWMPin(1)
+    b = MockPWMPin(2)
+    with Motor(f, b) as device:
+        device.close()
+        assert device.closed
+        assert device.forward_device.pin is None
+        assert device.backward_device.pin is None
+        device.close()
+        assert device.closed
+
+def test_motor_close_nonpwm():
+    f = MockPin(1)
+    b = MockPin(2)
+    with Motor(f, b, pwm=False) as device:
+        device.close()
+        assert device.closed
+        assert device.forward_device.pin is None
+        assert device.backward_device.pin is None
+
+def test_motor_value():
+    f = MockPWMPin(1)
+    b = MockPWMPin(2)
+    with Motor(f, b) as device:
+        device.value = -1
+        assert device.is_active
+        assert device.value == -1
+        assert b.state == 1 and f.state == 0
+        device.value = 1
+        assert device.is_active
+        assert device.value == 1
+        assert b.state == 0 and f.state == 1
+        device.value = 0.5
+        assert device.is_active
+        assert device.value == 0.5
+        assert b.state == 0 and f.state == 0.5
+        device.value = -0.5
+        assert device.is_active
+        assert device.value == -0.5
+        assert b.state == 0.5 and f.state == 0
+        device.value = 0
+        assert not device.is_active
+        assert not device.value
+        assert b.state == 0 and f.state == 0
+
+def test_motor_value_nonpwm():
+    f = MockPin(1)
+    b = MockPin(2)
+    with Motor(f, b, pwm=False) as device:
+        device.value = -1
+        assert device.is_active
+        assert device.value == -1
+        assert b.state == 1 and f.state == 0
+        device.value = 1
+        assert device.is_active
+        assert device.value == 1
+        assert b.state == 0 and f.state == 1
+        device.value = 0
+        assert not device.is_active
+        assert not device.value
+        assert b.state == 0 and f.state == 0
+
+def test_motor_bad_value():
+    f = MockPWMPin(1)
+    b = MockPWMPin(2)
+    with Motor(f, b) as device:
+        with pytest.raises(ValueError):
+            device.value = -2
+        with pytest.raises(ValueError):
+            device.value = 2
+
+def test_motor_bad_value_nonpwm():
+    f = MockPin(1)
+    b = MockPin(2)
+    with Motor(f, b, pwm=False) as device:
+        with pytest.raises(ValueError):
+            device.value = -2
+        with pytest.raises(ValueError):
+            device.value = 2
+        with pytest.raises(ValueError):
+            device.value = 0.5
+        with pytest.raises(ValueError):
+            device.value = -0.5
+
+def test_motor_reverse():
+    f = MockPWMPin(1)
+    b = MockPWMPin(2)
+    with Motor(f, b) as device:
+        device.forward()
+        assert device.value == 1
+        assert b.state == 0 and f.state == 1
+        device.reverse()
+        assert device.value == -1
+        assert b.state == 1 and f.state == 0
+        device.backward(0.5)
+        assert device.value == -0.5
+        assert b.state == 0.5 and f.state == 0
+        device.reverse()
+        assert device.value == 0.5
+        assert b.state == 0 and f.state == 0.5
+
+def test_motor_reverse_nonpwm():
+    f = MockPin(1)
+    b = MockPin(2)
+    with Motor(f, b, pwm=False) as device:
+        device.forward()
+        assert device.value == 1
+        assert b.state == 0 and f.state == 1
+        device.reverse()
+        assert device.value == -1
+        assert b.state == 1 and f.state == 0
+
+
 
 def test_rgbled_missing_pins():
     with pytest.raises(ValueError):
@@ -880,139 +948,6 @@ def test_rgbled_close_nonpwm():
         device.close()
         assert device.closed
 
-def test_motor_missing_pins():
-    with pytest.raises(ValueError):
-        Motor()
-
-def test_motor_pins():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        assert device.forward_device.pin is f
-        assert isinstance(device.forward_device, PWMOutputDevice)
-        assert device.backward_device.pin is b
-        assert isinstance(device.backward_device, PWMOutputDevice)
-
-def test_motor_pins_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        assert device.forward_device.pin is f
-        assert isinstance(device.forward_device, DigitalOutputDevice)
-        assert device.backward_device.pin is b
-        assert isinstance(device.backward_device, DigitalOutputDevice)
-
-def test_motor_close():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        device.close()
-        assert device.closed
-        assert device.forward_device.pin is None
-        assert device.backward_device.pin is None
-        device.close()
-        assert device.closed
-
-def test_motor_close_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        device.close()
-        assert device.closed
-        assert device.forward_device.pin is None
-        assert device.backward_device.pin is None
-
-def test_motor_value():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        device.value = -1
-        assert device.is_active
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
-        device.value = 1
-        assert device.is_active
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.value = 0.5
-        assert device.is_active
-        assert device.value == 0.5
-        assert b.state == 0 and f.state == 0.5
-        device.value = -0.5
-        assert device.is_active
-        assert device.value == -0.5
-        assert b.state == 0.5 and f.state == 0
-        device.value = 0
-        assert not device.is_active
-        assert not device.value
-        assert b.state == 0 and f.state == 0
-
-def test_motor_value_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        device.value = -1
-        assert device.is_active
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
-        device.value = 1
-        assert device.is_active
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.value = 0
-        assert not device.is_active
-        assert not device.value
-        assert b.state == 0 and f.state == 0
-
-def test_motor_bad_value():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        with pytest.raises(ValueError):
-            device.value = -2
-        with pytest.raises(ValueError):
-            device.value = 2
-
-def test_motor_bad_value_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        with pytest.raises(ValueError):
-            device.value = -2
-        with pytest.raises(ValueError):
-            device.value = 2
-        with pytest.raises(ValueError):
-            device.value = 0.5
-        with pytest.raises(ValueError):
-            device.value = -0.5
-
-def test_motor_reverse():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        device.forward()
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.reverse()
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
-        device.backward(0.5)
-        assert device.value == -0.5
-        assert b.state == 0.5 and f.state == 0
-        device.reverse()
-        assert device.value == 0.5
-        assert b.state == 0 and f.state == 0.5
-
-def test_motor_reverse_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        device.forward()
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.reverse()
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
 
 def test_servo_pins():
     p = MockPWMPin(1)
