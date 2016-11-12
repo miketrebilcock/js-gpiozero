@@ -160,7 +160,7 @@ WiringPiPin.prototype.state = function (value) {
         wpi.pwmWrite(this._number, value);
         this._duty_cycle = value;
     } else {
-        wpi.digitalWrite (this._number, value?1:0);
+        wpi.digitalWrite (this._number, value ? 1:0);
     }
 }
 
@@ -177,28 +177,28 @@ WiringPiPin.prototype.pull = function (value) {
     this._pull = value;
     wpi.pullUpDnControl(this._number, this.GPIO_PULL_UPS[this._pull]);
 }
+
+WiringPiPin.prototype.frequency = function (value) {
+    if (value == undefined) {
+        return this._frequency;
+    }
+    if (this._function!='output') {
+        throw new exc.PinSetInput("Pin is not set for output function");
+    }
+    if (value == -1) {
+        this._frequency = undefined;
+        this._pwm = undefined;
+        this._change_state(0.0);
+    } else {
+        if (this._frequency == undefined) {
+            this._pwm = wpi.pinMode(this._number, wpi.PWM_OUTPUT);
+            this._change_state(0.0);           
+        }
+        wpi.pwmToneWrite(this._number, value);
+        this._frequency = value;
+    }
+}
 /*
-
-    def _get_frequency(self):
-        return self._frequency
-
-    def _set_frequency(self, value):
-        if self._frequency is None and value is not None:
-            try:
-                self._pwm = GPIO.PWM(self._number, value)
-            except RuntimeError:
-                raise PinPWMFixedValue('cannot start PWM on pin %r' % self)
-            self._pwm.start(0)
-            self._duty_cycle = 0
-            self._frequency = value
-        elif self._frequency is not None and value is not None:
-            self._pwm.ChangeFrequency(value)
-            self._frequency = value
-        elif self._frequency is not None and value is None:
-            self._pwm.stop()
-            self._pwm = None
-            self._duty_cycle = None
-            self._frequency = None
 
     def _get_bounce(self):
         return None if self._bounce == -666 else (self._bounce / 1000)
