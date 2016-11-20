@@ -1,11 +1,11 @@
 function inherit(proto) {
   function F() {}
   F.prototype = proto;
-  return new F;
+  return new F();
 }
 
 function GPIOZeroError (message) {
-	message!=undefined?message:"Base class for all exceptions in GPIO Zero";
+	message = message !== undefined?message:"Base class for all exceptions in GPIO Zero";
 	Error.call(this, message);
 }
 
@@ -19,20 +19,20 @@ GPIOZeroError.prototype.constructor = GPIOZeroError;
 });*/
 
 function GPIODeviceError (message) {
-	GPIOZeroError.call(this, message!=undefined?message:"Base class for errors specific to the GPIODevice hierarchy");
+	GPIOZeroError.call(this, message !== undefined ? message:"Base class for errors specific to the GPIODevice hierarchy");
 }
 GPIODeviceError.prototype = inherit(GPIOZeroError.prototype);
 GPIODeviceError.prototype.constructor = GPIODeviceError;
 
 function DeviceClosed (message) {
-	GPIOZeroError.call(this, message!=undefined?message:"Base class for errors specific to the GPIODevice hierarchy");
+	GPIOZeroError.call(this, message !== undefined ? message:"Base class for errors specific to the GPIODevice hierarchy");
 }
 DeviceClosed.prototype = inherit(GPIOZeroError.prototype);
 DeviceClosed.prototype.constructor = DeviceClosed;
 exports.DeviceClosed = DeviceClosed;
 
 function GPIOPinMissing (message) {
-	GPIODeviceError.call(this, message!=undefined?message:"Error raised when a pin number is not specified");   
+	GPIODeviceError.call(this, message !== undefined ? message:"Error raised when a pin number is not specified");   
 }
 GPIOPinMissing.prototype =  inherit(GPIODeviceError.prototype);
 GPIOPinMissing.prototype.constructor = GPIOPinMissing;
@@ -40,14 +40,14 @@ exports.GPIOPinMissing = GPIOPinMissing;
 
 
 function GPIOPinInUse (message) {
-	GPIODeviceError.call(this, message!=undefined?message:"Error raised when attempting to use a pin already in use by another device");
+	GPIODeviceError.call(this, message !== undefined?message:"Error raised when attempting to use a pin already in use by another device");
 }
 GPIOPinInUse.prototype = inherit(GPIODeviceError.prototype);
 GPIOPinInUse.prototype.constructor = GPIOPinInUse;
 exports.GPIOPinInUse = GPIOPinInUse;
 
 function PinError(message) {
-    GPIOZeroError.call(this, message!=undefined?message:"Base class for errors related to pin implementations");
+    GPIOZeroError.call(this, message !== undefined?message:"Base class for errors related to pin implementations");
 }
 PinError.prototype = inherit(GPIOZeroError.prototype);
 PinError.prototype.constructor = PinError;
@@ -66,26 +66,26 @@ PinSetInput.prototype.constructor = PinSetInput;
 exports.PinSetInput = PinSetInput;
 
 function OutputDeviceError (message) {
-	GPIOZeroError.call(this, message!=undefined?message:"Base class for errors specific to the GPIODevice hierarchy");
+	GPIOZeroError.call(this, message !== undefined?message:"Base class for errors specific to the GPIODevice hierarchy");
 }
 OutputDeviceError.prototype = inherit(GPIOZeroError.prototype);
 OutputDeviceError.prototype.constructor = OutputDeviceError;
 
 function OutputDeviceBadValue(message){
-	OutputDeviceError.call(this, message!=undefined?message:"Error Raised when unacceptable value receieved");
+	OutputDeviceError.call(this, message !== undefined?message:"Error Raised when unacceptable value receieved");
 }
 OutputDeviceBadValue.prototype = inherit(OutputDeviceError.prototype);
 OutputDeviceBadValue.prototype.constructor = OutputDeviceBadValue;
 exports.OutputDeviceBadValue = OutputDeviceBadValue;
 
 function AttributeError (message) {
-	GPIOZeroError.call(this, message!=undefined?message:"Base class for attribute errors");
+	GPIOZeroError.call(this, message !== undefined?message:"Base class for attribute errors");
 }
 AttributeError.prototype = inherit(GPIOZeroError.prototype);
 AttributeError.prototype.constructor = AttributeError;
 
 function PinPWMUnsupported(message) {
-	AttributeError.call(this, message!=undefined?message:"PWM Not Support in this Pin");
+	AttributeError.call(this, message !== undefined?message:"PWM Not Support in this Pin");
 }
 
 PinPWMUnsupported.prototype = inherit(AttributeError.prototype);

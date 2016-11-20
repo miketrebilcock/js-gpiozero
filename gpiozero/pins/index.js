@@ -3,7 +3,7 @@ require ("../exc.js");
 function inherit(proto) {
   function F() {}
   F.prototype = proto;
-  return new F;
+  return new F();
 }
 
 function Pin() {
@@ -101,7 +101,7 @@ Pin.prototype = {
         raised.
     */
 	pin_function: function (value) {
-        if (value == undefined) {
+        if (value === undefined) {
             return "input";
         }
         if (value != "input") {
@@ -124,18 +124,18 @@ Pin.prototype = {
 
     */
     state: function (value) {
-        if (value == undefined) {
+        if (value === undefined) {
             return 0;
         }
         throw new PinSetInput("Cannot set the state of input pin " + this);
     },
     blink: function (on_time, off_time, loops, callback) {
-        this.on_time = (on_time==undefined ? 1000 : on_time*1000);
-        this.off_time = (off_time==undefined ? 1000 : off_time*1000);
+        this.on_time = (on_time === undefined ? 1000 : on_time*1000);
+        this.off_time = (off_time === undefined ? 1000 : off_time*1000);
         this.number_of_blinks = loops;
         this.callback = callback;
         this._stop_blink();
-        if(loops==undefined) {
+        if(loops === undefined) {
             this._blink_timer = setInterval(function(that) {
                 that.state(1);
                 setTimeout (function() {
@@ -157,12 +157,12 @@ Pin.prototype = {
                     }, that.on_time);
                 } else {
                     that._stop_blink();
-                    if(that.callback != undefined)
+                    if(that.callback !== undefined)
                     {
                         that.callback();
                     }
                 }
-            }, this.on_time + this.off_time, this)
+            }, this.on_time + this.off_time, this);
             this.state(1);
             setTimeout (function(that) {
                     that.state(0);
@@ -171,15 +171,15 @@ Pin.prototype = {
         }
     },
     _stop_blink : function() {
-        if (this._blink_timer != undefined ) {
+        if (this._blink_timer !== undefined ) {
             clearInterval(this._blink_timer);
             this._blink_timer = undefined;
         }
     }
-}
+};
 
 
-var _PI_REVISION = undefined;
+var _PI_REVISION;
 
 function LocalPin(){
     /*
@@ -196,7 +196,7 @@ LocalPin.prototype.constructor = LocalPin;
 
 LocalPin.prototype.pi_info = function (){
     throw new NotImplementedError();
-}
+};
 /*
 
     def _get_pull(self):

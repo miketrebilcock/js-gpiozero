@@ -23,4 +23,4 @@ module.exports = {
 	Buzzer : output_devices.Buzzer,
 	Motor: output_devices.Motor
 
-}
+};

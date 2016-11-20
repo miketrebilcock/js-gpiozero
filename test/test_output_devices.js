@@ -2,7 +2,7 @@
 var expect = require('chai').expect,
 	assert = require('chai').assert,
 	gz = require('../gpiozero/'),
-	mp = require('../gpiozero/pins/mock.js')
+	mp = require('../gpiozero/pins/mock.js'),
     isclose = require('../gpiozero/compat.js').isclose;
 
 
@@ -64,7 +64,7 @@ describe('output_devices', function() {
 	    	device.close();		    
 		    expect(device.closed()).to.equal(true);		    
 		    expect(function(){
-	    		device.on()
+	    		device.on();
 	    	}).to.throw(gz.DeviceClosed);
 		});		
 	});
@@ -118,7 +118,7 @@ describe('output_devices', function() {
 		});		
 	});
 
-    it('test_output_blink_background', done => {            
+    it('test_output_blink_background', function(done) {            
         pin = new mp.MockPin(2);    
         var device = new gz.DigitalOutputDevice(pin);
 
@@ -138,7 +138,7 @@ describe('output_devices', function() {
           
     });
 
-    it('test_output_blink_interrupt_while_on', done => {            
+    it('test_output_blink_interrupt_while_on', function(done) {            
         pin = new mp.MockPin(2);    
         var device = new gz.DigitalOutputDevice(pin);
 
@@ -146,8 +146,7 @@ describe('output_devices', function() {
         var expected = [false,true,false];
         setTimeout(function () {
             try{
-                device.off()
-                
+                device.off();                
                 expect(pin._blink_thread).to.equal(undefined);
 
                 pin.assert_states(expected);
@@ -160,7 +159,7 @@ describe('output_devices', function() {
         }, 200);
     });
 
-    it('test_output_blink_interrupt_while_off', done => {            
+    it('test_output_blink_interrupt_while_off', function(done) {            
         pin = new mp.MockPin(2);    
         var device = new gz.DigitalOutputDevice(pin);
 
@@ -168,7 +167,7 @@ describe('output_devices', function() {
         var expected = [false, true, false];
         setTimeout(function () {
             try{
-                device.off()
+                device.off();
                 
                 expect(pin._blink_thread).to.equal(undefined);
 
@@ -182,7 +181,7 @@ describe('output_devices', function() {
         }, 200);
     });
 
-    it('output_Buzzer_has_buzz', done => {  
+    it('output_Buzzer_has_buzz', function(done) {  
         pin = new mp.MockPin(2);    
         var device = new gz.Buzzer(pin);
 
@@ -191,8 +190,7 @@ describe('output_devices', function() {
         var expected = [{time:0, state: false},{time:1, state: true},{time:200, state: false}];
         setTimeout(function () {
             try{
-                device.off()
-                
+                device.off();                
                 expect(pin._blink_thread).to.equal(undefined);
                 pin.assert_states_and_times(expected);
                 device.close();
@@ -325,13 +323,13 @@ describe('output_devices', function() {
         for (var i=0; i< 50 * fade_in_time ; i++) {
             expected.push(i * (1 / 50) / fade_in_time);
         }
-        for (var i=0; i< 50 * fade_out_time ; i++) {
+        for (i=0; i< 50 * fade_out_time ; i++) {
             expected.push(1-(i * (1 / 50)) / fade_out_time);
         }
 
         pin = new mp.MockPWMPin(2);
         var device = new gz.PWMOutputDevice(pin); 
-        device.blink(on_time, off_time, fade_in_time, fade_out_time, n,()=>{
+        device.blink(on_time, off_time, fade_in_time, fade_out_time, n,function(){
             pin.assert_states(expected);
             done();
         });
@@ -349,8 +347,7 @@ describe('output_devices', function() {
         device.blink(on_time, off_time, fade_in_time, fade_out_time, n);
         setTimeout(function () {
             try{
-                device.off()
-                
+                device.off();                
                 expect(pin._blink_thread).to.equal(undefined);               
                 device.close();
                 done(); // success: call done with no parameter to indicate that it() is done()
@@ -411,9 +408,6 @@ describe('output_devices', function() {
 });
 
 /*
-def test_motor_missing_pins():
-    with pytest.raises(ValueError):
-        Motor()
 
 def test_motor_pins():
     f = MockPWMPin(1)

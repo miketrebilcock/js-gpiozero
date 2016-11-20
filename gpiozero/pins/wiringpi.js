@@ -4,7 +4,7 @@ var wpi = require("wiring-pi"),
 
 var _PINS = {},
     WIRING_PI,
-    PI_INFO = undefined,
+    PI_INFO,
     GPIO_FUNCTIONS = {
         'input':   wpi.INPUT,
         'output':  wpi.OUTPUT,
@@ -23,7 +23,7 @@ var _PINS = {},
 function inherit(proto) {
   function F() {}
   F.prototype = proto;
-  return new F;
+  return new F();
 }
 
 exports.WiringPiPin = WiringPiPin;
@@ -50,7 +50,7 @@ function WiringPiPin(number) {
 
     
     */
-    if (WIRING_PI==undefined) {       
+    if (WIRING_PI === undefined) {       
     	wpi.setup('gpio');
     	WIRING_PI = true;
     }
@@ -69,14 +69,14 @@ function WiringPiPin(number) {
 
 
 
-    if (PI_INFO == undefined) {
+    if (PI_INFO === undefined) {
         PI_INFO = wpi.piBoardRev();
     }
     if ( number < 0 || number > 54){
         throw new Error('invalid pin ' + number.toString() + ' specified (must be 0..53)' );
     }    
 
-    if(_PINS[number] != undefined)
+    if(_PINS[number] !== undefined)
     {
         return _PINS[number];
     }
@@ -85,7 +85,7 @@ function WiringPiPin(number) {
     this._pwm = undefined;
     this._frequency = undefined;
     this._duty_cycle = undefined;
-    this._bounce = -666
+    this._bounce = -666;
     this._when_changed = undefined;
     this._function = 'input';
     this._state = false;
@@ -103,23 +103,23 @@ WiringPiPin.prototype.constructor = WiringPiPin;
 
 WiringPiPin.prototype.toString = function () {
     return "GPIO " + this._number.toString();
-}
+};
 
 WiringPiPin.prototype.number = function () {
     return this._number();
-}
+};
 
 WiringPiPin.prototype.close = function () {
     this._frequency = undefined;
     this._when_changed = undefined;
     wpi.pullUpDnControl(this._number, wpi.PUD_OFF);
-}
+};
 
 WiringPiPin.prototype.output_with_state = function (state) {
-    this._pull = 'floating'
+    this._pull = 'floating';
     wpi.pinMode(this._number, wpi.OUT);
     wpi.digitalWrite(this._number, state);
-}
+};
 
 WiringPiPin.prototype.input_with_pull = function (pull) {
    // if (pull != 'up' and self.PI_INFO.pulled_up('GPIO%d' % self._number):
@@ -128,44 +128,44 @@ WiringPiPin.prototype.input_with_pull = function (pull) {
     wpi.pinMode(this._number, wpi.IN);
         //GPIO.setup(self._number, GPIO.IN, self.GPIO_PULL_UPS[pull])
     wpi.pullUpDnControl(this._number, wpi.PUD_UP);
-    this._pull = pull
+    this._pull = pull;
     //except KeyError:
     //    raise PinInvalidPull('invalid pull "%s" for pin %r' % (pull, self))
-}
+};
 
 WiringPiPin.prototype.pin_function = function (value) {
-    if ( value == undefined) {
+    if ( value === undefined) {
         return this._function;   
     }
     if (value != 'input') {
         this._pull = 'floating';
     }
     if (value == 'input' || value == 'output') {
-         wpi.pinMode(this._number, GPIO_FUNCTIONS[value])
+         wpi.pinMode(this._number, GPIO_FUNCTIONS[value]);
          wpi.pullUpDnControl(this._number, GPIO_PULL_UPS[this._pull]);
     } else {
         throw exc.PinInvalidFunction('invalid function " + value + " for pin ' + this._number.toString());
     }
-}
+};
 
 WiringPiPin.prototype.state = function (value) {
-    if ( value == undefined) {
-        if (this._pwm != undefined) {
+    if ( value === undefined) {
+        if (this._pwm !== undefined) {
             return this._duty_cycle;
         } else {
             return wpi.digitalRead(this._number);
         }        
     }
-    if (this._pwm != undefined) {
+    if (this._pwm !== undefined) {
         wpi.pwmWrite(this._number, value);
         this._duty_cycle = value;
     } else {
         wpi.digitalWrite (this._number, value ? 1:0);
     }
-}
+};
 
 WiringPiPin.prototype.pull = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._pull;
     }
     if (this.function != 'input') {
@@ -176,13 +176,13 @@ WiringPiPin.prototype.pull = function (value) {
     }*/
     this._pull = value;
     wpi.pullUpDnControl(this._number, this.GPIO_PULL_UPS[this._pull]);
-}
+};
 
 WiringPiPin.prototype.frequency = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._frequency;
     }
-    if (this._function!='output') {
+    if (this._function != 'output') {
         throw new exc.PinSetInput("Pin is not set for output function");
     }
     if (value == -1) {
@@ -190,14 +190,14 @@ WiringPiPin.prototype.frequency = function (value) {
         this._pwm = undefined;
         this._change_state(0.0);
     } else {
-        if (this._frequency == undefined) {
+        if (this._frequency === undefined) {
             this._pwm = wpi.pinMode(this._number, wpi.PWM_OUTPUT);
             this._change_state(0.0);           
         }
         wpi.pwmToneWrite(this._number, value);
         this._frequency = value;
     }
-}
+};
 /*
 
     def _get_bounce(self):

@@ -28,7 +28,7 @@ function with_close (device, method) {
 	it('device_init', function() {	
 		pin = new mp.MockPin(1);	
 	    with_close(new gz.GPIODevice(pin), function(device){
-		    assert(device.closed()==false, "Device is incorrectly reporting closed");
+		    assert(device.closed() === false, "Device is incorrectly reporting closed");
 		    assert(device.pin() == pin, "Device has not returned correct pin");
 		});
 	});
@@ -38,7 +38,7 @@ function with_close (device, method) {
 	    with_close(new gz.GPIODevice(pin), function (device) {
 	    	expect(function(){
 	    		device = new gz.GPIODevice(pin);
-	    	}).to.throw(gz.GPIOPinInUse)
+	    	}).to.throw(gz.GPIOPinInUse);
 	    });
 	});
 
@@ -57,8 +57,8 @@ function with_close (device, method) {
 		pin = new mp.MockPin(1);	
 	    device = new gz.GPIODevice(pin);
 	    device.close();
-		assert(device.closed()==true, "Device is incorrectly reporting open");
-		assert(device.pin() == undefined, "Device still holding onto pin");		
+		assert(device.closed() === true, "Device is incorrectly reporting open");
+		assert(device.pin() === undefined, "Device still holding onto pin");		
 	});
 
 	it('reopen_same_pin', function() {
@@ -66,10 +66,10 @@ function with_close (device, method) {
 	    device = new gz.GPIODevice(pin);
 	    device.close();
 	    device2 = new gz.GPIODevice(pin);	    
-		assert(device2.closed()==false, "Device is incorrectly reporting closed");
+		assert(device2.closed() === false, "Device is incorrectly reporting closed");
 		assert(device2.pin() == pin, "Device has not returned correct pin");
-		assert(device.closed()==true, "Device is incorrectly reporting open");
-		assert(device.pin() == undefined, "Device still holding onto pin");
+		assert(device.closed() === true, "Device is incorrectly reporting open");
+		assert(device.pin() === undefined, "Device still holding onto pin");
 		device2.close();				
 	});
 

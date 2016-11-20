@@ -29,8 +29,8 @@ function OutputDevice (pin, active_high, initial_value){
 
     GPIODevice.call(this, pin);
     this._lock = new Lock();
-    this.active_high( (active_high == undefined) ? true : active_high );
-    if (initial_value == undefined) {        
+    this.active_high( (active_high === undefined) ? true : active_high );
+    if (initial_value === undefined) {        
         this._pin.pin_function('output');
     } else {
         this._pin.output_with_state(this._value_to_state(initial_value));
@@ -40,7 +40,7 @@ function OutputDevice (pin, active_high, initial_value){
 function inherit(proto) {
   function F() {}
   F.prototype = proto;
-  return new F;
+  return new F();
 }
 
 
@@ -49,12 +49,12 @@ OutputDevice.prototype.constructor = OutputDevice;
 
 OutputDevice.prototype._value_to_state = function (value) {
     return (value)?this._active_state : this._inactive_state;
-}
+};
 
 OutputDevice.prototype._write = function (value) {    
     this._check_open(this);
     this._pin.state (this._value_to_state(value));
-}
+};
 
 OutputDevice.prototype.on = function () {
     /*
@@ -62,7 +62,7 @@ OutputDevice.prototype.on = function () {
     */
     this._pin._stop_blink();
     this._write(true);
-}
+};
 
 OutputDevice.prototype.off = function() {
     /*
@@ -70,7 +70,7 @@ OutputDevice.prototype.off = function() {
     */
     this._pin._stop_blink();
     this._write(false);
-}
+};
 
 OutputDevice.prototype.active_high = function (value) {
     /*
@@ -83,21 +83,21 @@ OutputDevice.prototype.active_high = function (value) {
     the device's pin state - it just changes how that state is
     interpreted).
     */
-    if(value == undefined)
+    if(value === undefined)
     {
         return this._active_state;
     }
     this._active_state = value ? true : false;
     this._inactive_state = value ? false : true;
-}
+};
 
 OutputDevice.prototype.value = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._read();
     }
     this._pin._stop_blink();
     this._write(value);
-}
+};
 
 OutputDevice.prototype.toggle = function () {
     /*
@@ -113,7 +113,7 @@ OutputDevice.prototype.toggle = function () {
         }
         release();
     });
-}
+};
 
 exports.DigitalOutputDevice = DigitalOutputDevice;
 
@@ -144,7 +144,7 @@ DigitalOutputDevice.prototype.blink = function (on_time, off_time, n, callback) 
         this method never returning).
     */
     this._pin.blink(on_time,off_time, n, callback);
-}
+};
 
 exports.LED = LED;
 
@@ -190,7 +190,7 @@ LED.prototype.constructor = LED;
 
 LED.prototype.is_lit = function () {
     return this.is_active();
-}
+};
 
 
 exports.Buzzer = Buzzer;
@@ -233,7 +233,7 @@ Buzzer.prototype.constructor = Buzzer;
 
 Buzzer.prototype.beep = function(){
     this.blink();
-}
+};
 
 exports.PWMOutputDevice = PWMOutputDevice;
 
@@ -261,7 +261,7 @@ function PWMOutputDevice (pin, active_high, initial_value, frequency) {
         to 100Hz.
     */
 
-    if (initial_value != undefined) {
+    if (initial_value !== undefined) {
         if (initial_value<0 || initial_value>1) {
             throw new exc.OutputDeviceBadValue("initial_value must be between 0 and 1, actual=:"+initial_value);
         }
@@ -270,8 +270,8 @@ function PWMOutputDevice (pin, active_high, initial_value, frequency) {
     OutputDevice.call(this, pin, active_high, initial_value);
     
     try {
-        this._pin.frequency (frequency == undefined ? 100: frequency);
-        this.value (initial_value == undefined ? 0 : initial_value);
+        this._pin.frequency (frequency === undefined ? 100: frequency);
+        this.value (initial_value === undefined ? 0 : initial_value);
     }
     catch (e) {
         this.close();
@@ -287,12 +287,12 @@ PWMOutputDevice.prototype.value = function (value) {
         The duty cycle of the PWM device. 0.0 is off, 1.0 is fully on. Values
         in between may be specified for varying levels of power in the device.
     */
-    if(value == undefined) {
+    if(value === undefined) {
         return this._read();
     }
     this._pin._stop_blink();
     this._write(value);
-}
+};
 
 PWMOutputDevice.prototype._read = function () {
     this._check_open();
@@ -301,7 +301,7 @@ PWMOutputDevice.prototype._read = function () {
     } else {
         return 1 - this._pin.state();
     }
-}
+};
 
 PWMOutputDevice.prototype._write = function (value) {
     if (!this.active_high()) {
@@ -312,28 +312,28 @@ PWMOutputDevice.prototype._write = function (value) {
     }
     this._check_open();
     this._pin.state(value);
-}
+};
 
 PWMOutputDevice.prototype.frequency = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._pin.frequency();
     }
     this._pin.frequency(value);
-}
+};
 
 PWMOutputDevice.prototype.is_active = function() {
-    return this.value() != 0;
-}
+    return this.value() !== 0;
+};
 
 PWMOutputDevice.prototype.on  = function () {
     this._pin._stop_blink();
     this._write(1);
-}
+};
 
 PWMOutputDevice.prototype.off  = function () {
     this._pin._stop_blink();
     this._write(0);
-}
+};
 
 PWMOutputDevice.prototype.toggle = function () {
     /*
@@ -345,13 +345,13 @@ PWMOutputDevice.prototype.toggle = function () {
     this._pin._stop_blink();
     var newValue = 1 - this.value();
     this.value(newValue);
-}
+};
 
 PWMOutputDevice.prototype.close = function() {
     this._pin._stop_blink();
     this._pin.frequency (-1);
     OutputDevice.prototype.close.call(this);
-}
+};
 
 
 PWMOutputDevice.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, callback) {
@@ -376,7 +376,7 @@ PWMOutputDevice.prototype.blink = function(on_time, off_time, fade_in_time, fade
 
     */
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
-}
+};
 
 PWMOutputDevice.prototype.pulse = function (fade_in_time, fade_out_time, n, callback) {
     /*
@@ -394,7 +394,7 @@ PWMOutputDevice.prototype.pulse = function (fade_in_time, fade_out_time, n, call
     var on_time =0,  off_time = 0;
 
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
-}
+};
 
 exports.Motor = Motor;
 
@@ -433,7 +433,7 @@ function Motor (forward, backward, pwm) {
         control.
     */
 
-    if(forward == undefined || backward == undefined) {
+    if(forward === undefined || backward === undefined) {
         throw new exc.GPIOPinMissing('Forward and Backward pins must be provided');
     }
 }   

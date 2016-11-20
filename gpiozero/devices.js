@@ -11,7 +11,7 @@ _PINS_LOCK =  new ReadWriteLock();//Yes, this needs to be re-entrant
 function inherit(proto) {
   function F() {}
   F.prototype = proto;
-  return new F;
+  return new F();
 }
 
 function _default_pin_factory(name) {
@@ -63,7 +63,7 @@ Device.prototype.value = function () {
     return the states of all their subordinate components.
     */
     throw NotImplementedError();
-}
+};
 
 Device.prototype.is_active = function() {
     /*
@@ -72,13 +72,13 @@ Device.prototype.is_active = function() {
     :attr:`value`, this is *always* a boolean.
     */
     return (this.value!=nothing);
-}
+};
 
 Device.prototype._check_open = function () {
     if (this.closed()) {          
         throw new exc.DeviceClosed('is closed or uninitialized') ;
     }  
-}        
+};      
 
 
 exports.Device = Device;
@@ -90,7 +90,7 @@ function GPIODevice (pin) {
     value of pin until we've verified that it isn't already allocated*/
     Device.call(this);
     this._pin = undefined;
-    if (pin == undefined){
+    if (pin === undefined){
         throw new exc.GPIOPinMissing('No pin given');
     }
     if (Number.isInteger(pin)) {
@@ -117,18 +117,18 @@ GPIODevice.prototype.close =  function () {
     var that = this;
     _PINS_LOCK.readLock(function (release) {        
         pin = that._pin;
-        if(_PINS.has(pin)) {  ;          
+        if(_PINS.has(pin)) {         
             _PINS.delete(pin);
             that._pin.close();
         }        
         that._pin = undefined;           
         release();
     });
-}
+};
 
 GPIODevice.prototype.closed = function () {    
-    return (this._pin == undefined);
-}
+    return (this._pin === undefined);
+};
 
 GPIODevice.prototype.pin = function () { 
     /*
@@ -137,8 +137,8 @@ GPIODevice.prototype.pin = function () {
     dealing with GPIO pins, query ``pin.number`` to discover the GPIO
     pin (in BCM numbering) that the device is connected to.
     */
-    return this._pin
-}
+    return this._pin;
+};
 
 GPIODevice.prototype.value = function () { 
     return this._read();
@@ -147,11 +147,11 @@ GPIODevice.prototype.value = function () {
 GPIODevice.prototype._read = function () {
     this._check_open();
     return this._state_to_value(this.pin().state());
-}
+};
 
 GPIODevice.prototype._state_to_value = function (state) {
         return Boolean(state == this._active_state);
-}
+};
 
 GPIODevice.prototype.is_active = function () { 
     /*
@@ -161,7 +161,7 @@ GPIODevice.prototype.is_active = function () {
     pin (in BCM numbering) that the device is connected to.
     */
     return Boolean(this.value());
-}
+};
 
 
 
@@ -173,7 +173,7 @@ GPIODevice.prototype.toString = function () {
     pin (in BCM numbering) that the device is connected to.
     */    
     return "<gpiozero.GPIODevice object on pin "+ this._pin._number.toString() +", is_active="+ this.is_active()+">";
-}
+};
 
 exports.GPIODevice = GPIODevice;
 

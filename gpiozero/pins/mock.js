@@ -8,7 +8,7 @@ var Pin = require ("./index.js").Pin,
 function inherit(proto) {
   function F() {}
   F.prototype = proto;
-  return new F;
+  return new F();
 }
 
 function MockPin(number) {
@@ -20,7 +20,7 @@ function MockPin(number) {
         throw new Error('invalid pin ' + number.toString() + ' specified (must be 0..53)' );
     }    
     old_pin = _PINS[number];
-    if (old_pin == undefined) {
+    if (old_pin === undefined) {
         Pin.call(this);
         _PINS[number] = this;
         this._number = number;
@@ -44,24 +44,24 @@ MockPin.prototype.constructor = MockPin;
 MockPin.prototype.clear_states = function() {        
     this._last_change = (new Date()).getTime();
     this.states = [{time:0.0, state: this._state}];
-}
+};
 
 MockPin.prototype.state_history = function() {        
     return this.states;
-}
+};
 
 MockPin.prototype.state = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._state;
     }
     if (this._function != 'output') {
         throw new exc.PinSetInput('cannot set state of pin ' + this);
     }
-    if (value != 0 && value != 1) {
+    if (value != '0' && value != '1') {
         throw new exc.PinSetInput('Invalid Value - must be 1 or 0 not ' + value.toString());
     }
     this._change_state(Boolean(value)) ;
-}
+};
 
 MockPin.prototype._change_state = function (value) {
     if (this._state != value) {
@@ -72,14 +72,14 @@ MockPin.prototype._change_state = function (value) {
         return true;
     }
     return false;
-}
+};
 
 MockPin.prototype.pin_function = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._function;
     }
-    if (value =='input' || value == 'output') {
-        this._function = value
+    if (value == 'input' || value == 'output') {
+        this._function = value;
         if (value == 'input') {
             //# Drive the input to the pull
             //self._set_pull(self._get_pull())
@@ -87,7 +87,7 @@ MockPin.prototype.pin_function = function (value) {
     } else {
         throw new exc.PinSetInput('Invalid Value - must be input or output not ' + value.toString());
     }        
-}
+};
 
 MockPin.prototype.close = function () {    
     this.when_changed = undefined;
@@ -96,15 +96,15 @@ MockPin.prototype.close = function () {
 };
 
 MockPin.prototype.frequency = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return;
     }
     throw new exc.PinPWMUnsupported();
-}
+};
 
 MockPin.prototype.number = function(){ 
     return this._number; 
-}
+};
 
 MockPin.prototype.assert_states = function (expected) {
     // Tests that the pin went through the expected states (a list of values)
@@ -112,7 +112,7 @@ MockPin.prototype.assert_states = function (expected) {
         var actual = this.state_history()[i].state;
         assert(isclose(actual, expected[i] , undefined, 10),actual + " not equal to " + expected[i] )  ;
     } 
-}
+};
 
 MockPin.prototype.assert_states_and_times = function (expected) {
     // Tests that the pin went through the expected states at the expected
@@ -125,15 +125,15 @@ MockPin.prototype.assert_states_and_times = function (expected) {
         var actual = this.state_history()[i].state;
         assert(isclose(actual, expected[i].state , 0.05, undefined),actual + " not equal to " + expected[i].state )  ;             
 
-        if (expected[i].time==0) {
-            var actual = this.state_history()[i].time;
+        if (expected[i].time === 0) {
+            actual = this.state_history()[i].time;
             assert (actual == expected[i].time, "Times are not equal Expected:" + expected[i].time+" Actual:"+actual );
-        } else if (expected[i].time!=1) {
-            var actual = this.state_history()[i].time;
+        } else if (expected[i].time !== 1) {
+            actual = this.state_history()[i].time;
             assert(isclose(actual, expected[i].time , undefined, 10),actual + " not equal to " + expected[i].time )  ;             
         }                     
     }
-}
+};
 
 
 exports.MockPin = MockPin;
@@ -161,10 +161,10 @@ exports.MockPWMPin = MockPWMPin;
 MockPWMPin.prototype.close = function () {
     this.frequency(undefined);
     MockPin.prototype.close.call(this);
-}
+};
 
 MockPWMPin.prototype.frequency = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._frequency;
     }
     if (this._function!='output') {
@@ -176,10 +176,10 @@ MockPWMPin.prototype.frequency = function (value) {
     } else {
         this._frequency = value;
     }
-}
+};
 
 MockPWMPin.prototype.state = function (value) {
-    if (value == undefined) {
+    if (value === undefined) {
         return this._state;
     }
     if (this._function != 'output') {
@@ -189,34 +189,35 @@ MockPWMPin.prototype.state = function (value) {
             throw new exc.OutputDeviceBadValue("initial_value must be between 0 and 1, actual=:"+value);
     }
     this._change_state(parseFloat(value));
-}
+};
 
 MockPWMPin.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, fps, callback) {
-    this.on_time = (on_time == undefined ? 1 : on_time);
-    this.off_time = (off_time == undefined ? 1 : off_time);
-    this.fade_in_time = (fade_in_time == undefined ? 0 : fade_in_time);
-    this.fade_out_time = (fade_out_time == undefined ? 0 : fade_out_time);
-    this.fps = (fps == undefined ? 50 : fps);
-    this.n = (n == undefined ? 0 : n);
+    this.on_time = (on_time === undefined ? 1 : on_time);
+    this.off_time = (off_time === undefined ? 1 : off_time);
+    this.fade_in_time = (fade_in_time === undefined ? 0 : fade_in_time);
+    this.fade_out_time = (fade_out_time === undefined ? 0 : fade_out_time);
+    this.fps = (fps === undefined ? 50 : fps);
+    this.n = (n === undefined ? 0 : n);
     this.sequence = [];
     this.blink_callback = callback;
+    var i=0;
 
     if (this.fade_in_time > 0) {
-        for (var i = 0; i<this.fps*this.fade_in_time; i++ ) {
+        for (i = 0; i<this.fps*this.fade_in_time; i++ ) {
             this.sequence.push({value: i * (1 / this.fps) / this.fade_in_time, delay: 1/this.fps});
         }
     }
     this.sequence.push({value: 1, delay: this.on_time});
 
     if (this.fade_out_time > 0) {
-        for (var i = 0; i<this.fps*this.fade_out_time; i++ ) {
+        for (i = 0; i<this.fps*this.fade_out_time; i++ ) {
             this.sequence.push({value:  1 - (i * (1 / this.fps)) / this.fade_out_time, delay: 1/ this.fps});
         }
     }
     this.sequence.push({value: 0, delay: this.off_time});
 
     if (this.n>0) {
-        for (var i = 0; i<(this.n-1); i++) {
+        for (i = 0; i<(this.n-1); i++) {
             this.sequence = this.sequence.concat(this.sequence);
         }
 
@@ -225,7 +226,7 @@ MockPWMPin.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_
         var that = this;
         this._blink_timer = setTimeout(that._run_blink, nextStep.delay, this.sequence, this);
     }
-}
+};
 
 MockPWMPin.prototype._run_blink = function (sequence, that){
     if(sequence.length>0) {
@@ -233,12 +234,12 @@ MockPWMPin.prototype._run_blink = function (sequence, that){
         that.state (nextStep.value);        
         that._blink_timer = setTimeout(that._run_blink, nextStep.delay, sequence, that);
     } else {
-        if(that.blink_callback != undefined)
+        if(that.blink_callback !== undefined)
         {
             that.blink_callback();
         }
     }
-}
+};
 
     
 /*    
