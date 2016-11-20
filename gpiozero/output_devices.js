@@ -1,5 +1,6 @@
 var Lock = require('rwlock'),
     GPIODevice = require('./devices.js').GPIODevice,
+    Device = require('./devices.js').Device,
     exc = require('./exc.js');
 
 exports.OutputDevice = OutputDevice;
@@ -436,7 +437,130 @@ function Motor (forward, backward, pwm) {
     if(forward === undefined || backward === undefined) {
         throw new exc.GPIOPinMissing('Forward and Backward pins must be provided');
     }
-}   
+    if (pwm === undefined || pwm === true){
+        this.forward_device = new PWMOutputDevice(forward);
+        this.backward_device = new PWMOutputDevice(backward);
+        //this._order = ('forward_device', 'backward_device');
+    } else {
+        this.forward_device = new DigitalOutputDevice(forward);
+        this.backward_device = new DigitalOutputDevice(backward);
+    }
+}
+
+
+Motor.prototype = inherit(Device.prototype);
+Motor.prototype.constructor = Motor;
+
+
+Motor.prototype.close = function () {
+    if (this.forward_device !== undefined) {
+        this.forward_device.close();  
+        this.forward_device = undefined;  
+    }
+    
+    if (this.backward_device !== undefined) {
+        this.backward_device.close();
+        this.backward_device = undefined;
+    }
+    OutputDevice.prototype.close.call(this);
+};
+
+Motor.prototype.closed = function () {
+    return (this.forward_device === undefined && this.backward_device === undefined);
+};
+
+Motor.prototype.value = function (value) {
+    if (value === undefined) {
+        return this.forward_device.value() - this.backward_device.value();
+    }
+
+    if (value >1 || value < -1) {
+        throw new exc.OutputDeviceBadValue("Motor value must be between -1 and 1, actual=:" + value);
+    }
+    
+    if (value > 0) {
+        this.forward(value);
+    } else if (value < 0) {
+        this.backward (-value);
+    } else {
+        this.stop();
+    }
+};
+
+Motor.prototype.is_active = function () {
+    /*
+    Returns ``True`` if the motor is currently running and ``False``
+    otherwise.
+    */
+    return this.value() !== 0;
+};
+    
+Motor.prototype.forward = function (speed) {
+    /*
+    Drive the motor forwards.
+
+    :param float speed:
+        The speed at which the motor should turn. Can be any value between
+        0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
+        ``True`` when the class was constructed (and only 0 or 1 if not).
+    */
+    if (speed === undefined) {
+        speed = 1;
+    }
+
+    if (speed < 0 || speed > 1) {
+        throw new exc.ValueError('forward speed must be between 0 and 1');
+    }
+
+    if (this.forward_device instanceof DigitalOutputDevice && speed != 1 && speed !== 0) {
+        throw new exc.ValueError('forward speed must be 0 or 1 with non-PWM Motors');
+    }
+
+    this.backward_device.off();
+    this.forward_device.value (speed);
+};
+
+Motor.prototype.backward = function (speed) {
+    /*
+    Drive the motor forwards.
+
+    :param float speed:
+        The speed at which the motor should turn. Can be any value between
+        0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
+        ``True`` when the class was constructed (and only 0 or 1 if not).
+    */
+    if (speed === undefined) {
+        speed = 1;
+    }
+
+    if (speed < 0 || speed > 1) {
+        throw new exc.ValueError('backward speed must be between 0 and 1');
+    }
+
+    if (this.backward_device instanceof DigitalOutputDevice && speed != 1 && speed !== 0) {
+        throw new exc.ValueError('backward speed must be 0 or 1 with non-PWM Motors');
+    }
+
+    this.forward_device.off();
+    this.backward_device.value (speed);
+};
+
+Motor.prototype.reverse = function () {
+    /*
+    Reverse the current direction of the motor. If the motor is currently
+    idle this does nothing. Otherwise, the motor's direction will be
+    reversed at the current speed.
+    */
+    this.value(-1 * this.value());
+};
+
+Motor.prototype.stop = function () {
+    /*
+    Stop the motor.
+    */
+    this.forward_device.off();
+    this.backward_device.off();
+};
 
 /*
     

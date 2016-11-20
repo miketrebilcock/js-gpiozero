@@ -405,142 +405,204 @@ describe('output_devices', function() {
         }).to.throw(gz.GPIOPinMissing);           
     });
 
+    it('motor_test_pins', function() {            
+       	var f = new mp.MockPWMPin(1),
+       		b = new mp.MockPWMPin(2);
+		
+		with_close(new gz.Motor(f,b), function(device){    	                
+            assert(device.forward_device.pin() == f,  "Forward Device Pin is not f");
+            assert(device.forward_device instanceof gz.PWMOutputDevice);
+			assert(device.backward_device.pin() == b, "Backward Device Pin is not b");
+            assert(device.backward_device instanceof gz.PWMOutputDevice);
+        });       
+    });
+
+    it('motor_test_pins_nonpwm', function() {            
+       	var f = new mp.MockPin(1),
+       		b = new mp.MockPin(2);
+		
+		with_close(new gz.Motor(f,b, false), function(device){                 
+            assert(device.forward_device.pin() == f, "Forward Device Pin is not f");            
+            assert(device.forward_device instanceof gz.DigitalOutputDevice, "Forward device is not a DigitalOutputDevice");			
+			assert(device.backward_device.pin() == b, "Backward Device Pin is not b");
+            assert(device.backward_device instanceof gz.DigitalOutputDevice, "Backward device is not a DigitalOutputDevice");
+        });       
+    });
+
+    it('motor_close_nonpwm', function() {            
+       	var f = new mp.MockPin(1),
+       		b = new mp.MockPin(2);
+		
+		with_close(new gz.Motor(f,b, false), function(device){                 
+        	device.close();
+        	assert (device.closed());
+        	assert (device.forward_device === undefined);
+        	assert (device.backwardward_device === undefined);
+        	device.close();
+        	assert (device.closed());
+        });       
+    });
+
+    it('motor_close', function() {            
+       	var f = new mp.MockPWMPin(1),
+       		b = new mp.MockPWMPin(2);
+		
+		with_close(new gz.Motor(f,b), function(device){                 
+        	device.close();
+        	assert (device.closed());
+        	assert (device.forward_device === undefined);
+        	assert (device.backwardward_device === undefined);
+        	device.close();
+        	assert (device.closed());
+        });       
+    });
+
+    it('motor_value', function() {            
+       	var f = new mp.MockPWMPin(1),
+       		b = new mp.MockPWMPin(2);
+		
+		with_close(new gz.Motor(f,b), function(device){                 
+        	device.value(-1);
+        	assert (device.is_active());
+        	assert (device.value() == -1, "Device value is not -1 it is " + device.value());
+        	assert (b.state() == 1);
+        	assert (f.state() === 0);
+        	device.value(1);
+        	assert (device.is_active());
+        	assert (device.value() == 1, "Device value is not 1 it is " + device.value());
+        	assert (b.state() === 0);
+        	assert (f.state() == 1);
+        	device.value(0.5);
+        	assert (device.is_active());
+        	assert (device.value() == 0.5, "Device value is not 0.5 it is " + device.value());
+        	assert (b.state() === 0);
+        	assert (f.state() == 0.5);
+        	device.value(-0.5);
+        	assert (device.is_active());
+        	assert (device.value() == -0.5, "Device value is not -0.5 it is " + device.value());
+        	assert (b.state() == 0.5);
+        	assert (f.state() === 0);
+        	device.value(0);
+        	assert (device.is_active() === false);
+        	assert (device.value() === 0, "Device value is not 0 it is " + device.value());
+        	assert (b.state() === 0);
+        	assert (f.state() === 0);
+        });       
+    });
+
+    it('motor_value_nonpwm', function() {            
+       	var f = new mp.MockPin(1),
+       		b = new mp.MockPin(2);
+		
+		with_close(new gz.Motor(f,b, false), function(device){                 
+        	device.value(-1);
+        	assert (device.is_active(), "Device is not active but should be");
+        	assert (device.value() == -1, "Device value is not -1 it is " + device.value());
+        	assert (b.state() === true);
+        	assert (f.state() === false, "Forward Device state should be false but is " + f.state());
+        	device.value(1);
+        	assert (device.is_active(), "Device is not active but should be");
+        	assert (device.value() == 1, "Device value is not 1 it is " + device.value());
+        	assert (b.state() === false);
+        	assert (f.state() === true);
+        	device.value(0);
+        	assert (device.is_active() === false, "Device is active but should NOT be");
+        	assert (device.value() === 0, "Device value is not 0 it is " + device.value());
+        	assert (b.state() === false);
+        	assert (f.state() === false);
+        });       
+    });
+
+    it('motor_badvalue', function() {            
+       	var f = new mp.MockPWMPin(1),
+       		b = new mp.MockPWMPin(2);
+		with_close(new gz.Motor(f,b), function(device){ 
+            expect(function(){            	
+               device.value(2);
+            }).to.throw(gz.ValueError);  
+            expect(function(){
+               device.value(-2);
+            }).to.throw(gz.ValueError); 
+        });
+	});
+
+	it('motor_badvalue_nonpwm', function() {            
+       	var f = new mp.MockPin(1),
+       		b = new mp.MockPin(2);
+		with_close(new gz.Motor(f,b, false), function(device){ 
+            expect(function(){
+               device.value(2);
+            }).to.throw(gz.ValueError); 
+            expect(function(){
+               device.value(-2);
+            }).to.throw(gz.ValueError); 
+            expect(function(){
+               device.value(0.5);
+            }).to.throw(gz.ValueError); 
+            expect(function(){
+               device.value(-0.5);
+            }).to.throw(gz.ValueError); 
+        });
+	});
+
+	it('motor_reverse', function() {            
+       	var f = new mp.MockPWMPin(1),
+       		b = new mp.MockPWMPin(2);
+		
+		with_close(new gz.Motor(f,b), function(device){                 
+        	device.forward();
+        	assert (device.is_active());
+        	assert (device.value() == 1, "Device value is not 1 it is " + device.value());
+        	assert (b.state() === 0);
+        	assert (f.state() == 1);
+        	device.reverse();
+        	assert (device.is_active());
+        	assert (device.value() == -1, "Device value is not -1 it is " + device.value());
+        	assert (b.state() == 1);
+        	assert (f.state() === 0);
+        	device.backward(0.5);
+        	assert (device.is_active());
+        	assert (device.value() == -0.5, "Device value is not -0.5 it is " + device.value());
+        	assert (b.state() == 0.5);
+        	assert (f.state() === 0);
+        	device.reverse();
+        	assert (device.is_active());
+        	assert (device.value() == 0.5, "Device value is not 0.5 it is " + device.value());
+        	assert (b.state() === 0);
+        	assert (f.state() == 0.5);
+        	device.stop();
+        	assert (device.is_active() === false);
+        	assert (device.value() === 0, "Device value is not 0 it is " + device.value());
+        	assert (b.state() === 0);
+        	assert (f.state() === 0);
+        });       
+    });
+
+    it('motor_reverse_nonpwm', function() {            
+       	var f = new mp.MockPin(1),
+       		b = new mp.MockPin(2);
+		
+		with_close(new gz.Motor(f,b, false), function(device){                 
+        	device.forward();
+        	assert (device.is_active());
+        	assert (device.value() == 1, "Device value is not 1 it is " + device.value());
+        	assert (b.state() === false);
+        	assert (f.state() === true);
+        	device.reverse();
+        	assert (device.is_active());
+        	assert (device.value() == -1, "Device value is not -1 it is " + device.value());
+        	assert (b.state() === true);
+        	assert (f.state() === false);
+        	device.stop();
+        	assert (device.is_active() === false);
+        	assert (device.value() === 0, "Device value is not 0 it is " + device.value());
+        	assert (b.state() === false);
+        	assert (f.state() === false);
+        });       
+    });
 });
 
 /*
-
-def test_motor_pins():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        assert device.forward_device.pin is f
-        assert isinstance(device.forward_device, PWMOutputDevice)
-        assert device.backward_device.pin is b
-        assert isinstance(device.backward_device, PWMOutputDevice)
-
-def test_motor_pins_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        assert device.forward_device.pin is f
-        assert isinstance(device.forward_device, DigitalOutputDevice)
-        assert device.backward_device.pin is b
-        assert isinstance(device.backward_device, DigitalOutputDevice)
-
-def test_motor_close():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        device.close()
-        assert device.closed
-        assert device.forward_device.pin is None
-        assert device.backward_device.pin is None
-        device.close()
-        assert device.closed
-
-def test_motor_close_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        device.close()
-        assert device.closed
-        assert device.forward_device.pin is None
-        assert device.backward_device.pin is None
-
-def test_motor_value():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        device.value = -1
-        assert device.is_active
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
-        device.value = 1
-        assert device.is_active
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.value = 0.5
-        assert device.is_active
-        assert device.value == 0.5
-        assert b.state == 0 and f.state == 0.5
-        device.value = -0.5
-        assert device.is_active
-        assert device.value == -0.5
-        assert b.state == 0.5 and f.state == 0
-        device.value = 0
-        assert not device.is_active
-        assert not device.value
-        assert b.state == 0 and f.state == 0
-
-def test_motor_value_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        device.value = -1
-        assert device.is_active
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
-        device.value = 1
-        assert device.is_active
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.value = 0
-        assert not device.is_active
-        assert not device.value
-        assert b.state == 0 and f.state == 0
-
-def test_motor_bad_value():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        with pytest.raises(ValueError):
-            device.value = -2
-        with pytest.raises(ValueError):
-            device.value = 2
-
-def test_motor_bad_value_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        with pytest.raises(ValueError):
-            device.value = -2
-        with pytest.raises(ValueError):
-            device.value = 2
-        with pytest.raises(ValueError):
-            device.value = 0.5
-        with pytest.raises(ValueError):
-            device.value = -0.5
-
-def test_motor_reverse():
-    f = MockPWMPin(1)
-    b = MockPWMPin(2)
-    with Motor(f, b) as device:
-        device.forward()
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.reverse()
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
-        device.backward(0.5)
-        assert device.value == -0.5
-        assert b.state == 0.5 and f.state == 0
-        device.reverse()
-        assert device.value == 0.5
-        assert b.state == 0 and f.state == 0.5
-
-def test_motor_reverse_nonpwm():
-    f = MockPin(1)
-    b = MockPin(2)
-    with Motor(f, b, pwm=False) as device:
-        device.forward()
-        assert device.value == 1
-        assert b.state == 0 and f.state == 1
-        device.reverse()
-        assert device.value == -1
-        assert b.state == 1 and f.state == 0
-
-
-
 def test_rgbled_missing_pins():
     with pytest.raises(ValueError):
         RGBLED()
