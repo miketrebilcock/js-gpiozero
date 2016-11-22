@@ -5,4 +5,7 @@
 A port of the fanastic [python gpiozero](https://github.com/RPi-Distro/python-gpiozero) to javascript creating simple interface to everyday GPIO components used with Raspberry Pi on node.js.
 
 It's early days and a work in progress!
- 
+
+## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+
+[![NPM](https://nodei.co/npm/js-gpiozero.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/js-gpiozero/)
