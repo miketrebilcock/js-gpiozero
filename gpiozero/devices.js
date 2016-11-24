@@ -1,11 +1,8 @@
-
-
 var ReadWriteLock = require('rwlock'),
     exc = require('./exc.js'),
     wiringpi = require('./pins/wiringpi.js').WiringPiPin;
-
-_PINS = new Set();
-_PINS_LOCK =  new ReadWriteLock();//Yes, this needs to be re-entrant
+var _PINS = new Set();
+var _PINS_LOCK =  new ReadWriteLock();//Yes, this needs to be re-entrant
 
 
 function inherit(proto) {
@@ -45,7 +42,7 @@ function _default_pin_factory(name) {
 }
 
 
-pin_factory = _default_pin_factory();
+var pin_factory = _default_pin_factory();
 
 function Device () {
     /*
@@ -62,7 +59,7 @@ Device.prototype.value = function () {
     ranges (e.g. -1 to +1) and composite devices usually use tuples to
     return the states of all their subordinate components.
     */
-    throw NotImplementedError();
+    throw new exc.NotImplementedError();
 };
 
 Device.prototype.is_active = function() {
@@ -71,7 +68,7 @@ Device.prototype.is_active = function() {
     otherwise. This property is usually derived from :attr:`value`. Unlike
     :attr:`value`, this is *always* a boolean.
     */
-    return (this.value!=nothing);
+    return (this.value !== undefined);
 };
 
 Device.prototype._check_open = function () {
@@ -83,7 +80,6 @@ Device.prototype._check_open = function () {
 Device.prototype.close = function () {
     return;
 }; 
-
 
 exports.Device = Device;
 
@@ -120,7 +116,7 @@ GPIODevice.prototype.constructor = GPIODevice;
 GPIODevice.prototype.close =  function () { 
     var that = this;
     _PINS_LOCK.readLock(function (release) {        
-        pin = that._pin;
+        var pin = that._pin;
         if(_PINS.has(pin)) {         
             _PINS.delete(pin);
             that._pin.close();

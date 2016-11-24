@@ -9,7 +9,7 @@ function isclose(a, b, rel_tol, abs_tol) {
     rel_tol = (rel_tol === undefined? 1e-9 : rel_tol);
 
     if (rel_tol < 0.0 || abs_tol < 0.0) {
-        throwexc.ValueError('error tolerances must be non-negative');
+        throw exc.ValueError('error tolerances must be non-negative');
     }
 
     if (a == b) { // fast-path for exact equality

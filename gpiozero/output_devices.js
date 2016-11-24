@@ -695,6 +695,7 @@ RGBLED.prototype.value = function (value) {
 };
 
 RGBLED.prototype.close = function () {
+    var i;
     for (i=0; i< 3 ; i++) {
         if (this._leds[i] !== undefined ) {
             this._leds[i].close();
@@ -705,78 +706,145 @@ RGBLED.prototype.close = function () {
     Device.prototype.close.call(this);
 };
 
+RGBLED.prototype.is_active = function() {
+    /*
+    Returns ``True`` if the LED is currently active (not black) and
+    ``False`` otherwise.
+    */
+    return (this.value()[0] + this.value()[1] + this.value()[2] > 0 );
+};
+
+RGBLED.prototype.on = function () {
+    /*
+    Turn the LED on. This equivalent to setting the LED color to white
+    ``(1, 1, 1)``.
+    */
+    this.value ([1, 1, 1]);
+};
+
+RGBLED.prototype.off = function () {
+    /*
+    Turn the LED on. This equivalent to setting the LED color to white
+    ``(1, 1, 1)``.
+    */
+    this.value ([0, 0, 0]);
+};
+
+RGBLED.prototype.toggle = function() {
+    /*
+    Toggle the state of the device. If the device is currently off
+    (:attr:`value` is ``(0, 0, 0)``), this changes it to "fully" on
+    (:attr:`value` is ``(1, 1, 1)``).  If the device has a specific color,
+    this method inverts the color.
+    */
+    var current = this.value();
+    this.value ([1 - current[0], 1 - current[1], 1 - current[2]]);
+};
+
+RGBLED.prototype.closed = function () {
+    return this._leds.length === 0;
+};
+
+RGBLED.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, callback) {
+
+    /*
+    Make the device turn on and off repeatedly.
+
+    :param float on_time:
+        Number of seconds on. Defaults to 1 second.
+
+    :param float off_time:
+        Number of seconds off. Defaults to 1 second.
+
+    :param float fade_in_time:
+        Number of seconds to spend fading in. Defaults to 0.
+
+    :param float fade_out_time:
+        Number of seconds to spend fading out. Defaults to 0.
+
+    :param tuple on_color:
+            The color to use when the LED is "on". Defaults to white.
+
+    :param tuple off_color:
+        The color to use when the LED is "off". Defaults to black.
+
+    :param int n:
+        Number of times to blink; ``None`` (the default) means forever.
+
+    */
+    if (this._leds[0] instanceof LED) {
+        if (fade_in_time !== undefined) {
+            throw new  exc.ValueError('fade_in_time must be 0 with non-PWM RGBLEDs');
+        }
+        if (fade_out_time !== undefined) {
+            throw new exc.ValueError('fade_out_time must be 0 with non-PWM RGBLEDs');
+        }
+    }
+
+    /*
+
+    self._stop_blink()
+        self._blink_thread = GPIOThread(
+            target=self._blink_device,
+            args=(
+                on_time, off_time, fade_in_time, fade_out_time,
+                on_color, off_color, n
+            )
+        )
+        self._blink_thread.start()
+        if not background:
+            self._blink_thread.join()
+            self._blink_thread = None
+    */
+
+
+
+
+    //this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, on_color, off_color, n, undefined, callback);
+
+};
+
+ /* def _blink_device(
+            self, on_time, off_time, fade_in_time, fade_out_time, on_color,
+            off_color, n, fps=25):
+        # Define some simple lambdas to perform linear interpolation between
+        # off_color and on_color
+        lerp = lambda t, fade_in: tuple(
+            (1 - t) * off + t * on
+            if fade_in else
+            (1 - t) * on + t * off
+            for off, on in zip(off_color, on_color)
+            )
+        sequence = []
+        if fade_in_time > 0:
+            sequence += [
+                (lerp(i * (1 / fps) / fade_in_time, True), 1 / fps)
+                for i in range(int(fps * fade_in_time))
+                ]
+        sequence.append((on_color, on_time))
+        if fade_out_time > 0:
+            sequence += [
+                (lerp(i * (1 / fps) / fade_out_time, False), 1 / fps)
+                for i in range(int(fps * fade_out_time))
+                ]
+        sequence.append((off_color, off_time))
+        sequence = (
+                cycle(sequence) if n is None else
+                chain.from_iterable(repeat(sequence, n))
+                )
+        for l in self._leds:
+            l._controller = self
+        for value, delay in sequence:
+            for l, v in zip(self._leds, value):
+                l._write(v)
+            if self._blink_thread.stopping.wait(delay):
+                break
+*/
+
+
 /*
 class RGBLED(SourceMixin, Device):
 
-    def close(self):
-        if self._leds:
-            self._stop_blink()
-            for led in self._leds:
-                led.close()
-            self._leds = ()
-        super(RGBLED, self).close()
-
-    @property
-    def closed(self):
-        return len(self._leds) == 0
-
-    @property
-    def value(self):
-        """
-        Represents the color of the LED as an RGB 3-tuple of ``(red, green,
-        blue)`` where each value is between 0 and 1 if ``pwm`` was ``True``
-        when the class was constructed (and only 0 or 1 if not).
-
-        For example, purple would be ``(1, 0, 1)`` and yellow would be ``(1, 1,
-        0)``, while orange would be ``(1, 0.5, 0)``.
-        """
-        return (self.red, self.green, self.blue)
-
-    @value.setter
-    def value(self, value):
-        for component in value:
-            if not 0 <= component <= 1:
-                raise OutputDeviceBadValue('each RGB color component must be between 0 and 1')
-            if isinstance(self._leds[0], LED):
-                if component not in (0, 1):
-                    raise OutputDeviceBadValue('each RGB color component must be 0 or 1 with non-PWM RGBLEDs')
-        self._stop_blink()
-        self.red, self.green, self.blue = value
-
-    @property
-    def is_active(self):
-        """
-        Returns ``True`` if the LED is currently active (not black) and
-        ``False`` otherwise.
-        """
-        return self.value != (0, 0, 0)
-
-    is_lit = is_active
-    color = value
-
-    def on(self):
-        """
-        Turn the LED on. This equivalent to setting the LED color to white
-        ``(1, 1, 1)``.
-        """
-        self.value = (1, 1, 1)
-
-    def off(self):
-        """
-        Turn the LED off. This is equivalent to setting the LED color to black
-        ``(0, 0, 0)``.
-        """
-        self.value = (0, 0, 0)
-
-    def toggle(self):
-        """
-        Toggle the state of the device. If the device is currently off
-        (:attr:`value` is ``(0, 0, 0)``), this changes it to "fully" on
-        (:attr:`value` is ``(1, 1, 1)``).  If the device has a specific color,
-        this method inverts the color.
-        """
-        r, g, b = self.value
-        self.value = (1 - r, 1 - g, 1 - b)
 
     def blink(
             self, on_time=1, off_time=1, fade_in_time=0, fade_out_time=0,
@@ -820,19 +888,7 @@ class RGBLED(SourceMixin, Device):
                 raise ValueError('fade_in_time must be 0 with non-PWM RGBLEDs')
             if fade_out_time:
                 raise ValueError('fade_out_time must be 0 with non-PWM RGBLEDs')
-        self._stop_blink()
-        self._blink_thread = GPIOThread(
-            target=self._blink_device,
-            args=(
-                on_time, off_time, fade_in_time, fade_out_time,
-                on_color, off_color, n
-            )
-        )
-        self._blink_thread.start()
-        if not background:
-            self._blink_thread.join()
-            self._blink_thread = None
-
+        
     def pulse(
             self, fade_in_time=1, fade_out_time=1,
             on_color=(1, 1, 1), off_color=(0, 0, 0), n=None, background=True):
@@ -872,41 +928,7 @@ class RGBLED(SourceMixin, Device):
             self._blink_thread.stop()
             self._blink_thread = None
 
-    def _blink_device(
-            self, on_time, off_time, fade_in_time, fade_out_time, on_color,
-            off_color, n, fps=25):
-        # Define some simple lambdas to perform linear interpolation between
-        # off_color and on_color
-        lerp = lambda t, fade_in: tuple(
-            (1 - t) * off + t * on
-            if fade_in else
-            (1 - t) * on + t * off
-            for off, on in zip(off_color, on_color)
-            )
-        sequence = []
-        if fade_in_time > 0:
-            sequence += [
-                (lerp(i * (1 / fps) / fade_in_time, True), 1 / fps)
-                for i in range(int(fps * fade_in_time))
-                ]
-        sequence.append((on_color, on_time))
-        if fade_out_time > 0:
-            sequence += [
-                (lerp(i * (1 / fps) / fade_out_time, False), 1 / fps)
-                for i in range(int(fps * fade_out_time))
-                ]
-        sequence.append((off_color, off_time))
-        sequence = (
-                cycle(sequence) if n is None else
-                chain.from_iterable(repeat(sequence, n))
-                )
-        for l in self._leds:
-            l._controller = self
-        for value, delay in sequence:
-            for l, v in zip(self._leds, value):
-                l._write(v)
-            if self._blink_thread.stopping.wait(delay):
-                break
+   
 
 
 */

@@ -19,7 +19,7 @@ function MockPin(number) {
     if ( number < 0 || number > 54){
         throw new Error('invalid pin ' + number.toString() + ' specified (must be 0..53)' );
     }    
-    old_pin = _PINS[number];
+    var old_pin = _PINS[number];
     if (old_pin === undefined) {
         Pin.call(this);
         _PINS[number] = this;
@@ -65,7 +65,7 @@ MockPin.prototype.state = function (value) {
 
 MockPin.prototype._change_state = function (value) {
     if (this._state != value) {
-        t = (new Date()).getTime();
+        var t = (new Date()).getTime();
         this._state = value;
         this.states.push({time:t - this._last_change, state: value});
         this._last_change = t;

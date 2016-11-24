@@ -1,4 +1,4 @@
-require ("../exc.js");
+var exc = require ("../exc.js");
 
 function inherit(proto) {
   function F() {}
@@ -127,7 +127,7 @@ Pin.prototype = {
         if (value === undefined) {
             return 0;
         }
-        throw new PinSetInput("Cannot set the state of input pin " + this);
+        throw new exc.PinSetInput("Cannot set the state of input pin " + this);
     },
     blink: function (on_time, off_time, loops, callback) {
         this.on_time = (on_time === undefined ? 1000 : on_time*1000);
@@ -195,7 +195,7 @@ LocalPin.prototype = inherit(Pin.prototype);
 LocalPin.prototype.constructor = LocalPin;
 
 LocalPin.prototype.pi_info = function (){
-    throw new NotImplementedError();
+    throw new exc.NotImplementedError();
 };
 /*
 

@@ -1,4 +1,3 @@
-
 var expect = require('chai').expect,
 	assert = require('chai').assert,
 	gz = require('../gpiozero/'),
@@ -622,7 +621,7 @@ describe('output_devices', function() {
      		assert (isclose(b.state(), 0.0), "Blue State is not 0.0:"+b.state());
 
      	});
-     });
+    });
 
     it('rgbled_initial_value_nonpwm', function () {
      	var r = new mp.MockPin(1),
@@ -635,113 +634,253 @@ describe('output_devices', function() {
      		assert (b.state() === true, "Blue State is not true:"+b.state());
 
      	});
-     });
+    });
 
+    it('rgbled_initial_bad_value', function() { 
+    	var r = new mp.MockPWMPin(1),
+     		b = new mp.MockPWMPin(2),
+     		g = new mp.MockPWMPin(3);                  
+        expect(function(){
+          gz.RGBLED(r,g, b, undefined, [0.1, 0.2, 1.2]);
+        }).to.throw(gz.ValueError); 
+	});
+
+	it('rgbled_initial_bad_value_nonpwm', function() { 
+    	var r = new mp.MockPin(1),
+     		b = new mp.MockPin(2),
+     		g = new mp.MockPin(3);                  
+        expect(function(){
+          gz.RGBLED(r,g, b, undefined, [0.1, 0.2, 0]);
+        }).to.throw(gz.ValueError); 
+	});
+
+	it('rgbled_value', function () {
+     	var r = new mp.MockPWMPin(1),
+     		b = new mp.MockPWMPin(2),
+     		g = new mp.MockPWMPin(3);
+
+     	with_close(new gz.RGBLED(r,g, b), function(device){ 
+    		
+     		assert (device._leds[0] instanceof gz.PWMLED, "LED 0 not set to PWMLED");
+     		assert (device._leds[1] instanceof gz.PWMLED, "LED 1 not set to PWMLED");
+     		assert (device._leds[2] instanceof gz.PWMLED, "LED 2 not set to PWMLED");
+
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+     		assert (device.value()[0] === 0 && 
+     			device.value()[1] === 0 && 
+     			device.value()[2] === 0, "Device value is not 0,0,0");
+     		device.on();
+     		assert (device.is_active(), "Device has not switched to active");
+     		assert (device.value()[0] === 1 && 
+     			device.value()[1] === 1 && 
+     			device.value()[2] === 1, "Device value is not 1,1,1");
+     		device.off();
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+			assert (device.value()[0] === 0 && 
+     			device.value()[1] === 0 && 
+     			device.value()[2] === 0, "Device value is not 0,0,0");
+			device.value([0.5, 0.5, 0.5]);
+			assert (device.is_active(), "Device has not switched to active");
+			assert (device.value()[0] === 0.5 && 
+     			device.value()[1] === 0.5 && 
+     			device.value()[2] === 0.5 , "Device value is not 0.5,0.5,0.5");
+
+     	});
+    });
+
+    it('rgbled_value_nonpwm', function () {
+     	var r = new mp.MockPin(1),
+     		b = new mp.MockPin(2),
+     		g = new mp.MockPin(3);
+
+     	with_close(new gz.RGBLED(r,g, b,undefined,undefined,false), function(device){ 
+    		
+     		assert (device._leds[0] instanceof gz.LED, "LED 0 not set to LED");
+     		assert (device._leds[1] instanceof gz.LED, "LED 1 not set to LED");
+     		assert (device._leds[2] instanceof gz.LED, "LED 2 not set to LED");
+
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+     		assert (device.value()[0] === false && 
+     			device.value()[1] === false && 
+     			device.value()[2] === false, "Device value is not false,false,false");
+     		device.on();
+     		assert (device.is_active(), "Device has not switched to active");
+     		assert (device.value()[0] === true && 
+     			device.value()[1] === true && 
+     			device.value()[2] === true, "Device value is not true,true,true");
+     		device.off();
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+			assert (device.value()[0] === false && 
+     			device.value()[1] === false && 
+     			device.value()[2] === false, "Device value is not false,false,false");
+     	});
+    });
+
+    it('rgbled_bad_value', function () {
+     	var r = new mp.MockPWMPin(1),
+     		b = new mp.MockPWMPin(2),
+     		g = new mp.MockPWMPin(3);
+     	var device = new gz.RGBLED(r,g, b);
+		expect(function(){
+		          Device.value([2,0,0]);
+		        }).to.throw(gz.ValueError); 
+		expect(function(){
+		          Device.value([0,-1,0]);
+		        }).to.throw(gz.ValueError); 
+     	device.close();
+     	assert (device.closed() === true);
+    });
+
+
+    it('rgbled_bad_value_nonpwm', function () {
+     	var r = new mp.MockPin(1),
+     		b = new mp.MockPin(2),
+     		g = new mp.MockPin(3);
+     	var device = new gz.RGBLED(r,g, b, undefined, undefined, false);
+		expect(function(){
+		          Device.value([2,0,0]);
+		        }).to.throw(gz.ValueError); 
+		expect(function(){
+		          Device.value([0,-1,0]);
+		        }).to.throw(gz.ValueError); 
+		expect(function(){
+		          Device.value([0.5,0,0]);
+		        }).to.throw(gz.ValueError);
+		expect(function(){
+		          Device.value([0,0.5,0]);
+		        }).to.throw(gz.ValueError); 
+		expect(function(){
+		          Device.value([0,0,0.5]);
+		        }).to.throw(gz.ValueError);
+     	device.close();
+     	assert (device.closed() === true);
+    });
+
+	it('rgbled_toggle', function () {
+     	var r = new mp.MockPWMPin(1),
+     		b = new mp.MockPWMPin(2),
+     		g = new mp.MockPWMPin(3);
+
+     	with_close(new gz.RGBLED(r,g, b), function(device){ 
+
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+     		assert (device.value()[0] === 0 && 
+     			device.value()[1] === 0 && 
+     			device.value()[2] === 0, "Device value is not 0,0,0");
+
+     		device.toggle();
+     		
+     		assert (device.is_active(), "Device has not switched to active");
+     		assert (device.value()[0] === 1 && 
+     			device.value()[1] === 1 && 
+     			device.value()[2] === 1, "Device value is not 1,1,1");
+
+     		device.toggle();
+     		
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+			assert (device.value()[0] === 0 && 
+     			device.value()[1] === 0 && 
+     			device.value()[2] === 0, "Device value is not 0,0,0");
+     	});
+    });
+
+    it('rgbled_value_nonpwm', function () {
+     	var r = new mp.MockPin(1),
+     		b = new mp.MockPin(2),
+     		g = new mp.MockPin(3);
+
+     	with_close(new gz.RGBLED(r,g, b,undefined,undefined,false), function(device){ 
+    		
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+     		assert (device.value()[0] === false && 
+     			device.value()[1] === false && 
+     			device.value()[2] === false, "Device value is not false,false,false");
+
+     		device.toggle();
+
+     		assert (device.is_active(), "Device has not switched to active");
+     		assert (device.value()[0] === true && 
+     			device.value()[1] === true && 
+     			device.value()[2] === true, "Device value is not true,true,true");
+
+     		device.toggle();
+
+     		assert (device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
+			assert (device.value()[0] === false && 
+     			device.value()[1] === false && 
+     			device.value()[2] === false, "Device value is not false,false,false");
+     	});
+    });
+/*
+     it('rgbled_blink_background', function(done) {            
+        var r = new mp.MockPWMPin(1),
+     		b = new mp.MockPWMPin(2),
+     		g = new mp.MockPWMPin(3),
+     		device =  new gz.RGBLED(r,g, b);
+
+        device.blink(0.2, 0.1, 2);
+        var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false},{time:101, state: true},{time:201, state: false}];
+        setTimeout(function () {
+            try{
+                r.assert_states_and_times(expected);
+                g.assert_states_and_times(expected);
+                b.assert_states_and_times(expected);
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 1500);
+              
+          
+    });*/
+
+    /*it('test_output_blink_interrupt_while_on', function(done) {            
+        pin = new mp.MockPin(2);    
+        var device = new gz.DigitalOutputDevice(pin);
+
+        device.blink(1, 0.1);
+        var expected = [false,true,false];
+        setTimeout(function () {
+            try{
+                device.off();                
+                expect(pin._blink_thread).to.equal(undefined);
+
+                pin.assert_states(expected);
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 200);
+    });
+
+    it('test_output_blink_interrupt_while_off', function(done) {            
+        pin = new mp.MockPin(2);    
+        var device = new gz.DigitalOutputDevice(pin);
+
+        device.blink(0.1, 1);
+        var expected = [false, true, false];
+        setTimeout(function () {
+            try{
+                device.off();
+                
+                expect(pin._blink_thread).to.equal(undefined);
+
+                pin.assert_states(expected);
+                device.close();
+                done(); // success: call done with no parameter to indicate that it() is done()
+              } catch( e ) {
+                device.close();
+                done( e ); // failure: call done with an error Object to indicate that it() failed
+              }
+        }, 200);
+    });*/
 });
 
 /*
-
-
-def test_rgbled_initial_value_nonpwm():
-    r, g, b = (MockPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b, pwm=False, initial_value=(0, 1, 1)) as device:
-        assert r.state == 0
-        assert g.state == 1
-        assert b.state == 1
-
-def test_rgbled_initial_bad_value():
-    r, g, b = (MockPWMPin(i) for i in (1, 2, 3))
-    with pytest.raises(ValueError):
-        RGBLED(r, g, b, initial_value=(0.1, 0.2, 1.2))
-
-def test_rgbled_initial_bad_value_nonpwm():
-    r, g, b = (MockPin(i) for i in (1, 2, 3))
-    with pytest.raises(ValueError):
-        RGBLED(r, g, b, pwm=False, initial_value=(0.1, 0.2, 0))
-
-def test_rgbled_value():
-    r, g, b = (MockPWMPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b) as device:
-        assert isinstance(device._leds[0], PWMLED)
-        assert isinstance(device._leds[1], PWMLED)
-        assert isinstance(device._leds[2], PWMLED)
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
-        device.on()
-        assert device.is_active
-        assert device.value == (1, 1, 1)
-        device.off()
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
-        device.value = (0.5, 0.5, 0.5)
-        assert device.is_active
-        assert device.value == (0.5, 0.5, 0.5)
-
-def test_rgbled_value_nonpwm():
-    r, g, b = (MockPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b, pwm=False) as device:
-        assert isinstance(device._leds[0], LED)
-        assert isinstance(device._leds[1], LED)
-        assert isinstance(device._leds[2], LED)
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
-        device.on()
-        assert device.is_active
-        assert device.value == (1, 1, 1)
-        device.off()
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
-
-def test_rgbled_bad_value():
-    r, g, b = (MockPWMPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b) as device:
-        with pytest.raises(ValueError):
-            device.value = (2, 0, 0)
-    with RGBLED(r, g, b) as device:
-        with pytest.raises(ValueError):
-            device.value = (0, -1, 0)
-
-def test_rgbled_bad_value_nonpwm():
-    r, g, b = (MockPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b, pwm=False) as device:
-        with pytest.raises(ValueError):
-            device.value = (2, 0, 0)
-    with RGBLED(r, g, b, pwm=False) as device:
-        with pytest.raises(ValueError):
-            device.value = (0, -1, 0)
-    with RGBLED(r, g, b, pwm=False) as device:
-        with pytest.raises(ValueError):
-            device.value = (0.5, 0, 0)
-    with RGBLED(r, g, b, pwm=False) as device:
-        with pytest.raises(ValueError):
-            device.value = (0, 0.5, 0)
-    with RGBLED(r, g, b, pwm=False) as device:
-        with pytest.raises(ValueError):
-            device.value = (0, 0, 0.5)
-
-def test_rgbled_toggle():
-    r, g, b = (MockPWMPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b) as device:
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
-        device.toggle()
-        assert device.is_active
-        assert device.value == (1, 1, 1)
-        device.toggle()
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
-
-def test_rgbled_toggle_nonpwm():
-    r, g, b = (MockPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b, pwm=False) as device:
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
-        device.toggle()
-        assert device.is_active
-        assert device.value == (1, 1, 1)
-        device.toggle()
-        assert not device.is_active
-        assert device.value == (0, 0, 0)
 
 @pytest.mark.skipif(hasattr(sys, 'pypy_version_info'),
                     reason='timing is too random on pypy')
