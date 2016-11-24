@@ -600,22 +600,47 @@ describe('output_devices', function() {
         	assert (f.state() === false);
         });       
     });
+
+     it('rgbled_missing_pins', function() {                   
+        expect(function(){
+          new RGBLED();
+        }).to.throw(gz.ValueError); 
+	});
+
+    it('rgbled_initial_value', function () {
+     	var r = new mp.MockPWMPin(1),
+     		b = new mp.MockPWMPin(2),
+     		g = new mp.MockPWMPin(3);
+
+     	with_close(new gz.RGBLED(r,g, b, undefined, [0.1, 0.2, 0]), function(device){       		
+     		assert (r.frequency(), "Frequency is not defined");
+     		assert (g.frequency(), "Frequency is not defined");
+     		assert (b.frequency(), "Frequency is not defined");
+
+     		assert (isclose(r.state(), 0.1), "Red State is not 0.1:"+r.state());
+     		assert (isclose(g.state(), 0.2), "Green State is not 0.2:"+g.state());
+     		assert (isclose(b.state(), 0.0), "Blue State is not 0.0:"+b.state());
+
+     	});
+     });
+
+    it('rgbled_initial_value_nonpwm', function () {
+     	var r = new mp.MockPin(1),
+     		b = new mp.MockPin(2),
+     		g = new mp.MockPin(3);
+
+     	with_close(new gz.RGBLED(r,g, b, undefined, [0, 1, 1], false), function(device){       		
+     		assert (r.state() === false, "Red State is not false:"+r.state());
+     		assert (g.state() === true, "Green State is not true:"+g.state());
+     		assert (b.state() === true, "Blue State is not true:"+b.state());
+
+     	});
+     });
+
 });
 
 /*
-def test_rgbled_missing_pins():
-    with pytest.raises(ValueError):
-        RGBLED()
 
-def test_rgbled_initial_value():
-    r, g, b = (MockPWMPin(i) for i in (1, 2, 3))
-    with RGBLED(r, g, b, initial_value=(0.1, 0.2, 0)) as device:
-        assert r.frequency
-        assert g.frequency
-        assert b.frequency
-        assert isclose(r.state, 0.1)
-        assert isclose(g.state, 0.2)
-        assert isclose(b.state, 0.0)
 
 def test_rgbled_initial_value_nonpwm():
     r, g, b = (MockPin(i) for i in (1, 2, 3))

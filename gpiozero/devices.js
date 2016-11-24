@@ -78,7 +78,11 @@ Device.prototype._check_open = function () {
     if (this.closed()) {          
         throw new exc.DeviceClosed('is closed or uninitialized') ;
     }  
-};      
+};
+
+Device.prototype.close = function () {
+    return;
+}; 
 
 
 exports.Device = Device;

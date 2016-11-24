@@ -21,6 +21,8 @@ module.exports = {
 	PWMOutputDevice : output_devices.PWMOutputDevice,
 	LED : output_devices.LED,
 	Buzzer : output_devices.Buzzer,
-	Motor: output_devices.Motor
+	Motor: output_devices.Motor,
+	PWMLED : output_devices.PWMLED,
+	RGBLED : output_devices.RGBLED
 
 };

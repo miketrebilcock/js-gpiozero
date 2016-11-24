@@ -562,107 +562,351 @@ Motor.prototype.stop = function () {
     this.backward_device.off();
 };
 
+exports.PWMLED = PWMLED;
+
+function PWMLED (pin, active_high, initial_value, frequency){
+    /*
+    Extends :class:`PWMOutputDevice` and represents a light emitting diode
+    (LED) with variable brightness.
+
+    A typical configuration of such a device is to connect a GPIO pin to the
+    anode (long leg) of the LED, and the cathode (short leg) to ground, with
+    an optional resistor to prevent the LED from burning out.
+
+    :param int pin:
+        The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
+        valid pin numbers.
+
+    :param bool active_high:
+        If ``True`` (the default), the :meth:`on` method will set the GPIO to
+        HIGH. If ``False``, the :meth:`on` method will set the GPIO to LOW (the
+        :meth:`off` method always does the opposite).
+
+    :param float initial_value:
+        If ``0`` (the default), the LED will be off initially. Other values
+        between 0 and 1 can be specified as an initial brightness for the LED.
+        Note that ``None`` cannot be specified (unlike the parent class) as
+        there is no way to tell PWM not to alter the state of the pin.
+
+    :param int frequency:
+        The frequency (in Hz) of pulses emitted to drive the LED. Defaults
+        to 100Hz.
+    */
+    PWMOutputDevice.call(this, pin, active_high, initial_value, frequency);
+}
+
+PWMLED.prototype = inherit(PWMOutputDevice.prototype);
+PWMLED.prototype.constructor = PWMLED;
+
+PWMLED.prototype.is_lit = function () {
+    return this.is_active();
+};
+
+function RGBLED(red, green, blue, active_high, initial_value, pwm) {
+    /*
+    Extends :class:`Device` and represents a full color LED component (composed
+    of red, green, and blue LEDs).
+
+    Connect the common cathode (longest leg) to a ground pin; connect each of
+    the other legs (representing the red, green, and blue anodes) to any GPIO
+    pins.  You can either use three limiting resistors (one per anode) or a
+    single limiting resistor on the cathode.
+
+    The following code will make the LED purple::
+
+        from gpiozero import RGBLED
+
+        led = RGBLED(2, 3, 4)
+        led.color = (1, 0, 1)
+
+    :param int red:
+        The GPIO pin that controls the red component of the RGB LED.
+
+    :param int green:
+        The GPIO pin that controls the green component of the RGB LED.
+
+    :param int blue:
+        The GPIO pin that controls the blue component of the RGB LED.
+
+    :param bool active_high:
+        Set to ``True`` (the default) for common cathode RGB LEDs. If you are
+        using a common anode RGB LED, set this to ``False``.
+
+    :param tuple initial_value:
+        The initial color for the RGB LED. Defaults to black ``(0, 0, 0)``.
+
+    :param bool pwm:
+        If ``True`` (the default), construct :class:`PWMLED` instances for
+        each component of the RGBLED. If ``False``, construct regular
+        :class:`LED` instances, which prevents smooth color graduations.
+    */
+
+    this._leds = [];
+    if (red === undefined || blue === undefined || green === undefined ) {
+        throw new exc.GPIOPinMissing('red, green, and blue pins must be provided');
+    }
+    pwm = (pwm === undefined ? true : pwm);
+    var LEDClass = pwm ? PWMLED : LED;
+    Device.call(this);
+    this._leds = [new LEDClass(red, active_high), new LEDClass(green, active_high), new LEDClass(blue, active_high)];   
+    if (initial_value === undefined) {
+        initial_value = [0,0,0];
+    }
+    this.value (initial_value);   
+}
+
+exports.RGBLED = RGBLED;
+RGBLED.prototype = inherit(Device.prototype);
+RGBLED.prototype.constructor = RGBLED;
+
+RGBLED.prototype.value = function (value) {
+    if (value === undefined) {
+        /*
+        Represents the color of the LED as an RGB 3-tuple of ``(red, green,
+        blue)`` where each value is between 0 and 1 if ``pwm`` was ``True``
+        when the class was constructed (and only 0 or 1 if not).
+
+        For example, purple would be ``(1, 0, 1)`` and yellow would be ``(1, 1,
+        0)``, while orange would be ``(1, 0.5, 0)``.
+        */
+        return [this.red, this.green, this.blue];
+    }
+    if (value.length < 3) {
+        throw new exc.OutputDeviceBadValue('RGB values must be an array of three components');
+    }
+    var i;
+    for (i=0; i< 3 ; i++) {
+        if (value[i]<0 || value[i]>1) {
+            throw new exc.OutputDeviceBadValue('each RGB component must be between 0 and 1');
+        }
+        if (this._leds[i] instanceof LED) {            
+            if (value[i] !==0 && value[i] != 1) {
+                throw new exc.OutputDeviceBadValue('each RGB color component must be 0 or 1 with non-PWM RGBLEDs');   
+            }
+        }
+    }
+   
+    for (i=0; i< 3 ; i++) {
+        this._leds[i].value(value [i]);
+    }
+    this.red = this._leds[0].value();
+    this.green = this._leds[1].value();
+    this.blue = this._leds[2].value();
+};
+
+RGBLED.prototype.close = function () {
+    for (i=0; i< 3 ; i++) {
+        if (this._leds[i] !== undefined ) {
+            this._leds[i].close();
+            this._leds[i] = undefined;
+        }
+    }   
+    this._leds = [];
+    Device.prototype.close.call(this);
+};
+
 /*
-    
- 
-class Motor(SourceMixin, CompositeDevice):
-    """
-    
-    """
-    def __init__(self, forward=None, backward=None, pwm=True):
-        if not all(p is not None for p in [forward, backward]):
-            raise GPIOPinMissing(
-                'forward and backward pins must be provided'
-            )
-        PinClass = PWMOutputDevice if pwm else DigitalOutputDevice
-        super(Motor, self).__init__(
-                forward_device=PinClass(forward),
-                backward_device=PinClass(backward),
-                _order=('forward_device', 'backward_device'))
+class RGBLED(SourceMixin, Device):
+
+    def close(self):
+        if self._leds:
+            self._stop_blink()
+            for led in self._leds:
+                led.close()
+            self._leds = ()
+        super(RGBLED, self).close()
+
+    @property
+    def closed(self):
+        return len(self._leds) == 0
 
     @property
     def value(self):
         """
-        Represents the speed of the motor as a floating point value between -1
-        (full speed backward) and 1 (full speed forward), with 0 representing
-        stopped.
+        Represents the color of the LED as an RGB 3-tuple of ``(red, green,
+        blue)`` where each value is between 0 and 1 if ``pwm`` was ``True``
+        when the class was constructed (and only 0 or 1 if not).
+
+        For example, purple would be ``(1, 0, 1)`` and yellow would be ``(1, 1,
+        0)``, while orange would be ``(1, 0.5, 0)``.
         """
-        return self.forward_device.value - self.backward_device.value
+        return (self.red, self.green, self.blue)
 
     @value.setter
     def value(self, value):
-        if not -1 <= value <= 1:
-            raise OutputDeviceBadValue("Motor value must be between -1 and 1")
-        if value > 0:
-            try:
-                self.forward(value)
-            except ValueError as e:
-                raise OutputDeviceBadValue(e)
-        elif value < 0:
-            try:
-               self.backward(-value)
-            except ValueError as e:
-                raise OutputDeviceBadValue(e)
-        else:
-            self.stop()
+        for component in value:
+            if not 0 <= component <= 1:
+                raise OutputDeviceBadValue('each RGB color component must be between 0 and 1')
+            if isinstance(self._leds[0], LED):
+                if component not in (0, 1):
+                    raise OutputDeviceBadValue('each RGB color component must be 0 or 1 with non-PWM RGBLEDs')
+        self._stop_blink()
+        self.red, self.green, self.blue = value
 
     @property
     def is_active(self):
         """
-        Returns ``True`` if the motor is currently running and ``False``
-        otherwise.
+        Returns ``True`` if the LED is currently active (not black) and
+        ``False`` otherwise.
         """
-        return self.value != 0
+        return self.value != (0, 0, 0)
 
-    def forward(self, speed=1):
-        """
-        Drive the motor forwards.
+    is_lit = is_active
+    color = value
 
-        :param float speed:
-            The speed at which the motor should turn. Can be any value between
-            0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
-            ``True`` when the class was constructed (and only 0 or 1 if not).
+    def on(self):
         """
-        if not 0 <= speed <= 1:
-            raise ValueError('forward speed must be between 0 and 1')
-        if isinstance(self.forward_device, DigitalOutputDevice):
-            if speed not in (0, 1):
-                raise ValueError('forward speed must be 0 or 1 with non-PWM Motors')
-        self.backward_device.off()
-        self.forward_device.value = speed
+        Turn the LED on. This equivalent to setting the LED color to white
+        ``(1, 1, 1)``.
+        """
+        self.value = (1, 1, 1)
 
-    def backward(self, speed=1):
+    def off(self):
         """
-        Drive the motor backwards.
+        Turn the LED off. This is equivalent to setting the LED color to black
+        ``(0, 0, 0)``.
+        """
+        self.value = (0, 0, 0)
 
-        :param float speed:
-            The speed at which the motor should turn. Can be any value between
-            0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
-            ``True`` when the class was constructed (and only 0 or 1 if not).
+    def toggle(self):
         """
-        if not 0 <= speed <= 1:
-            raise ValueError('backward speed must be between 0 and 1')
-        if isinstance(self.backward_device, DigitalOutputDevice):
-            if speed not in (0, 1):
-                raise ValueError('backward speed must be 0 or 1 with non-PWM Motors')
-        self.forward_device.off()
-        self.backward_device.value = speed
+        Toggle the state of the device. If the device is currently off
+        (:attr:`value` is ``(0, 0, 0)``), this changes it to "fully" on
+        (:attr:`value` is ``(1, 1, 1)``).  If the device has a specific color,
+        this method inverts the color.
+        """
+        r, g, b = self.value
+        self.value = (1 - r, 1 - g, 1 - b)
 
-    def reverse(self):
+    def blink(
+            self, on_time=1, off_time=1, fade_in_time=0, fade_out_time=0,
+            on_color=(1, 1, 1), off_color=(0, 0, 0), n=None, background=True):
         """
-        Reverse the current direction of the motor. If the motor is currently
-        idle this does nothing. Otherwise, the motor's direction will be
-        reversed at the current speed.
-        """
-        self.value = -self.value
+        Make the device turn on and off repeatedly.
 
-    def stop(self):
-        """
-        Stop the motor.
-        """
-        self.forward_device.off()
-        self.backward_device.off()
+        :param float on_time:
+            Number of seconds on. Defaults to 1 second.
 
+        :param float off_time:
+            Number of seconds off. Defaults to 1 second.
+
+        :param float fade_in_time:
+            Number of seconds to spend fading in. Defaults to 0. Must be 0 if
+            ``pwm`` was ``False`` when the class was constructed
+            (:exc:`ValueError` will be raised if not).
+
+        :param float fade_out_time:
+            Number of seconds to spend fading out. Defaults to 0. Must be 0 if
+            ``pwm`` was ``False`` when the class was constructed
+            (:exc:`ValueError` will be raised if not).
+
+        :param tuple on_color:
+            The color to use when the LED is "on". Defaults to white.
+
+        :param tuple off_color:
+            The color to use when the LED is "off". Defaults to black.
+
+        :param int n:
+            Number of times to blink; ``None`` (the default) means forever.
+
+        :param bool background:
+            If ``True`` (the default), start a background thread to continue
+            blinking and return immediately. If ``False``, only return when the
+            blink is finished (warning: the default value of *n* will result in
+            this method never returning).
+        """
+        if isinstance(self._leds[0], LED):
+            if fade_in_time:
+                raise ValueError('fade_in_time must be 0 with non-PWM RGBLEDs')
+            if fade_out_time:
+                raise ValueError('fade_out_time must be 0 with non-PWM RGBLEDs')
+        self._stop_blink()
+        self._blink_thread = GPIOThread(
+            target=self._blink_device,
+            args=(
+                on_time, off_time, fade_in_time, fade_out_time,
+                on_color, off_color, n
+            )
+        )
+        self._blink_thread.start()
+        if not background:
+            self._blink_thread.join()
+            self._blink_thread = None
+
+    def pulse(
+            self, fade_in_time=1, fade_out_time=1,
+            on_color=(1, 1, 1), off_color=(0, 0, 0), n=None, background=True):
+        """
+        Make the device fade in and out repeatedly.
+
+        :param float fade_in_time:
+            Number of seconds to spend fading in. Defaults to 1.
+
+        :param float fade_out_time:
+            Number of seconds to spend fading out. Defaults to 1.
+
+        :param tuple on_color:
+            The color to use when the LED is "on". Defaults to white.
+
+        :param tuple off_color:
+            The color to use when the LED is "off". Defaults to black.
+
+        :param int n:
+            Number of times to pulse; ``None`` (the default) means forever.
+
+        :param bool background:
+            If ``True`` (the default), start a background thread to continue
+            pulsing and return immediately. If ``False``, only return when the
+            pulse is finished (warning: the default value of *n* will result in
+            this method never returning).
+        """
+        on_time = off_time = 0
+        self.blink(
+            on_time, off_time, fade_in_time, fade_out_time,
+            on_color, off_color, n, background
+        )
+
+    def _stop_blink(self, led=None):
+        # If this is called with a single led, we stop all blinking anyway
+        if self._blink_thread:
+            self._blink_thread.stop()
+            self._blink_thread = None
+
+    def _blink_device(
+            self, on_time, off_time, fade_in_time, fade_out_time, on_color,
+            off_color, n, fps=25):
+        # Define some simple lambdas to perform linear interpolation between
+        # off_color and on_color
+        lerp = lambda t, fade_in: tuple(
+            (1 - t) * off + t * on
+            if fade_in else
+            (1 - t) * on + t * off
+            for off, on in zip(off_color, on_color)
+            )
+        sequence = []
+        if fade_in_time > 0:
+            sequence += [
+                (lerp(i * (1 / fps) / fade_in_time, True), 1 / fps)
+                for i in range(int(fps * fade_in_time))
+                ]
+        sequence.append((on_color, on_time))
+        if fade_out_time > 0:
+            sequence += [
+                (lerp(i * (1 / fps) / fade_out_time, False), 1 / fps)
+                for i in range(int(fps * fade_out_time))
+                ]
+        sequence.append((off_color, off_time))
+        sequence = (
+                cycle(sequence) if n is None else
+                chain.from_iterable(repeat(sequence, n))
+                )
+        for l in self._leds:
+            l._controller = self
+        for value, delay in sequence:
+            for l, v in zip(self._leds, value):
+                l._write(v)
+            if self._blink_thread.stopping.wait(delay):
+                break
 
 
 */
