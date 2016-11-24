@@ -9,23 +9,23 @@ It's early days and a work in progress!
 ##Using
 First of all we need to be running the latest version of nodejs. The following command updates the Debian apt package repository to include the NodeSource packages
 
-''''bash
+```bash
 $curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-''''
+```
  
 Now that we have added the NodeSource package repository, we can move on and install Node.js!
 
-''''bash
+```bash
 $ sudo apt install nodejs
-''''
+```
 
 We can then test and see what version of Node we are running
 
-''''bash
+```bash
 $ node -v
 v7.2.0
 
-''''
+```
 
 =======
 ## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/i-am-digital/js-gpiozero/issues)
