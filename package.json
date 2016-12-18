@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "wiring-pi": "2.2.0",
-    "rwlock": "5.0.0"
+    "rwlock": "5.0.0",
+    "documentation" : "^4.0.0-beta9"
   },
   "devDependencies": {
     "mocha": "3.1.2",

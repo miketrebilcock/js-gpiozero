@@ -1,13 +1,10 @@
 var expect = require('chai').expect,
 	assert = require('chai').assert,
 	gz = require('../gpiozero/'),
-	mp = require('../gpiozero/pins/mock.js');
+	mp = require('../gpiozero/pins/mock.js'),
+	with_close = require('../gpiozero/').with_close;
     
 
-function with_close (device, method) {
-	method(device);
-	device.close();
-}
 //QUnit.module("devices");
  describe('devices', function() { 
 
@@ -78,6 +75,58 @@ function with_close (device, method) {
 		    expect(device.toString()).to.equal("<gpiozero.GPIODevice object on pin 1, is_active=false>");
 		});	
 	});
+
+	/*
+	def test_composite_device_sequence():
+    with CompositeDevice(
+            InputDevice(MockPin(2)),
+            InputDevice(MockPin(3))
+            ) as device:
+        assert len(device) == 2
+        assert device[0].pin.number == 2
+        assert device[1].pin.number == 3
+        assert device.namedtuple._fields == ('_0', '_1')
+
+def test_composite_device_values():
+    with CompositeDevice(
+            InputDevice(MockPin(2)),
+            InputDevice(MockPin(3))
+            ) as device:
+        assert device.value == (0, 0)
+        assert not device.is_active
+        device[0].pin.drive_high()
+        assert device.value == (1, 0)
+        assert device.is_active
+
+def test_composite_device_named():
+    with CompositeDevice(
+            foo=InputDevice(MockPin(2)),
+            bar=InputDevice(MockPin(3)),
+            _order=('foo', 'bar')
+            ) as device:
+        assert device.namedtuple._fields == ('foo', 'bar')
+        assert device.value == (0, 0)
+        assert not device.is_active
+
+def test_composite_device_bad_init():
+    with pytest.raises(ValueError):
+        CompositeDevice(foo=1, bar=2, _order=('foo',))
+    with pytest.raises(ValueError):
+        CompositeDevice(close=1)
+    with pytest.raises(ValueError):
+        CompositeDevice(2)
+    with pytest.raises(ValueError):
+        CompositeDevice(MockPin(2))
+
+def test_composite_device_read_only():
+    device = CompositeDevice(
+        foo=InputDevice(MockPin(2)),
+        bar=InputDevice(MockPin(3))
+        )
+    with pytest.raises(AttributeError):
+        device.foo = 1
+	
+	 */
 
 });
 

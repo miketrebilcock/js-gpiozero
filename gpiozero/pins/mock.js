@@ -3,13 +3,8 @@ var Pin = require ("./index.js").Pin,
     expect = require('chai').expect,
     assert = require('chai').assert,
     isclose = require('../compat.js').isclose,
+    inherit = require ('../tools.js').inherit,
     _PINS = [];
-
-function inherit(proto) {
-  function F() {}
-  F.prototype = proto;
-  return new F();
-}
 
 function MockPin(number) {
     /*

@@ -1,6 +1,7 @@
 var wpi = require("wiring-pi"),
     p = require ("./index.js"),
-    exc = require("../exc.js");
+    exc = require("../exc.js"),
+    inherit = require ('../tools.js').inherit;
 
 var _PINS = {},
     WIRING_PI,
@@ -19,12 +20,6 @@ var _PINS = {},
         'down':     wpi.PUD_DOWN,
         'floating': wpi.PUD_OFF,
         };
-
-function inherit(proto) {
-  function F() {}
-  F.prototype = proto;
-  return new F();
-}
 
 exports.WiringPiPin = WiringPiPin;
 

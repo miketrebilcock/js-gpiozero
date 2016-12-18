@@ -1,8 +1,4 @@
-function inherit(proto) {
-  function F() {}
-  F.prototype = proto;
-  return new F();
-}
+var inherit = require ('./tools.js').inherit;
 
 function GPIOZeroError (message) {
 	message = message !== undefined?message:"Base class for all exceptions in GPIO Zero";

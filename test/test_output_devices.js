@@ -811,15 +811,16 @@ describe('output_devices', function() {
      			device.value()[2] === false, "Device value is not false,false,false");
      	});
     });
-/*
-     it('rgbled_blink_background', function(done) {            
+
+    /*it('rgbled_blink_background', function(done) {            
         var r = new mp.MockPWMPin(1),
      		b = new mp.MockPWMPin(2),
      		g = new mp.MockPWMPin(3),
      		device =  new gz.RGBLED(r,g, b);
-
-        device.blink(0.2, 0.1, 2);
+        
         var expected = [{time:0, state: false},{time:1, state: true},{time:201, state: false},{time:101, state: true},{time:201, state: false}];
+        device.blink(0.2, 0.1, 2);
+        
         setTimeout(function () {
             try{
                 r.assert_states_and_times(expected);
@@ -828,14 +829,15 @@ describe('output_devices', function() {
                 device.close();
                 done(); // success: call done with no parameter to indicate that it() is done()
               } catch( e ) {
+                console.log(e);
                 device.close();
                 done( e ); // failure: call done with an error Object to indicate that it() failed
               }
         }, 1500);
               
           
-    });*/
-
+    });
+*/
     /*it('test_output_blink_interrupt_while_on', function(done) {            
         pin = new mp.MockPin(2);    
         var device = new gz.DigitalOutputDevice(pin);

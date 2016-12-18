@@ -1,7 +1,9 @@
 var exc = require('./exc.js'),
 devices = require('./devices.js'),
 output_devices = require ('./output_devices.js'),
-pins = require('./pins/');
+pins = require('./pins/'),
+tools = require('./tools.js'),
+boards = require('./boards.js');
 
 module.exports = {
 	
@@ -23,6 +25,11 @@ module.exports = {
 	Buzzer : output_devices.Buzzer,
 	Motor: output_devices.Motor,
 	PWMLED : output_devices.PWMLED,
-	RGBLED : output_devices.RGBLED
+	RGBLED : output_devices.RGBLED,
+
+	TrafficLights : boards.TrafficLights,
+
+	with_close : tools.with_close,
+	inherit : tools.inherit
 
 };

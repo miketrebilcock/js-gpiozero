@@ -1,10 +1,5 @@
-var exc = require ("../exc.js");
-
-function inherit(proto) {
-  function F() {}
-  F.prototype = proto;
-  return new F();
-}
+var exc = require ("../exc.js"),
+    inherit = require ('../tools.js').inherit;
 
 function Pin() {
     /*

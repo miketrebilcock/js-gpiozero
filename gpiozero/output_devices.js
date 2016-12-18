@@ -1,7 +1,8 @@
 var Lock = require('rwlock'),
     GPIODevice = require('./devices.js').GPIODevice,
     Device = require('./devices.js').Device,
-    exc = require('./exc.js');
+    exc = require('./exc.js'),
+    inherit = require ('./tools.js').inherit;
 
 exports.OutputDevice = OutputDevice;
 
@@ -36,12 +37,6 @@ function OutputDevice (pin, active_high, initial_value){
     } else {
         this._pin.output_with_state(this._value_to_state(initial_value));
     } 
-}
-
-function inherit(proto) {
-  function F() {}
-  F.prototype = proto;
-  return new F();
 }
 
 
@@ -745,7 +740,7 @@ RGBLED.prototype.closed = function () {
     return this._leds.length === 0;
 };
 
-RGBLED.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, callback) {
+/*RGBLED.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, on_color, off_color, n, callback) {
 
     /*
     Make the device turn on and off repeatedly.
@@ -771,7 +766,7 @@ RGBLED.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time
     :param int n:
         Number of times to blink; ``None`` (the default) means forever.
 
-    */
+    
     if (this._leds[0] instanceof LED) {
         if (fade_in_time !== undefined) {
             throw new  exc.ValueError('fade_in_time must be 0 with non-PWM RGBLEDs');
@@ -781,28 +776,17 @@ RGBLED.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time
         }
     }
 
-    /*
-
-    self._stop_blink()
-        self._blink_thread = GPIOThread(
-            target=self._blink_device,
-            args=(
-                on_time, off_time, fade_in_time, fade_out_time,
-                on_color, off_color, n
-            )
-        )
-        self._blink_thread.start()
-        if not background:
-            self._blink_thread.join()
-            self._blink_thread = None
-    */
-
-
-
-
-    //this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, on_color, off_color, n, undefined, callback);
+    this._leds[0].blink (on_time, off_time, fade_in_time, fade_out_time, n, callback);
+    this._leds[1].blink (on_time, off_time, fade_in_time, fade_out_time, n, callback);
+    this._leds[2].blink (on_time, off_time, fade_in_time, fade_out_time, n, callback);
 
 };
+
+RGBLED.prototype._stop_blink = function () {
+    this._leds[0]._pin._stop_blink();
+    this._leds[1]._pin._stop_blink();
+    this._leds[2]._pin._stop_blink();
+}
 
  /* def _blink_device(
             self, on_time, off_time, fade_in_time, fade_out_time, on_color,
