@@ -1,37 +1,37 @@
 var expect = require('chai').expect,
-	assert = require('chai').assert,
-	gz = require('../gpiozero/'),
-	mp = require('../gpiozero/pins/mock.js'),
+    assert = require('chai').assert,
+    gz = require('../gpiozero/'),
+    mp = require('../gpiozero/pins/mock.js'),
     isclose = require('../gpiozero/compat.js').isclose,
     with_close = require('../gpiozero/').with_close;
 
-describe('boards', function() { 
+describe('boards', function() {
 
-	before(function() {
-      
+    before(function() {
+
     });
 
- 	afterEach(function() { 
+    afterEach(function() {
         mp.clear_pins();
-    	  
-    });	
 
-	it('traffic_lights', function() {		
-		red_pin = new mp.MockPin(2);
-    	amber_pin = new mp.MockPin(3);
-    	green_pin = new mp.MockPin(4);			
-	    with_close(new gz.TrafficLights(red_pin, amber_pin, green_pin), function(board){
-		    board.red.on();
-		    expect(board.red.value).to.be(true);
-		    expect(board.yellow.value).to.be(false);
-		    expect(board.green.value).to.be(false);
+    });
 
-		    expect(red_pin.state).to.be(true);
-		    expect(amber_pin.state).to.be(false);
-		    expect(green_pin.state).to.be(false);
-		   
-		});
-	});
+    it('traffic_lights', function() {
+        red_pin = new mp.MockPin(2);
+        amber_pin = new mp.MockPin(3);
+        green_pin = new mp.MockPin(4);
+        with_close(new gz.TrafficLights(red_pin, amber_pin, green_pin), function(board) {
+            board.red.on();
+            expect(board.red.value).to.be(true);
+            expect(board.yellow.value).to.be(false);
+            expect(board.green.value).to.be(false);
+
+            expect(red_pin.state).to.be(true);
+            expect(amber_pin.state).to.be(false);
+            expect(green_pin.state).to.be(false);
+
+        });
+    });
 });
 
 

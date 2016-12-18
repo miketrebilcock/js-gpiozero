@@ -23,7 +23,8 @@
     "chai": "^3.5.0",
     "istanbul": "^0.4.5",
     "codecov": "^1.0.1",
-    "mocha-jshint": "^2.3.1"
+    "mocha-eslint": "^3.0.1",
+    "eslint-config-node" : "^1.6.0"
   },
   "keywords": [
     "wiringPi",
