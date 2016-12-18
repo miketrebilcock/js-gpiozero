@@ -1,3 +1,5 @@
+/*global it describe afterEach */
+
 var expect = require("chai").expect,
     assert = require("chai").assert,
     gz = require("../gpiozero/"),
@@ -12,34 +14,29 @@ function with_close(device, method) {
     device.close();
 }
 
-describe("output_devices", function() {
+describe("output_devices", () => {
 
-    before(function() {
-
-    });
-
-    afterEach(function() {
+    afterEach(() => {
         mp.clear_pins();
-
     });
 
-    it('output_initial_values', function() {
-        pin = new mp.MockPin(2);
-        with_close(new gz.OutputDevice(pin, undefined, false), function(device) {
+    it('output_initial_values', () => {
+        var pin = new mp.MockPin(2);
+        with_close(new gz.OutputDevice(pin, undefined, false), () => {
             expect(pin.pin_function()).to.equal('output');
             expect(pin.state()).to.equal(false);
         });
-        with_close(new gz.OutputDevice(pin, undefined, true), function(device) {
+        with_close(new gz.OutputDevice(pin, undefined, true), () => {
             expect(pin.state()).to.equal(true);
         });
-        with_close(new gz.OutputDevice(pin, undefined, undefined), function(device) {
+        with_close(new gz.OutputDevice(pin, undefined, undefined), () => {
             expect(pin.state()).to.equal(true);
         });
     });
 
-    it('output_write_active_high', function() {
-        pin = new mp.MockPin(2);
-        with_close(new gz.OutputDevice(pin, undefined, undefined), function(device) {
+    it('output_write_active_high', () => {
+        var pin = new mp.MockPin(2);
+        with_close(new gz.OutputDevice(pin, undefined, undefined), (device) => {
             device.on();
             expect(pin.state()).to.equal(true);
             device.off();
@@ -47,9 +44,9 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_write_active_low', function() {
-        pin = new mp.MockPin(2);
-        with_close(new gz.OutputDevice(pin, false, undefined), function(device) {
+    it('output_write_active_low', () => {
+        var pin = new mp.MockPin(2);
+        with_close(new gz.OutputDevice(pin, false, undefined), (device) => {
             device.on();
             expect(pin.state()).to.equal(false);
             device.off();
@@ -57,30 +54,30 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_write_closed', function() {
-        pin = new mp.MockPin(2);
-        with_close(new gz.OutputDevice(pin, false, undefined), function(device) {
+    it('output_write_closed', () => {
+        var pin = new mp.MockPin(2);
+        with_close(new gz.OutputDevice(pin, false, undefined), (device) => {
             device.close();
             expect(device.closed()).to.equal(true);
-            expect(function() {
+            expect(() => {
                 device.on();
             }).to.throw(gz.DeviceClosed);
         });
     });
 
-    it('output_write_silly', function() {
-        pin = new mp.MockPin(2);
-        with_close(new gz.OutputDevice(pin), function(device) {
+    it('output_write_silly', () => {
+        var pin = new mp.MockPin(2);
+        with_close(new gz.OutputDevice(pin), (device) => {
             pin.pin_function('input');
-            expect(function() {
+            expect(() => {
                 device.on();
             }).to.throw(gz.PinSetInput);
         });
     });
 
-    it('output_value', function() {
+    it('output_value', () => {
         var pin = new mp.MockPin(2);
-        with_close(new gz.OutputDevice(pin), function(device) {
+        with_close(new gz.OutputDevice(pin), (device) => {
             expect(device.value()).to.equal(false);
             expect(pin.state()).to.equal(false);
             device.on();
@@ -92,9 +89,9 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_digital_toggle', function() {
-        pin = new mp.MockPin(2);
-        with_close(new gz.DigitalOutputDevice(pin), function(device) {
+    it('output_digital_toggle', () => {
+        var pin = new mp.MockPin(2);
+        with_close(new gz.DigitalOutputDevice(pin), (device) => {
             expect(device.value()).to.equal(false);
             expect(pin.state()).to.equal(false);
             device.toggle();
@@ -106,9 +103,9 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_LED_is_Lit', function() {
-        pin = new mp.MockPin(2);
-        with_close(new gz.LED(pin), function(device) {
+    it('output_LED_is_Lit', () => {
+        var pin = new mp.MockPin(2);
+        with_close(new gz.LED(pin), (device) => {
             expect(device.is_lit()).to.equal(false);
             device.toggle();
             expect(device.is_lit()).to.equal(true);
@@ -117,8 +114,8 @@ describe("output_devices", function() {
         });
     });
 
-    it('test_output_blink_background', function(done) {
-        pin = new mp.MockPin(2);
+    it('test_output_blink_background', (done) => {
+        var pin = new mp.MockPin(2);
         var device = new gz.DigitalOutputDevice(pin);
 
         device.blink(0.2, 0.1, 2);
@@ -138,7 +135,7 @@ describe("output_devices", function() {
             time: 201,
             state: false
         }];
-        setTimeout(function() {
+        setTimeout(() => {
             try {
                 pin.assert_states_and_times(expected);
                 device.close();
@@ -152,13 +149,13 @@ describe("output_devices", function() {
 
     });
 
-    it('test_output_blink_interrupt_while_on', function(done) {
-        pin = new mp.MockPin(2);
+    it('test_output_blink_interrupt_while_on', (done) => {
+        var pin = new mp.MockPin(2);
         var device = new gz.DigitalOutputDevice(pin);
 
         device.blink(1, 0.1);
         var expected = [false, true, false];
-        setTimeout(function() {
+        setTimeout(() => {
             try {
                 device.off();
                 expect(pin._blink_thread).to.equal(undefined);
@@ -173,13 +170,13 @@ describe("output_devices", function() {
         }, 200);
     });
 
-    it('test_output_blink_interrupt_while_off', function(done) {
-        pin = new mp.MockPin(2);
+    it('test_output_blink_interrupt_while_off', (done) => {
+        var pin = new mp.MockPin(2);
         var device = new gz.DigitalOutputDevice(pin);
 
         device.blink(0.1, 1);
         var expected = [false, true, false];
-        setTimeout(function() {
+        setTimeout(() => {
             try {
                 device.off();
 
@@ -195,8 +192,8 @@ describe("output_devices", function() {
         }, 200);
     });
 
-    it('output_Buzzer_has_buzz', function(done) {
-        pin = new mp.MockPin(2);
+    it('output_Buzzer_has_buzz', (done) => {
+        var pin = new mp.MockPin(2);
         var device = new gz.Buzzer(pin);
 
         device.beep();
@@ -211,7 +208,7 @@ describe("output_devices", function() {
             time: 200,
             state: false
         }];
-        setTimeout(function() {
+        setTimeout(() => {
             try {
                 device.off();
                 expect(pin._blink_thread).to.equal(undefined);
@@ -225,25 +222,25 @@ describe("output_devices", function() {
         }, 200);
     });
 
-    it('output_pwm_bad_initial_value', function() {
-        pin = new mp.MockPin(2);
-        expect(function() {
+    it('output_pwm_bad_initial_value', () => {
+        var pin = new mp.MockPin(2);
+        expect(() => {
             new gz.PWMOutputDevice(pin, undefined, 2);
         }).to.throw(gz.OutputDeviceBadValue);
     });
 
-    it('test_output_pwm_not_supported', function() {
-        pin = new mp.MockPin(2);
-        expect(function() {
+    it('test_output_pwm_not_supported', () => {
+        var pin = new mp.MockPin(2);
+        expect(() => {
             new gz.PWMOutputDevice(pin);
         }).to.throw(gz.PinPWMUnsupported);
     });
 
-    it('output_pwm_states', function() {
-        pin = new mp.MockPWMPin(2);
+    it('output_pwm_states', () => {
+        var pin = new mp.MockPWMPin(2);
 
         var expected = [0.0, 0.1, 0.2, 0.0];
-        with_close(new gz.PWMOutputDevice(pin), function(device) {
+        with_close(new gz.PWMOutputDevice(pin), (device) => {
             device.value(0.1);
             device.value(0.2);
             device.value(0.0);
@@ -251,10 +248,10 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_pwm_read', function() {
-        pin = new mp.MockPWMPin(2);
+    it('output_pwm_read', () => {
+        var pin = new mp.MockPWMPin(2);
 
-        with_close(new gz.PWMOutputDevice(pin, undefined, undefined, 100), function(device) {
+        with_close(new gz.PWMOutputDevice(pin, undefined, undefined, 100), (device) => {
             expect(device.frequency()).to.equal(100);
             device.value(0.1);
             expect(device.value()).to.equal(0.1);
@@ -268,22 +265,22 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_pwm_write', function() {
-        pin = new mp.MockPWMPin(2);
+    it('output_pwm_write', () => {
+       var pin = new mp.MockPWMPin(2);
 
         var expected = [0.0, 1.0, 0.0];
-        with_close(new gz.PWMOutputDevice(pin), function(device) {
+        with_close(new gz.PWMOutputDevice(pin), (device) => {
             device.on();
             device.off();
             pin.assert_states(expected);
         });
     });
 
-    it('output_pwm_toggle', function() {
-        pin = new mp.MockPWMPin(2);
+    it('output_pwm_toggle', () => {
+        var pin = new mp.MockPWMPin(2);
 
         var expected = [0.0, 1.0, 0.5, 0.1, 0.9, 0.0];
-        with_close(new gz.PWMOutputDevice(pin), function(device) {
+        with_close(new gz.PWMOutputDevice(pin), (device) => {
             device.toggle();
             device.value(0.5);
             device.value(0.1);
@@ -293,11 +290,10 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_pwm_active_high_read', function() {
-        pin = new mp.MockPWMPin(2);
+    it('output_pwm_active_high_read', () => {
+        var pin = new mp.MockPWMPin(2);
 
-        var expected = [0.0, 1.0, 0.5, 0.1, 0.9, 0.0];
-        with_close(new gz.PWMOutputDevice(pin, false), function(device) {
+        with_close(new gz.PWMOutputDevice(pin, false), (device) => {
             device.value(0.1);
             assert(isclose(device.value(), 0.1));
             expect(pin.state()).to.equal(0.9);
@@ -306,36 +302,36 @@ describe("output_devices", function() {
         });
     });
 
-    it('output_pwm_bad_value', function() {
-        pin = new mp.MockPWMPin(2);
-        with_close(new gz.PWMOutputDevice(pin), function(device) {
-            expect(function() {
+    it('output_pwm_bad_value', () => {
+        var pin = new mp.MockPWMPin(2);
+        with_close(new gz.PWMOutputDevice(pin), (device) => {
+            expect(() => {
                 device.value(2);
             }).to.throw(gz.ValueError);
         });
     });
 
-    it('output_pwm_write_closed', function() {
-        pin = new mp.MockPWMPin(2);
-        device = new gz.PWMOutputDevice(pin);
+    it('output_pwm_write_closed', () => {
+        var pin = new mp.MockPWMPin(2);
+        var device = new gz.PWMOutputDevice(pin);
         device.close();
 
-        expect(function() {
+        expect(() => {
             device.on();
         }).to.throw(gz.GPIODeviceClosed);
     });
 
-    it('output_pwm_write_silly', function() {
-        pin = new mp.MockPWMPin(2);
-        with_close(new gz.OutputDevice(pin), function(device) {
+    it('output_pwm_write_silly', () => {
+        var pin = new mp.MockPWMPin(2);
+        with_close(new gz.OutputDevice(pin), (device) => {
             pin.pin_function('input');
-            expect(function() {
+            expect(() => {
                 device.off();
             }).to.throw(gz.PinSetInput);
         });
     });
 
-    it('output_pwm_blink_callback', function(done) {
+    it('output_pwm_blink_callback', (done) => {
         var fade_in_time = 0.5,
             fade_out_time = 0.5,
             on_time = 0.1,
@@ -350,25 +346,25 @@ describe("output_devices", function() {
             expected.push(1 - (i * (1 / 50)) / fade_out_time);
         }
 
-        pin = new mp.MockPWMPin(2);
+        var pin = new mp.MockPWMPin(2);
         var device = new gz.PWMOutputDevice(pin);
-        device.blink(on_time, off_time, fade_in_time, fade_out_time, n, function() {
+        device.blink(on_time, off_time, fade_in_time, fade_out_time, n, () => {
             pin.assert_states(expected);
             done();
         });
     });
 
-    it('output_pwm_blink_interrupt', function(done) {
+    it('output_pwm_blink_interrupt', (done) => {
         var fade_in_time = 1,
             fade_out_time = 1,
             on_time = 1,
             off_time = 1,
             n = 1;
 
-        pin = new mp.MockPWMPin(2);
+        var pin = new mp.MockPWMPin(2);
         var device = new gz.PWMOutputDevice(pin);
         device.blink(on_time, off_time, fade_in_time, fade_out_time, n);
-        setTimeout(function() {
+        setTimeout(() => {
             try {
                 device.off();
                 expect(pin._blink_thread).to.equal(undefined);
@@ -381,7 +377,7 @@ describe("output_devices", function() {
         }, 200);
     });
 
-    it('output_pwm_pulse_interrupt', function(done) {
+    it('output_pwm_pulse_interrupt', (done) => {
         var fade_in_time = 0.1,
             fade_out_time = 0.1,
             n = 2,
@@ -450,10 +446,10 @@ describe("output_devices", function() {
                 state: 0
             }];
 
-        pin = new mp.MockPWMPin(2);
+        var pin = new mp.MockPWMPin(2);
         var device = new gz.PWMOutputDevice(pin);
         device.pulse(fade_in_time, fade_out_time, n);
-        setTimeout(function() {
+        setTimeout(() => {
             try {
                 pin.assert_states_and_times(expected);
                 device.close();
@@ -465,41 +461,42 @@ describe("output_devices", function() {
         }, 200);
     });
 
-    it('motor_missing_pins', function() {
-        expect(function() {
-            var test = new gz.Motor();
+    it('motor_missing_pins', () => {
+        expect(() => {
+            /*eslint no-new: off*/
+            new gz.Motor();
         }).to.throw(gz.GPIOPinMissing);
     });
 
-    it('motor_test_pins', function() {
+    it('motor_test_pins', () => {
         var f = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2);
 
-        with_close(new gz.Motor(f, b), function(device) {
-            assert(device.forward_device.pin() == f, "Forward Device Pin is not f");
+        with_close(new gz.Motor(f, b), (device) => {
+            assert(device.forward_device.pin() === f, "Forward Device Pin is not f");
             assert(device.forward_device instanceof gz.PWMOutputDevice);
-            assert(device.backward_device.pin() == b, "Backward Device Pin is not b");
+            assert(device.backward_device.pin() === b, "Backward Device Pin is not b");
             assert(device.backward_device instanceof gz.PWMOutputDevice);
         });
     });
 
-    it('motor_test_pins_nonpwm', function() {
+    it('motor_test_pins_nonpwm', () => {
         var f = new mp.MockPin(1),
             b = new mp.MockPin(2);
 
-        with_close(new gz.Motor(f, b, false), function(device) {
-            assert(device.forward_device.pin() == f, "Forward Device Pin is not f");
+        with_close(new gz.Motor(f, b, false), (device) => {
+            assert(device.forward_device.pin() === f, "Forward Device Pin is not f");
             assert(device.forward_device instanceof gz.DigitalOutputDevice, "Forward device is not a DigitalOutputDevice");
-            assert(device.backward_device.pin() == b, "Backward Device Pin is not b");
+            assert(device.backward_device.pin() === b, "Backward Device Pin is not b");
             assert(device.backward_device instanceof gz.DigitalOutputDevice, "Backward device is not a DigitalOutputDevice");
         });
     });
 
-    it('motor_close_nonpwm', function() {
+    it('motor_close_nonpwm', () => {
         var f = new mp.MockPin(1),
             b = new mp.MockPin(2);
 
-        with_close(new gz.Motor(f, b, false), function(device) {
+        with_close(new gz.Motor(f, b, false), (device) => {
             device.close();
             assert(device.closed());
             assert(device.forward_device === undefined);
@@ -509,11 +506,11 @@ describe("output_devices", function() {
         });
     });
 
-    it('motor_close', function() {
+    it('motor_close', () => {
         var f = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2);
 
-        with_close(new gz.Motor(f, b), function(device) {
+        with_close(new gz.Motor(f, b), (device) => {
             device.close();
             assert(device.closed());
             assert(device.forward_device === undefined);
@@ -523,30 +520,30 @@ describe("output_devices", function() {
         });
     });
 
-    it('motor_value', function() {
+    it('motor_value', () => {
         var f = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2);
 
-        with_close(new gz.Motor(f, b), function(device) {
+        with_close(new gz.Motor(f, b), (device) => {
             device.value(-1);
             assert(device.is_active());
-            assert(device.value() == -1, "Device value is not -1 it is " + device.value());
-            assert(b.state() == 1);
+            assert(device.value() === -1, "Device value is not -1 it is " + device.value());
+            assert(b.state() === 1);
             assert(f.state() === 0);
             device.value(1);
             assert(device.is_active());
-            assert(device.value() == 1, "Device value is not 1 it is " + device.value());
+            assert(device.value() === 1, "Device value is not 1 it is " + device.value());
             assert(b.state() === 0);
-            assert(f.state() == 1);
+            assert(f.state() === 1);
             device.value(0.5);
             assert(device.is_active());
-            assert(device.value() == 0.5, "Device value is not 0.5 it is " + device.value());
+            assert(device.value() === 0.5, "Device value is not 0.5 it is " + device.value());
             assert(b.state() === 0);
-            assert(f.state() == 0.5);
+            assert(f.state() === 0.5);
             device.value(-0.5);
             assert(device.is_active());
-            assert(device.value() == -0.5, "Device value is not -0.5 it is " + device.value());
-            assert(b.state() == 0.5);
+            assert(device.value() === -0.5, "Device value is not -0.5 it is " + device.value());
+            assert(b.state() === 0.5);
             assert(f.state() === 0);
             device.value(0);
             assert(device.is_active() === false);
@@ -556,19 +553,19 @@ describe("output_devices", function() {
         });
     });
 
-    it('motor_value_nonpwm', function() {
+    it('motor_value_nonpwm', () => {
         var f = new mp.MockPin(1),
             b = new mp.MockPin(2);
 
-        with_close(new gz.Motor(f, b, false), function(device) {
+        with_close(new gz.Motor(f, b, false), (device) => {
             device.value(-1);
             assert(device.is_active(), "Device is not active but should be");
-            assert(device.value() == -1, "Device value is not -1 it is " + device.value());
+            assert(device.value() === -1, "Device value is not -1 it is " + device.value());
             assert(b.state() === true);
             assert(f.state() === false, "Forward Device state should be false but is " + f.state());
             device.value(1);
             assert(device.is_active(), "Device is not active but should be");
-            assert(device.value() == 1, "Device value is not 1 it is " + device.value());
+            assert(device.value() === 1, "Device value is not 1 it is " + device.value());
             assert(b.state() === false);
             assert(f.state() === true);
             device.value(0);
@@ -579,63 +576,63 @@ describe("output_devices", function() {
         });
     });
 
-    it('motor_badvalue', function() {
+    it('motor_badvalue', () => {
         var f = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2);
-        with_close(new gz.Motor(f, b), function(device) {
-            expect(function() {
+        with_close(new gz.Motor(f, b), (device) => {
+            expect(() => {
                 device.value(2);
             }).to.throw(gz.ValueError);
-            expect(function() {
+            expect(() => {
                 device.value(-2);
             }).to.throw(gz.ValueError);
         });
     });
 
-    it('motor_badvalue_nonpwm', function() {
+    it('motor_badvalue_nonpwm', () => {
         var f = new mp.MockPin(1),
             b = new mp.MockPin(2);
-        with_close(new gz.Motor(f, b, false), function(device) {
-            expect(function() {
+        with_close(new gz.Motor(f, b, false), (device) => {
+            expect(() => {
                 device.value(2);
             }).to.throw(gz.ValueError);
-            expect(function() {
+            expect(() => {
                 device.value(-2);
             }).to.throw(gz.ValueError);
-            expect(function() {
+            expect(() => {
                 device.value(0.5);
             }).to.throw(gz.ValueError);
-            expect(function() {
+            expect(() => {
                 device.value(-0.5);
             }).to.throw(gz.ValueError);
         });
     });
 
-    it('motor_reverse', function() {
+    it('motor_reverse', () => {
         var f = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2);
 
-        with_close(new gz.Motor(f, b), function(device) {
+        with_close(new gz.Motor(f, b), (device) => {
             device.forward();
             assert(device.is_active());
-            assert(device.value() == 1, "Device value is not 1 it is " + device.value());
+            assert(device.value() === 1, "Device value is not 1 it is " + device.value());
             assert(b.state() === 0);
-            assert(f.state() == 1);
+            assert(f.state() === 1);
             device.reverse();
             assert(device.is_active());
-            assert(device.value() == -1, "Device value is not -1 it is " + device.value());
-            assert(b.state() == 1);
+            assert(device.value() === -1, "Device value is not -1 it is " + device.value());
+            assert(b.state() === 1);
             assert(f.state() === 0);
             device.backward(0.5);
             assert(device.is_active());
-            assert(device.value() == -0.5, "Device value is not -0.5 it is " + device.value());
-            assert(b.state() == 0.5);
+            assert(device.value() === -0.5, "Device value is not -0.5 it is " + device.value());
+            assert(b.state() === 0.5);
             assert(f.state() === 0);
             device.reverse();
             assert(device.is_active());
-            assert(device.value() == 0.5, "Device value is not 0.5 it is " + device.value());
+            assert(device.value() === 0.5, "Device value is not 0.5 it is " + device.value());
             assert(b.state() === 0);
-            assert(f.state() == 0.5);
+            assert(f.state() === 0.5);
             device.stop();
             assert(device.is_active() === false);
             assert(device.value() === 0, "Device value is not 0 it is " + device.value());
@@ -644,19 +641,19 @@ describe("output_devices", function() {
         });
     });
 
-    it('motor_reverse_nonpwm', function() {
+    it('motor_reverse_nonpwm', () => {
         var f = new mp.MockPin(1),
             b = new mp.MockPin(2);
 
-        with_close(new gz.Motor(f, b, false), function(device) {
+        with_close(new gz.Motor(f, b, false), (device) => {
             device.forward();
             assert(device.is_active());
-            assert(device.value() == 1, "Device value is not 1 it is " + device.value());
+            assert(device.value() === 1, "Device value is not 1 it is " + device.value());
             assert(b.state() === false);
             assert(f.state() === true);
             device.reverse();
             assert(device.is_active());
-            assert(device.value() == -1, "Device value is not -1 it is " + device.value());
+            assert(device.value() === -1, "Device value is not -1 it is " + device.value());
             assert(b.state() === true);
             assert(f.state() === false);
             device.stop();
@@ -667,18 +664,19 @@ describe("output_devices", function() {
         });
     });
 
-    it('rgbled_missing_pins', function() {
-        expect(function() {
-            new RGBLED();
+    it('rgbled_missing_pins', () => {
+        expect(() => {
+            /*eslint no-new: off*/
+            new gz.RGBLED();
         }).to.throw(gz.ValueError);
     });
 
-    it('rgbled_initial_value', function() {
+    it('rgbled_initial_value', () => {
         var r = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2),
             g = new mp.MockPWMPin(3);
 
-        with_close(new gz.RGBLED(r, g, b, undefined, [0.1, 0.2, 0]), function(device) {
+        with_close(new gz.RGBLED(r, g, b, undefined, [0.1, 0.2, 0]), () => {
             assert(r.frequency(), "Frequency is not defined");
             assert(g.frequency(), "Frequency is not defined");
             assert(b.frequency(), "Frequency is not defined");
@@ -690,12 +688,12 @@ describe("output_devices", function() {
         });
     });
 
-    it('rgbled_initial_value_nonpwm', function() {
+    it('rgbled_initial_value_nonpwm', () => {
         var r = new mp.MockPin(1),
             b = new mp.MockPin(2),
             g = new mp.MockPin(3);
 
-        with_close(new gz.RGBLED(r, g, b, undefined, [0, 1, 1], false), function(device) {
+        with_close(new gz.RGBLED(r, g, b, undefined, [0, 1, 1], false), () => {
             assert(r.state() === false, "Red State is not false:" + r.state());
             assert(g.state() === true, "Green State is not true:" + g.state());
             assert(b.state() === true, "Blue State is not true:" + b.state());
@@ -703,30 +701,30 @@ describe("output_devices", function() {
         });
     });
 
-    it('rgbled_initial_bad_value', function() {
+    it('rgbled_initial_bad_value', () => {
         var r = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2),
             g = new mp.MockPWMPin(3);
-        expect(function() {
+        expect(() => {
             gz.RGBLED(r, g, b, undefined, [0.1, 0.2, 1.2]);
         }).to.throw(gz.ValueError);
     });
 
-    it('rgbled_initial_bad_value_nonpwm', function() {
+    it('rgbled_initial_bad_value_nonpwm', () => {
         var r = new mp.MockPin(1),
             b = new mp.MockPin(2),
             g = new mp.MockPin(3);
-        expect(function() {
+        expect(() => {
             gz.RGBLED(r, g, b, undefined, [0.1, 0.2, 0]);
         }).to.throw(gz.ValueError);
     });
 
-    it('rgbled_value', function() {
+    it('rgbled_value', () => {
         var r = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2),
             g = new mp.MockPWMPin(3);
 
-        with_close(new gz.RGBLED(r, g, b), function(device) {
+        with_close(new gz.RGBLED(r, g, b), (device) => {
 
             assert(device._leds[0] instanceof gz.PWMLED, "LED 0 not set to PWMLED");
             assert(device._leds[1] instanceof gz.PWMLED, "LED 1 not set to PWMLED");
@@ -755,12 +753,12 @@ describe("output_devices", function() {
         });
     });
 
-    it('rgbled_value_nonpwm', function() {
+    it('rgbled_value_nonpwm', () => {
         var r = new mp.MockPin(1),
             b = new mp.MockPin(2),
             g = new mp.MockPin(3);
 
-        with_close(new gz.RGBLED(r, g, b, undefined, undefined, false), function(device) {
+        with_close(new gz.RGBLED(r, g, b, undefined, undefined, false), (device) => {
 
             assert(device._leds[0] instanceof gz.LED, "LED 0 not set to LED");
             assert(device._leds[1] instanceof gz.LED, "LED 1 not set to LED");
@@ -783,52 +781,52 @@ describe("output_devices", function() {
         });
     });
 
-    it('rgbled_bad_value', function() {
+    it('rgbled_bad_value', () => {
         var r = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2),
             g = new mp.MockPWMPin(3);
         var device = new gz.RGBLED(r, g, b);
-        expect(function() {
-            Device.value([2, 0, 0]);
+        expect(() => {
+            device.value([2, 0, 0]);
         }).to.throw(gz.ValueError);
-        expect(function() {
-            Device.value([0, -1, 0]);
+        expect(() => {
+            device.value([0, -1, 0]);
         }).to.throw(gz.ValueError);
         device.close();
         assert(device.closed() === true);
     });
 
 
-    it('rgbled_bad_value_nonpwm', function() {
+    it('rgbled_bad_value_nonpwm', () => {
         var r = new mp.MockPin(1),
             b = new mp.MockPin(2),
             g = new mp.MockPin(3);
         var device = new gz.RGBLED(r, g, b, undefined, undefined, false);
-        expect(function() {
-            Device.value([2, 0, 0]);
+        expect(() => {
+            device.value([2, 0, 0]);
         }).to.throw(gz.ValueError);
-        expect(function() {
-            Device.value([0, -1, 0]);
+        expect(() => {
+            device.value([0, -1, 0]);
         }).to.throw(gz.ValueError);
-        expect(function() {
-            Device.value([0.5, 0, 0]);
+        expect(() => {
+            device.value([0.5, 0, 0]);
         }).to.throw(gz.ValueError);
-        expect(function() {
-            Device.value([0, 0.5, 0]);
+        expect(() => {
+            device.value([0, 0.5, 0]);
         }).to.throw(gz.ValueError);
-        expect(function() {
-            Device.value([0, 0, 0.5]);
+        expect(() => {
+            device.value([0, 0, 0.5]);
         }).to.throw(gz.ValueError);
         device.close();
         assert(device.closed() === true);
     });
 
-    it('rgbled_toggle', function() {
+    it('rgbled_toggle', () => {
         var r = new mp.MockPWMPin(1),
             b = new mp.MockPWMPin(2),
             g = new mp.MockPWMPin(3);
 
-        with_close(new gz.RGBLED(r, g, b), function(device) {
+        with_close(new gz.RGBLED(r, g, b), (device) => {
 
             assert(device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
             assert(device.value()[0] === 0 &&
@@ -851,12 +849,12 @@ describe("output_devices", function() {
         });
     });
 
-    it('rgbled_value_nonpwm', function() {
+    it('rgbled_value_nonpwm', () => {
         var r = new mp.MockPin(1),
             b = new mp.MockPin(2),
             g = new mp.MockPin(3);
 
-        with_close(new gz.RGBLED(r, g, b, undefined, undefined, false), function(device) {
+        with_close(new gz.RGBLED(r, g, b, undefined, undefined, false), (device) => {
 
             assert(device.is_active() === false, "Device is incorrectly set to active when values are: " + device.value());
             assert(device.value()[0] === false &&

@@ -1,7 +1,8 @@
 {
     "root": true,
     "rules": {
-        "no-var" : "off"
+        "no-var" : "off",
+        "import/no-commonjs" : "off"
     },
     "extends": ["node"]
 }

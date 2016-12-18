@@ -1,3 +1,5 @@
+/*global it describe afterEach */
+
 var expect = require('chai').expect,
     assert = require('chai').assert,
     gz = require('../gpiozero/'),
@@ -5,22 +7,18 @@ var expect = require('chai').expect,
     isclose = require('../gpiozero/compat.js').isclose,
     with_close = require('../gpiozero/').with_close;
 
-describe('boards', function() {
+describe('boards', () => {
 
-    before(function() {
-
-    });
-
-    afterEach(function() {
+    afterEach(() => {
         mp.clear_pins();
 
     });
 
-    it('traffic_lights', function() {
-        red_pin = new mp.MockPin(2);
-        amber_pin = new mp.MockPin(3);
-        green_pin = new mp.MockPin(4);
-        with_close(new gz.TrafficLights(red_pin, amber_pin, green_pin), function(board) {
+    it('traffic_lights', () => {
+        var red_pin = new mp.MockPin(2),
+            amber_pin = new mp.MockPin(3),
+            green_pin = new mp.MockPin(4);
+        with_close(new gz.TrafficLights(red_pin, amber_pin, green_pin), (board) => {
             board.red.on();
             expect(board.red.value).to.be(true);
             expect(board.yellow.value).to.be(false);
