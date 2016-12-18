@@ -12,7 +12,7 @@ module.exports = {
 	OutputDeviceBadValue : exc.OutputDeviceBadValue,
 	PinPWMUnsupported : exc.PinPWMUnsupported,
 	PinInputState : exc.PinInputState,
-	pins : pins,
+	pins,
 
 	
 	GPIODevice : devices.GPIODevice,

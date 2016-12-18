@@ -1,6 +1,9 @@
 var ReadWriteLock = require('rwlock'),
-	inherit = require ('./tools.js').inherit,
-    extend = require ('./tools.js').extend;
+    inherit = require('./tools.js').inherit,
+    extend = require('./tools.js').extend,
+    PWMLED = require('./output_devices.js').PWMLED,
+    LED = require('./output_devices.js').LED,
+    exc = require('./exc.js');
 
 exports.LEDCollection = LEDCollection;
 
@@ -11,21 +14,21 @@ exports.LEDCollection = LEDCollection;
  * @param {array}
  * @param {object}
  */
-function LEDCollection (_pins, _options) {
-	var defaults = {
+function LEDCollection(_pins, _options) {
+    var defaults = {
         pwm: false, //If true, creates PWMLED instances for each pin, else LED
-        active_high: true,  //If ``True`` (the default), the :meth:`on` method will set all the
-    						//associated pins to HIGH. If ``False``, the :meth:`on` method will set
-    						//all pins to LOW (the :meth:`off` method always does the opposite). This
-    						//parameter can only be specified as a keyword parameter.
+        active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
+        //associated pins to HIGH. If ``False``, the :meth:`on` method will set
+        //all pins to LOW (the :meth:`off` method always does the opposite). This
+        //parameter can only be specified as a keyword parameter.
         initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-        					  // Switched on initialled
-	};
+        // Switched on initialled
+    };
     this.options = extend(defaults, _options);
     this._leds = [];
     var i = 0;
     for (i = 0; i < _pins.length; i++) {
-    	this._leds[i] = this.options.pwm ? new PWMLED (_pins[i]) : new LED(_pin[i]);
+        this._leds[i] = this.options.pwm ? new PWMLED(_pins[i]) : new LED(_pins[i]);
     }
 }
 /*
@@ -51,26 +54,26 @@ class LEDCollection(CompositeOutputDevice):
 exports.LEDBoard = LEDBoard;
 
 /**
-* Extends :class:`LEDCollection` and represents a generic LED board or collection of LEDs.
-* The following example turns on all the LEDs on a board containing 5 LEDs
-* attached to GPIO pins 2 through 6::
-* 		from gpiozero import LEDBoard
-* 		leds = LEDBoard(2, 3, 4, 5, 6)
-* 		leds.on()
-* @param {array} pins Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary. You can also specify :class:`LEDBoard` instances to create trees of LEDs.
-* @param {object} _options [description]
-*/
-function LEDBoard (pins, _options) {
+ * Extends :class:`LEDCollection` and represents a generic LED board or collection of LEDs.
+ * The following example turns on all the LEDs on a board containing 5 LEDs
+ * attached to GPIO pins 2 through 6::
+ * 		from gpiozero import LEDBoard
+ * 		leds = LEDBoard(2, 3, 4, 5, 6)
+ * 		leds.on()
+ * @param {array} pins Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary. You can also specify :class:`LEDBoard` instances to create trees of LEDs.
+ * @param {object} _options [description]
+ */
+function LEDBoard(pins, _options) {
 
-	var defaults = {
-	        pwm: false, //If true, creates PWMLED instances for each pin, else LED
-	        active_high: true,  //If ``True`` (the default), the :meth:`on` method will set all the
-        						//associated pins to HIGH. If ``False``, the :meth:`on` method will set
-        						//all pins to LOW (the :meth:`off` method always does the opposite). This
-        						//parameter can only be specified as a keyword parameter.
-	        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-	        					  // Switched on initialled
-	    };
+    var defaults = {
+        pwm: false, //If true, creates PWMLED instances for each pin, else LED
+        active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
+        //associated pins to HIGH. If ``False``, the :meth:`on` method will set
+        //all pins to LOW (the :meth:`off` method always does the opposite). This
+        //parameter can only be specified as a keyword parameter.
+        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
+        // Switched on initialled
+    };
     this.options = extend(defaults, _options);
     this._blink_leds = [];
     this._blink_lock = new ReadWriteLock();
@@ -244,29 +247,31 @@ exports.TrafficLights = TrafficLights;
 
 
 /**
-* Extends :class:`LEDBoard` for devices containing red, yellow, and green LEDs.
-* @param {number} red The GPIO pin that the red LED is attached to.
-* @param {number} amber The GPIO pin that the amber LED is attached to.
-* @param {number} green The GPIO pin that the green LED is attached to.
-* @param {object} _options 
-*/
-function TrafficLights (red, amber, green, _options) {
+ * Extends :class:`LEDBoard` for devices containing red, yellow, and green LEDs.
+ * @param {number} red The GPIO pin that the red LED is attached to.
+ * @param {number} amber The GPIO pin that the amber LED is attached to.
+ * @param {number} green The GPIO pin that the green LED is attached to.
+ * @param {object} _options 
+ */
+function TrafficLights(red, amber, green, _options) {
 
 
-	var defaults = {
-	        pwm: false, //If true, creates PWMLED instances, else LED
-	        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-	        					  // Switched on initialled
+    var defaults = {
+        pwm: false, //If true, creates PWMLED instances, else LED
+        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
+        // Switched on initialled
 
-	    };
+    };
     this.options = extend(defaults, _options);
-    this.devices = {red : red,
-    				amber : amber,
-    				green : green};
-    if (this.devices.red === undefined || 
-    	this.devices.amber === undefined ||
-    	this.devices.green === undefined) {
-    	throw new exc.GPIOPinMissing('Pins must be provided for all LEDs');
+    this.devices = {
+        red,
+        amber,
+        green
+    };
+    if (this.devices.red === undefined ||
+        this.devices.amber === undefined ||
+        this.devices.green === undefined) {
+        throw new exc.GPIOPinMissing('Pins must be provided for all LEDs');
     }
     LEDBoard.call(this, this.devices, this.options);
 }

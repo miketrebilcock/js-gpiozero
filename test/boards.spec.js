@@ -1,10 +1,10 @@
 /*global it describe afterEach */
 
 var expect = require('chai').expect,
-    assert = require('chai').assert,
+    //assert = require('chai').assert,
     gz = require('../gpiozero/'),
     mp = require('../gpiozero/pins/mock.js'),
-    isclose = require('../gpiozero/compat.js').isclose,
+    //isclose = require('../gpiozero/compat.js').isclose,
     with_close = require('../gpiozero/').with_close;
 
 describe('boards', () => {

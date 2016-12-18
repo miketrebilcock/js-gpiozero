@@ -117,8 +117,6 @@ describe("output_devices", () => {
     it('test_output_blink_background', (done) => {
         var pin = new mp.MockPin(2);
         var device = new gz.DigitalOutputDevice(pin);
-
-        device.blink(0.2, 0.1, 2);
         var expected = [{
             time: 0,
             state: false
@@ -135,6 +133,7 @@ describe("output_devices", () => {
             time: 201,
             state: false
         }];
+        device.blink(0.2, 0.1, 2);
         setTimeout(() => {
             try {
                 pin.assert_states_and_times(expected);

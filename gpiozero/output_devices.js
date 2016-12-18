@@ -2,11 +2,11 @@ var Lock = require('rwlock'),
     GPIODevice = require('./devices.js').GPIODevice,
     Device = require('./devices.js').Device,
     exc = require('./exc.js'),
-    inherit = require ('./tools.js').inherit;
+    inherit = require('./tools.js').inherit;
 
 exports.OutputDevice = OutputDevice;
 
-function OutputDevice (pin, active_high, initial_value){
+function OutputDevice(pin, active_high, initial_value) {
     /*
     Represents a generic GPIO output device.
 
@@ -28,31 +28,31 @@ function OutputDevice (pin, active_high, initial_value){
         ``None``, the device will be left in whatever state the pin is found in
         when configured for output (warning: this can be on).  If ``True``, the
         device will be switched on initially.*/
-
     GPIODevice.call(this, pin);
     this._lock = new Lock();
-    this.active_high( (active_high === undefined) ? true : active_high );
-    if (initial_value === undefined) {        
+    this.active_high((active_high === undefined) ? true : active_high);
+
+    if (initial_value === undefined) {
         this._pin.pin_function('output');
     } else {
         this._pin.output_with_state(this._value_to_state(initial_value));
-    } 
+    }
 }
 
 
 OutputDevice.prototype = inherit(GPIODevice.prototype);
 OutputDevice.prototype.constructor = OutputDevice;
 
-OutputDevice.prototype._value_to_state = function (value) {
-    return (value)?this._active_state : this._inactive_state;
+OutputDevice.prototype._value_to_state = function(value) {
+    return (value) ? this._active_state : this._inactive_state;
 };
 
-OutputDevice.prototype._write = function (value) {    
+OutputDevice.prototype._write = function(value) {
     this._check_open(this);
-    this._pin.state (this._value_to_state(value));
+    this._pin.state(this._value_to_state(value));
 };
 
-OutputDevice.prototype.on = function () {
+OutputDevice.prototype.on = function() {
     /*
     Turns the device on.
     */
@@ -68,7 +68,7 @@ OutputDevice.prototype.off = function() {
     this._write(false);
 };
 
-OutputDevice.prototype.active_high = function (value) {
+OutputDevice.prototype.active_high = function(value) {
     /*
     When ``True``, the :attr:`value` property is ``True`` when the device's
     :attr:`pin` is high. When ``False`` the :attr:`value` property is
@@ -79,15 +79,14 @@ OutputDevice.prototype.active_high = function (value) {
     the device's pin state - it just changes how that state is
     interpreted).
     */
-    if(value === undefined)
-    {
+    if (value === undefined) {
         return this._active_state;
     }
-    this._active_state = value ? true : false;
-    this._inactive_state = value ? false : true;
+    this._active_state = value;
+    this._inactive_state = !value;
 };
 
-OutputDevice.prototype.value = function (value) {
+OutputDevice.prototype.value = function(value) {
     if (value === undefined) {
         return this._read();
     }
@@ -95,13 +94,13 @@ OutputDevice.prototype.value = function (value) {
     this._write(value);
 };
 
-OutputDevice.prototype.toggle = function () {
+OutputDevice.prototype.toggle = function() {
     /*
     Reverse the state of the device. If it's on, turn it off; if it's off,
         turn it on.
     */
     var that = this;
-    this._lock.readLock(function (release) {
+    this._lock.readLock((release) => {
         if (that.is_active()) {
             that.off();
         } else {
@@ -113,14 +112,14 @@ OutputDevice.prototype.toggle = function () {
 
 exports.DigitalOutputDevice = DigitalOutputDevice;
 
-function DigitalOutputDevice (pin, active_high, initial_value) {
-    OutputDevice.call(this, pin, active_high, initial_value);    
+function DigitalOutputDevice(pin, active_high, initial_value) {
+    OutputDevice.call(this, pin, active_high, initial_value);
 }
 
 DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
 DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
 
-DigitalOutputDevice.prototype.blink = function (on_time, off_time, n, callback) {
+DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
     /*
     Make the device turn on and off repeatedly.
 
@@ -139,101 +138,101 @@ DigitalOutputDevice.prototype.blink = function (on_time, off_time, n, callback) 
         blink is finished (warning: the default value of *n* will result in
         this method never returning).
     */
-    this._pin.blink(on_time,off_time, n, callback);
+    this._pin.blink(on_time, off_time, n, callback);
 };
 
 exports.LED = LED;
 
-function LED(pin, active_high, initial_value){ 
-/*
-    Extends :class:`DigitalOutputDevice` and represents a light emitting diode
-    (LED).
+function LED(pin, active_high, initial_value) {
+    /*
+        Extends :class:`DigitalOutputDevice` and represents a light emitting diode
+        (LED).
 
-    Connect the cathode (short leg, flat side) of the LED to a ground pin;
-    connect the anode (longer leg) to a limiting resistor; connect the other
-    side of the limiting resistor to a GPIO pin (the limiting resistor can be
-    placed either side of the LED).
+        Connect the cathode (short leg, flat side) of the LED to a ground pin;
+        connect the anode (longer leg) to a limiting resistor; connect the other
+        side of the limiting resistor to a GPIO pin (the limiting resistor can be
+        placed either side of the LED).
 
-    The following example will light the LED::
+        The following example will light the LED::
 
-        from gpiozero import LED
+            from gpiozero import LED
 
-        led = LED(17)
-        led.on()
+            led = LED(17)
+            led.on()
 
-    :param int pin:
-        The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
-        valid pin numbers.
+        :param int pin:
+            The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
+            valid pin numbers.
 
-    :param bool active_high:
-        If ``True`` (the default), the LED will operate normally with the
-        circuit described above. If ``False`` you should wire the cathode to
-        the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
+        :param bool active_high:
+            If ``True`` (the default), the LED will operate normally with the
+            circuit described above. If ``False`` you should wire the cathode to
+            the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
 
-    :param bool initial_value:
-        If ``False`` (the default), the LED will be off initially.  If
-        ``None``, the LED will be left in whatever state the pin is found in
-        when configured for output (warning: this can be on).  If ``True``, the
-        LED will be switched on initially.
-    """
-    pass
-*/
+        :param bool initial_value:
+            If ``False`` (the default), the LED will be off initially.  If
+            ``None``, the LED will be left in whatever state the pin is found in
+            when configured for output (warning: this can be on).  If ``True``, the
+            LED will be switched on initially.
+        """
+        pass
+    */
     DigitalOutputDevice.call(this, pin, active_high, initial_value);
 }
 
 LED.prototype = inherit(DigitalOutputDevice.prototype);
 LED.prototype.constructor = LED;
 
-LED.prototype.is_lit = function () {
+LED.prototype.is_lit = function() {
     return this.is_active();
 };
 
 
 exports.Buzzer = Buzzer;
 
-function Buzzer (pin, active_high, initial_value){ 
-/*
-Extends :class:`DigitalOutputDevice` and represents a digital buzzer
-    component.
+function Buzzer(pin, active_high, initial_value) {
+    /*
+    Extends :class:`DigitalOutputDevice` and represents a digital buzzer
+        component.
 
-    Connect the cathode (negative pin) of the buzzer to a ground pin; connect
-    the other side to any GPIO pin.
+        Connect the cathode (negative pin) of the buzzer to a ground pin; connect
+        the other side to any GPIO pin.
 
-    The following example will sound the buzzer::
+        The following example will sound the buzzer::
 
-        from gpiozero import Buzzer
+            from gpiozero import Buzzer
 
-        bz = Buzzer(3)
-        bz.on()
+            bz = Buzzer(3)
+            bz.on()
 
-    :param int pin:
-        The GPIO pin which the buzzer is attached to. See :ref:`pin_numbering`
-        for valid pin numbers.
+        :param int pin:
+            The GPIO pin which the buzzer is attached to. See :ref:`pin_numbering`
+            for valid pin numbers.
 
-    :param bool active_high:
-        If ``True`` (the default), the buzzer will operate normally with the
-        circuit described above. If ``False`` you should wire the cathode to
-        the GPIO pin, and the anode to a 3V3 pin.
+        :param bool active_high:
+            If ``True`` (the default), the buzzer will operate normally with the
+            circuit described above. If ``False`` you should wire the cathode to
+            the GPIO pin, and the anode to a 3V3 pin.
 
-    :param bool initial_value:
-        If ``False`` (the default), the buzzer will be silent initially.  If
-        ``None``, the buzzer will be left in whatever state the pin is found in
-        when configured for output (warning: this can be on).  If ``True``, the
-        buzzer will be switched on initially.
-*/
+        :param bool initial_value:
+            If ``False`` (the default), the buzzer will be silent initially.  If
+            ``None``, the buzzer will be left in whatever state the pin is found in
+            when configured for output (warning: this can be on).  If ``True``, the
+            buzzer will be switched on initially.
+    */
     DigitalOutputDevice.call(this, pin, active_high, initial_value);
 }
 
-Buzzer.prototype = inherit (DigitalOutputDevice.prototype);
+Buzzer.prototype = inherit(DigitalOutputDevice.prototype);
 Buzzer.prototype.constructor = Buzzer;
 
-Buzzer.prototype.beep = function(){
+Buzzer.prototype.beep = function() {
     this.blink();
 };
 
 exports.PWMOutputDevice = PWMOutputDevice;
 
-function PWMOutputDevice (pin, active_high, initial_value, frequency) {
+function PWMOutputDevice(pin, active_high, initial_value, frequency) {
     /*
     Generic output device configured for pulse-width modulation (PWM).
 
@@ -258,18 +257,17 @@ function PWMOutputDevice (pin, active_high, initial_value, frequency) {
     */
 
     if (initial_value !== undefined) {
-        if (initial_value<0 || initial_value>1) {
-            throw new exc.OutputDeviceBadValue("initial_value must be between 0 and 1, actual=:"+initial_value);
+        if (initial_value < 0 || initial_value > 1) {
+            throw new exc.OutputDeviceBadValue("initial_value must be between 0 and 1, actual=:" + initial_value);
         }
     }
 
     OutputDevice.call(this, pin, active_high, initial_value);
-    
+
     try {
-        this._pin.frequency (frequency === undefined ? 100: frequency);
-        this.value (initial_value === undefined ? 0 : initial_value);
-    }
-    catch (e) {
+        this._pin.frequency(frequency === undefined ? 100 : frequency);
+        this.value(initial_value === undefined ? 0 : initial_value);
+    } catch (e) {
         this.close();
         throw e;
     }
@@ -278,39 +276,38 @@ function PWMOutputDevice (pin, active_high, initial_value, frequency) {
 PWMOutputDevice.prototype = inherit(OutputDevice.prototype);
 PWMOutputDevice.prototype.constructor = PWMOutputDevice;
 
-PWMOutputDevice.prototype.value = function (value) {
+PWMOutputDevice.prototype.value = function(value) {
     /*
         The duty cycle of the PWM device. 0.0 is off, 1.0 is fully on. Values
         in between may be specified for varying levels of power in the device.
     */
-    if(value === undefined) {
+    if (value === undefined) {
         return this._read();
     }
     this._pin._stop_blink();
     this._write(value);
 };
 
-PWMOutputDevice.prototype._read = function () {
+PWMOutputDevice.prototype._read = function() {
     this._check_open();
     if (this.active_high()) {
         return this._pin.state();
-    } else {
-        return 1 - this._pin.state();
     }
+    return 1 - this._pin.state();
 };
 
-PWMOutputDevice.prototype._write = function (value) {
+PWMOutputDevice.prototype._write = function(value) {
     if (!this.active_high()) {
         value = 1 - value;
     }
-    if (value<0 || value >1) {
+    if (value < 0 || value > 1) {
         throw new exc.OutputDeviceBadValue("PWM value must be between 0 and 1");
     }
     this._check_open();
     this._pin.state(value);
 };
 
-PWMOutputDevice.prototype.frequency = function (value) {
+PWMOutputDevice.prototype.frequency = function(value) {
     if (value === undefined) {
         return this._pin.frequency();
     }
@@ -321,17 +318,17 @@ PWMOutputDevice.prototype.is_active = function() {
     return this.value() !== 0;
 };
 
-PWMOutputDevice.prototype.on  = function () {
+PWMOutputDevice.prototype.on = function() {
     this._pin._stop_blink();
     this._write(1);
 };
 
-PWMOutputDevice.prototype.off  = function () {
+PWMOutputDevice.prototype.off = function() {
     this._pin._stop_blink();
     this._write(0);
 };
 
-PWMOutputDevice.prototype.toggle = function () {
+PWMOutputDevice.prototype.toggle = function() {
     /*
     Toggle the state of the device. If the device is currently off
     (:attr:`value` is 0.0), this changes it to "fully" on (:attr:`value` is
@@ -345,7 +342,7 @@ PWMOutputDevice.prototype.toggle = function () {
 
 PWMOutputDevice.prototype.close = function() {
     this._pin._stop_blink();
-    this._pin.frequency (-1);
+    this._pin.frequency(-1);
     OutputDevice.prototype.close.call(this);
 };
 
@@ -374,7 +371,7 @@ PWMOutputDevice.prototype.blink = function(on_time, off_time, fade_in_time, fade
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
 };
 
-PWMOutputDevice.prototype.pulse = function (fade_in_time, fade_out_time, n, callback) {
+PWMOutputDevice.prototype.pulse = function(fade_in_time, fade_out_time, n, callback) {
     /*
     Make the device fade in and out repeatedly.
 
@@ -387,14 +384,15 @@ PWMOutputDevice.prototype.pulse = function (fade_in_time, fade_out_time, n, call
     :param int n:
         Number of times to blink; ``None`` (the default) means forever.
     */
-    var on_time =0,  off_time = 0;
+    var on_time = 0,
+        off_time = 0;
 
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
 };
 
 exports.Motor = Motor;
 
-function Motor (forward, backward, pwm) {
+function Motor(forward, backward, pwm) {
     /*
     Extends :class:`CompositeDevice` and represents a generic motor
     connected to a bi-directional motor driver circuit (i.e.  an `H-bridge`_).
@@ -429,10 +427,10 @@ function Motor (forward, backward, pwm) {
         control.
     */
 
-    if(forward === undefined || backward === undefined) {
+    if (forward === undefined || backward === undefined) {
         throw new exc.GPIOPinMissing('Forward and Backward pins must be provided');
     }
-    if (pwm === undefined || pwm === true){
+    if (pwm === undefined || pwm === true) {
         this.forward_device = new PWMOutputDevice(forward);
         this.backward_device = new PWMOutputDevice(backward);
         //this._order = ('forward_device', 'backward_device');
@@ -447,12 +445,12 @@ Motor.prototype = inherit(Device.prototype);
 Motor.prototype.constructor = Motor;
 
 
-Motor.prototype.close = function () {
+Motor.prototype.close = function() {
     if (this.forward_device !== undefined) {
-        this.forward_device.close();  
-        this.forward_device = undefined;  
+        this.forward_device.close();
+        this.forward_device = undefined;
     }
-    
+
     if (this.backward_device !== undefined) {
         this.backward_device.close();
         this.backward_device = undefined;
@@ -460,37 +458,37 @@ Motor.prototype.close = function () {
     OutputDevice.prototype.close.call(this);
 };
 
-Motor.prototype.closed = function () {
+Motor.prototype.closed = function() {
     return (this.forward_device === undefined && this.backward_device === undefined);
 };
 
-Motor.prototype.value = function (value) {
+Motor.prototype.value = function(value) {
     if (value === undefined) {
         return this.forward_device.value() - this.backward_device.value();
     }
 
-    if (value >1 || value < -1) {
+    if (value > 1 || value < -1) {
         throw new exc.OutputDeviceBadValue("Motor value must be between -1 and 1, actual=:" + value);
     }
-    
+
     if (value > 0) {
         this.forward(value);
     } else if (value < 0) {
-        this.backward (-value);
+        this.backward(-value);
     } else {
         this.stop();
     }
 };
 
-Motor.prototype.is_active = function () {
+Motor.prototype.is_active = function() {
     /*
     Returns ``True`` if the motor is currently running and ``False``
     otherwise.
     */
     return this.value() !== 0;
 };
-    
-Motor.prototype.forward = function (speed) {
+
+Motor.prototype.forward = function(speed) {
     /*
     Drive the motor forwards.
 
@@ -507,15 +505,15 @@ Motor.prototype.forward = function (speed) {
         throw new exc.ValueError('forward speed must be between 0 and 1');
     }
 
-    if (this.forward_device instanceof DigitalOutputDevice && speed != 1 && speed !== 0) {
+    if (this.forward_device instanceof DigitalOutputDevice && speed !== 1 && speed !== 0) {
         throw new exc.ValueError('forward speed must be 0 or 1 with non-PWM Motors');
     }
 
     this.backward_device.off();
-    this.forward_device.value (speed);
+    this.forward_device.value(speed);
 };
 
-Motor.prototype.backward = function (speed) {
+Motor.prototype.backward = function(speed) {
     /*
     Drive the motor forwards.
 
@@ -532,15 +530,15 @@ Motor.prototype.backward = function (speed) {
         throw new exc.ValueError('backward speed must be between 0 and 1');
     }
 
-    if (this.backward_device instanceof DigitalOutputDevice && speed != 1 && speed !== 0) {
+    if (this.backward_device instanceof DigitalOutputDevice && speed !== 1 && speed !== 0) {
         throw new exc.ValueError('backward speed must be 0 or 1 with non-PWM Motors');
     }
 
     this.forward_device.off();
-    this.backward_device.value (speed);
+    this.backward_device.value(speed);
 };
 
-Motor.prototype.reverse = function () {
+Motor.prototype.reverse = function() {
     /*
     Reverse the current direction of the motor. If the motor is currently
     idle this does nothing. Otherwise, the motor's direction will be
@@ -549,7 +547,7 @@ Motor.prototype.reverse = function () {
     this.value(-1 * this.value());
 };
 
-Motor.prototype.stop = function () {
+Motor.prototype.stop = function() {
     /*
     Stop the motor.
     */
@@ -559,7 +557,7 @@ Motor.prototype.stop = function () {
 
 exports.PWMLED = PWMLED;
 
-function PWMLED (pin, active_high, initial_value, frequency){
+function PWMLED(pin, active_high, initial_value, frequency) {
     /*
     Extends :class:`PWMOutputDevice` and represents a light emitting diode
     (LED) with variable brightness.
@@ -593,7 +591,7 @@ function PWMLED (pin, active_high, initial_value, frequency){
 PWMLED.prototype = inherit(PWMOutputDevice.prototype);
 PWMLED.prototype.constructor = PWMLED;
 
-PWMLED.prototype.is_lit = function () {
+PWMLED.prototype.is_lit = function() {
     return this.is_active();
 };
 
@@ -637,24 +635,24 @@ function RGBLED(red, green, blue, active_high, initial_value, pwm) {
     */
 
     this._leds = [];
-    if (red === undefined || blue === undefined || green === undefined ) {
+    if (red === undefined || blue === undefined || green === undefined) {
         throw new exc.GPIOPinMissing('red, green, and blue pins must be provided');
     }
     pwm = (pwm === undefined ? true : pwm);
     var LEDClass = pwm ? PWMLED : LED;
     Device.call(this);
-    this._leds = [new LEDClass(red, active_high), new LEDClass(green, active_high), new LEDClass(blue, active_high)];   
+    this._leds = [new LEDClass(red, active_high), new LEDClass(green, active_high), new LEDClass(blue, active_high)];
     if (initial_value === undefined) {
-        initial_value = [0,0,0];
+        initial_value = [0, 0, 0];
     }
-    this.value (initial_value);   
+    this.value(initial_value);
 }
 
 exports.RGBLED = RGBLED;
 RGBLED.prototype = inherit(Device.prototype);
 RGBLED.prototype.constructor = RGBLED;
 
-RGBLED.prototype.value = function (value) {
+RGBLED.prototype.value = function(value) {
     if (value === undefined) {
         /*
         Represents the color of the LED as an RGB 3-tuple of ``(red, green,
@@ -670,33 +668,33 @@ RGBLED.prototype.value = function (value) {
         throw new exc.OutputDeviceBadValue('RGB values must be an array of three components');
     }
     var i;
-    for (i=0; i< 3 ; i++) {
-        if (value[i]<0 || value[i]>1) {
+    for (i = 0; i < 3; i++) {
+        if (value[i] < 0 || value[i] > 1) {
             throw new exc.OutputDeviceBadValue('each RGB component must be between 0 and 1');
         }
-        if (this._leds[i] instanceof LED) {            
-            if (value[i] !==0 && value[i] != 1) {
-                throw new exc.OutputDeviceBadValue('each RGB color component must be 0 or 1 with non-PWM RGBLEDs');   
+        if (this._leds[i] instanceof LED) {
+            if (value[i] !== 0 && value[i] !== 1) {
+                throw new exc.OutputDeviceBadValue('each RGB color component must be 0 or 1 with non-PWM RGBLEDs');
             }
         }
     }
-   
-    for (i=0; i< 3 ; i++) {
-        this._leds[i].value(value [i]);
+
+    for (i = 0; i < 3; i++) {
+        this._leds[i].value(value[i]);
     }
     this.red = this._leds[0].value();
     this.green = this._leds[1].value();
     this.blue = this._leds[2].value();
 };
 
-RGBLED.prototype.close = function () {
+RGBLED.prototype.close = function() {
     var i;
-    for (i=0; i< 3 ; i++) {
-        if (this._leds[i] !== undefined ) {
+    for (i = 0; i < 3; i++) {
+        if (this._leds[i] !== undefined) {
             this._leds[i].close();
             this._leds[i] = undefined;
         }
-    }   
+    }
     this._leds = [];
     Device.prototype.close.call(this);
 };
@@ -706,23 +704,23 @@ RGBLED.prototype.is_active = function() {
     Returns ``True`` if the LED is currently active (not black) and
     ``False`` otherwise.
     */
-    return (this.value()[0] + this.value()[1] + this.value()[2] > 0 );
+    return (this.value()[0] + this.value()[1] + this.value()[2] > 0);
 };
 
-RGBLED.prototype.on = function () {
+RGBLED.prototype.on = function() {
     /*
     Turn the LED on. This equivalent to setting the LED color to white
     ``(1, 1, 1)``.
     */
-    this.value ([1, 1, 1]);
+    this.value([1, 1, 1]);
 };
 
-RGBLED.prototype.off = function () {
+RGBLED.prototype.off = function() {
     /*
     Turn the LED on. This equivalent to setting the LED color to white
     ``(1, 1, 1)``.
     */
-    this.value ([0, 0, 0]);
+    this.value([0, 0, 0]);
 };
 
 RGBLED.prototype.toggle = function() {
@@ -733,10 +731,10 @@ RGBLED.prototype.toggle = function() {
     this method inverts the color.
     */
     var current = this.value();
-    this.value ([1 - current[0], 1 - current[1], 1 - current[2]]);
+    this.value([1 - current[0], 1 - current[1], 1 - current[2]]);
 };
 
-RGBLED.prototype.closed = function () {
+RGBLED.prototype.closed = function() {
     return this._leds.length === 0;
 };
 

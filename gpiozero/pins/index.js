@@ -1,5 +1,5 @@
-var exc = require ("../exc.js"),
-    inherit = require ('../tools.js').inherit;
+var exc = require("../exc.js"),
+    inherit = require('../tools.js').inherit;
 
 function Pin() {
     /*
@@ -39,21 +39,23 @@ function Pin() {
         shutdown.
     """
 	*/
-    this._blink_timer = undefined;    
+    this._blink_timer = undefined;
 }
 
 Pin.prototype = {
-	toString: function () { return "Abstract pin";},
-	close: function () {
-		/*
+    toString() {
+        return "Abstract pin";
+    },
+    close() {
+        /*
         Cleans up the resources allocated to the pin. After this method is
         called, this :class:`Pin` instance may no longer be used to query or
         control the pin's state.
         */
         this._stop_blink();
-	},
-	output_with_state: function (state) {
-		/*
+    },
+    output_with_state(state) {
+        /*
         Sets the pin's function to "output" and specifies an initial state
         for the pin. By default this is equivalent to performing::
 
@@ -65,11 +67,11 @@ Pin.prototype = {
         initial value (which can be important for avoiding "blips" in
         active-low configurations).
         */
-        this._function ='output';        
-        this.state (state);        
-	},
-	input_with_pull: function (pull){
-		/*
+        this._function = 'output';
+        this.state(state);
+    },
+    input_with_pull(pull) {
+        /*
         Sets the pin's function to "input" and specifies an initial pull-up
         for the pin. By default this is equivalent to performing::
 
@@ -81,9 +83,9 @@ Pin.prototype = {
         pin up/down (which can be important for avoiding "blips" in some
         configurations).
         */
-        this.pin_function ('input');
-        this.pull (pull);	
-	},
+        this.pin_function('input');
+        this.pull(pull);
+    },
     /*
         The function of the pin. This property is a string indicating the
         current function or purpose of the pin. Typically this is the string
@@ -95,15 +97,15 @@ Pin.prototype = {
         specified, for this attribute, :exc:`PinInvalidFunction` will be
         raised.
     */
-	pin_function: function (value) {
+    pin_function(value) {
         if (value === undefined) {
             return "input";
         }
-        if (value != "input") {
+        if (value !== "input") {
             throw new exc.PinInvalidFunction(
                 "Cannot set the function of pin " + this + " to " + value);
         }
-	},
+    },
     /*
         The state of the pin. This is 0 for low, and 1 for high. As a low level
         view of the pin, no swapping is performed in the case of pull ups (see
@@ -118,55 +120,53 @@ Pin.prototype = {
         raised.
 
     */
-    state: function (value) {
+    state(value) {
         if (value === undefined) {
             return 0;
         }
         throw new exc.PinSetInput("Cannot set the state of input pin " + this);
     },
-    blink: function (on_time, off_time, loops, callback) {
-        this.on_time = (on_time === undefined ? 1000 : on_time*1000);
-        this.off_time = (off_time === undefined ? 1000 : off_time*1000);
+    blink(on_time, off_time, loops, callback) {
+        this.on_time = (on_time === undefined ? 1000 : on_time * 1000);
+        this.off_time = (off_time === undefined ? 1000 : off_time * 1000);
         this.number_of_blinks = loops;
         this.callback = callback;
         this._stop_blink();
-        if(loops === undefined) {
-            this._blink_timer = setInterval(function(that) {
-                that.state(1);
-                setTimeout (function() {
-                    that.state(0);
+        if (loops === undefined) {
+            this._blink_timer = setInterval((that) => {
+                that.state(true);
+                setTimeout(() => {
+                    that.state(false);
                 }, that.off_time);
             }, this.on_time + this.off_time, this);
-            this.state(1);
-            setTimeout (function(that) {
-                    that.state(0);
-                }, this.off_time, this);
-
+            this.state(true);
+            setTimeout((that) => {
+                that.state(false);
+            }, this.off_time, this);
         } else {
-            this._blink_timer = setInterval(function(that) {
-                if(that.number_of_blinks>0) {
-                    that.state(1);
-                    setTimeout (function() {
-                        that.state(0);
-                        that.number_of_blinks --;
+            this._blink_timer = setInterval((that) => {
+                if (that.number_of_blinks > 0) {
+                    that.state(true);
+                    setTimeout(() => {
+                        that.state(false);
+                        that.number_of_blinks--;
                     }, that.on_time);
                 } else {
                     that._stop_blink();
-                    if(that.callback !== undefined)
-                    {
+                    if (that.callback !== undefined) {
                         that.callback();
                     }
                 }
             }, this.on_time + this.off_time, this);
-            this.state(1);
-            setTimeout (function(that) {
-                    that.state(0);
-                    that.number_of_blinks --;
-                }, this.on_time, this);
+            this.state(true);
+            setTimeout((that) => {
+                that.state(false);
+                that.number_of_blinks--;
+            }, this.on_time, this);
         }
     },
-    _stop_blink : function() {
-        if (this._blink_timer !== undefined ) {
+    _stop_blink() {
+        if (this._blink_timer !== undefined) {
             clearInterval(this._blink_timer);
             this._blink_timer = undefined;
         }
@@ -174,9 +174,9 @@ Pin.prototype = {
 };
 
 
-var _PI_REVISION;
+//var _PI_REVISION;
 
-function LocalPin(){
+function LocalPin() {
     /*
     Abstract base class representing pins attached locally to a Pi. This forms
     the base class for local-only pin interfaces (:class:`RPiGPIOPin`,
@@ -189,7 +189,7 @@ function LocalPin(){
 LocalPin.prototype = inherit(Pin.prototype);
 LocalPin.prototype.constructor = LocalPin;
 
-LocalPin.prototype.pi_info = function (){
+LocalPin.prototype.pi_info = function() {
     throw new exc.NotImplementedError();
 };
 /*

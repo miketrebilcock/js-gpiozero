@@ -12,7 +12,7 @@ function isclose(a, b, rel_tol, abs_tol) {
         throw exc.ValueError('error tolerances must be non-negative');
     }
 
-    if (a == b) { // fast-path for exact equality
+    if (a === b) { // fast-path for exact equality
         return true;
     }
     if (!isFinite(a) || !isFinite(b)){
