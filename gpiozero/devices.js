@@ -1,9 +1,9 @@
-var ReadWriteLock = require('rwlock'),
+const ReadWriteLock = require('rwlock'),
     exc = require('./exc.js'),
     wiringpi = require('./pins/wiringpi.js').WiringPiPin,
     inherit = require('./tools.js').inherit;
 
-var _PINS = new Set(),
+const _PINS = new Set(),
     _PINS_LOCK = new ReadWriteLock(); //Yes, this needs to be re-entrant
 
 /*    /*if(name == undefined) {
@@ -77,15 +77,8 @@ Device.prototype.close = function() {
 
 exports.Device = Device;
 
-function CompositeDevice(args) {
-    this._all = args;
-}
-
-exports.CompositeDevice = CompositeDevice;
-/*
-class CompositeDevice(Device):
-    """
-    Extends :class:`Device`. Represents a device composed of multiple devices
+/**
+ *  Extends :class:`Device`. Represents a device composed of multiple devices
     like simple HATs, H-bridge motor controllers, robots composed of multiple
     motors, etc.
 
@@ -93,6 +86,65 @@ class CompositeDevice(Device):
     arguments.  Positional arguments form unnamed devices accessed via the
     :attr:`all` attribute, while keyword arguments are added to the device
     as named (read-only) attributes.
+ * @param {[array]} devices
+ * @param {[array]} kwdevices
+ */
+function CompositeDevice(devices, kwdevices) {
+    this._all = [];
+    this._namedtuple = [];
+    let i;
+    if(devices !== undefined) {
+        for (i = 0; i < devices.length; i++) {
+            this[i] = devices[i];
+            this._namedtuple.push('_' + i);
+            this._all.push(devices[i]);
+        }
+    }
+
+    if(kwdevices !== undefined) {
+        for (i = 0; i < kwdevices.length; i++) {
+            const device_name = kwdevices[i][0];
+            this[device_name] = kwdevices[i][1];
+            this._namedtuple.push(kwdevices[i][0]);
+            this._all.push(kwdevices[i][1]);
+        }
+    }
+    Device.call(this);
+}
+
+CompositeDevice.prototype = inherit(Device.prototype);
+CompositeDevice.prototype.constructor = CompositeDevice;
+
+CompositeDevice.prototype.length = function() {
+    return this._all.length;
+};
+
+CompositeDevice.prototype.namedtuple = function() {
+    return this._namedtuple;
+};
+
+CompositeDevice.prototype.value = function () {
+    let i;
+    const result = [];
+    for (i = 0; i < this._all.length; i++) {
+        result[i] = this._all[i].value();
+    }
+    return result;
+};
+
+CompositeDevice.prototype.is_active = function () {
+    let i;
+    for (i = 0; i < this._all.length; i++) {
+        if (this._all[i].value()) {
+            return true;
+        }
+    }
+    return false;
+};
+
+exports.CompositeDevice = CompositeDevice;
+/*
+class CompositeDevice(Device):
 
     :param list _order:
         If specified, this is the order of named items specified by keyword
@@ -149,9 +201,6 @@ class CompositeDevice(Device):
                     )
         except DeviceClosed:
             return "<gpiozero.%s object closed>" % (self.__class__.__name__)
-
-    def __len__(self):
-        return len(self._all)
 
     def __getitem__(self, index):
         return self._all[index]
@@ -218,9 +267,9 @@ GPIODevice.prototype = inherit(Device.prototype);
 GPIODevice.prototype.constructor = GPIODevice;
 
 GPIODevice.prototype.close = function() {
-    var that = this;
+    const that = this;
     _PINS_LOCK.readLock((release) => {
-        var pin = that._pin;
+        const pin = that._pin;
         if (_PINS.has(pin)) {
             _PINS.delete(pin);
             that._pin.close();

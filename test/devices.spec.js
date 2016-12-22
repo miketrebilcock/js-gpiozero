@@ -77,37 +77,51 @@ describe('devices', () => {
         });
     });
 
+    it('compsite_device_sequence', () => {
+        with_close(new gz.CompositeDevice([new gz.OutputDevice(new mp.MockPin(2)),
+                new gz.OutputDevice(new mp.MockPin(3))]),
+            (device) => {
+                assert(device.length() === 2, "CompositeDevice length is not 2");
+                assert(device[0]._pin.number() === 2);
+                assert(device[1]._pin.number() === 3);
+                assert(device.namedtuple()[0] === '_0', "CompositeDevice NamedTuple returned "+device.namedtuple());
+                assert(device.namedtuple()[1] === '_1', "CompositeDevice NamedTuple returned "+device.namedtuple());
+            });
+    });
+
+    it('compsite_device_values', () => {
+        with_close(new gz.CompositeDevice([new gz.OutputDevice(new mp.MockPin(2)),
+                new gz.OutputDevice(new mp.MockPin(3))]),
+            (device) => {
+                assert(device.value()[0] === false, "CompositeDevice value[0] is not false");
+                assert(device.value()[1] === false, "CompositeDevice value[1] is not false");
+                assert(device.is_active() === false, "CompositeDevice is_active is not false");
+                device[0]._pin.state(true);
+                assert(true === device.value()[0], "CompositeDevice value[0] is not true");
+                assert(false === device.value()[1], "CompositeDevice value[1] is not false");
+                assert(true === device.is_active(), "CompositeDevice is_active is not true");
+            });
+    });
+
+    it('compsite_device_named', () => {
+        with_close(new gz.CompositeDevice(undefined,[
+                ['foo', new gz.OutputDevice(new mp.MockPin(2))],
+                ['bar', new gz.OutputDevice(new mp.MockPin(3))]
+            ]),
+            (device) => {
+                assert(device.namedtuple()[0] === 'foo', "CompositeDevice NamedTuple returned "+device.namedtuple());
+                assert(device.namedtuple()[1] === 'bar', "CompositeDevice NamedTuple returned "+device.namedtuple());
+                assert(device.value()[0] === false, "CompositeDevice value[0] is not false");
+                assert(device.value()[1] === false, "CompositeDevice value[1] is not false");
+                assert(device.is_active() === false, "CompositeDevice is_active is not false");
+                assert(device.foo.value() === false, "CompositeDevice value[0] is not false");
+                assert(device.bar.value() === false, "CompositeDevice value[1] is not false");
+                device.foo._pin.state(true);
+                assert(device.foo.value() === true, "CompositeDevice value[0] is not true");
+            });
+    });
+
     /*
-	def test_composite_device_sequence():
-    with CompositeDevice(
-            InputDevice(MockPin(2)),
-            InputDevice(MockPin(3))
-            ) as device:
-        assert len(device) == 2
-        assert device[0].pin.number == 2
-        assert device[1].pin.number == 3
-        assert device.namedtuple._fields == ('_0', '_1')
-
-def test_composite_device_values():
-    with CompositeDevice(
-            InputDevice(MockPin(2)),
-            InputDevice(MockPin(3))
-            ) as device:
-        assert device.value == (0, 0)
-        assert not device.is_active
-        device[0].pin.drive_high()
-        assert device.value == (1, 0)
-        assert device.is_active
-
-def test_composite_device_named():
-    with CompositeDevice(
-            foo=InputDevice(MockPin(2)),
-            bar=InputDevice(MockPin(3)),
-            _order=('foo', 'bar')
-            ) as device:
-        assert device.namedtuple._fields == ('foo', 'bar')
-        assert device.value == (0, 0)
-        assert not device.is_active
 
 def test_composite_device_bad_init():
     with pytest.raises(ValueError):

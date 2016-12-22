@@ -1,5 +1,15 @@
 var inherit = require ('./tools.js').inherit;
 
+function NotImplementedError (message) {
+	message = message !== undefined?message:"The method is not yet implemented";
+	Error.call(this, message);
+}
+
+NotImplementedError.prototype = inherit(Error.prototype);
+NotImplementedError.prototype.constructor = NotImplementedError;
+
+exports.NotImplementedError = NotImplementedError;
+
 function GPIOZeroError (message) {
 	message = message !== undefined?message:"Base class for all exceptions in GPIO Zero";
 	Error.call(this, message);

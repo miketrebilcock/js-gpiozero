@@ -1,6 +1,6 @@
 {
-  "name": "js-gpiozero",
   "version": "0.1.4",
+  "name": "js-gpiozero",
   "description": "A port of python gpiozero to node.js",
   "main": "./gpiozero/index.js",
   "repository": {
@@ -16,15 +16,18 @@
   "dependencies": {
     "wiring-pi": "^2.2.1",
     "rwlock": "5.0.0",
-    "documentation" : "^4.0.0-beta9"
+    "documentation": "^4.0.0-beta9"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
     "chai": "^3.5.0",
-    "istanbul": "^0.4.5",
     "codecov": "^1.0.1",
-    "mocha-eslint": "^3.0.1",
-    "eslint-config-node" : "^1.6.0"
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb-base": "^11.0.0",
+    "eslint-config-node": "^1.6.0",
+    "eslint-plugin-import": "^2.2.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "mocha-eslint": "^3.0.1"
   },
   "keywords": [
     "wiringPi",

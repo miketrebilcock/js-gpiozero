@@ -7,7 +7,7 @@ A port of the fanastic [python gpiozero](https://github.com/RPi-Distro/python-gp
 It's early days and a work in progress!
 
 ##Using
-First of all we need to be running the latest version of nodejs. The following command updates the Debian apt package repository to include the NodeSource packages
+First of all we need to be running the latest version of nodejs (at least v7). The following command updates the Debian apt package repository to include the NodeSource packages
 
 ```bash
 $curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
@@ -23,7 +23,7 @@ We can then test and see what version of Node we are running
 
 ```bash
 $ node -v
-v7.2.0
+v7.3.0
 
 ```
 
