@@ -1,18 +1,11 @@
 /*global it describe afterEach */
 
-var expect = require("chai").expect,
-    assert = require("chai").assert,
-    gz = require("../gpiozero/"),
-    mp = require("../gpiozero/pins/mock.js"),
-    isclose = require("../gpiozero/compat.js").isclose;
-
-
-
-
-function with_close(device, method) {
-    method(device);
-    device.close();
-}
+const expect = require("chai").expect;
+const assert = require("chai").assert;
+const gz = require("../gpiozero/");
+const mp = require("../gpiozero/pins/mock.js");
+const isclose = require("../gpiozero/compat.js").isclose;
+const with_close = require ("../gpiozero/tools.js").with_close;
 
 describe("output_devices", () => {
 

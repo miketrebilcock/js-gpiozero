@@ -1,8 +1,8 @@
-var exc = require('./exc.js'),
-devices = require('./devices.js'),
-output_devices = require ('./output_devices.js'),
-tools = require('./tools.js'),
-boards = require('./boards.js');
+const exc = require('./exc.js');
+const devices = require('./devices.js');
+const output_devices = require('./output_devices.js');
+const tools = require('./tools.js');
+const boards = require('./boards.js');
 
 module.exports = {
 	GPIOPinMissing	: exc.GPIOPinMissing,
@@ -25,6 +25,7 @@ module.exports = {
 	PWMLED 	: output_devices.PWMLED,
 	RGBLED 	: output_devices.RGBLED,
 
+    CompositeOutputDevice : boards.CompositeOutputDevice,
 	TrafficLights : boards.TrafficLights,
 
 	with_close : tools.with_close,

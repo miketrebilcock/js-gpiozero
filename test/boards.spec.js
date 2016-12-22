@@ -1,11 +1,10 @@
 /*global it describe afterEach */
 
-const //expect = require('chai').expect,
-    assert = require('chai').assert,
-    gz = require('../gpiozero/'),
-    mp = require('../gpiozero/pins/mock.js'),
-    //isclose = require('../gpiozero/compat.js').isclose,
-    with_close = require('../gpiozero/').with_close;
+const expect = require('chai').expect;
+const assert = require('chai').assert;
+const gz = require('../gpiozero/');
+const mp = require('../gpiozero/pins/mock.js');
+const with_close = require('../gpiozero/').with_close;
 
 describe('boards', () => {
 
@@ -30,48 +29,89 @@ describe('boards', () => {
             board.close();
         });
     });
+
+    it('traffic_lights_bad_init', () => {
+        expect(() => {
+            /*eslint no-new: off*/
+            new gz.TrafficLights();
+        }).to.throw(gz.ValueError);
+    });
+
+    it('composite_output_on_off', () => {
+        const pin1 = new mp.MockPin(2);
+        const pin2 = new mp.MockPin(3);
+        const pin3 = new mp.MockPin(4);
+        with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
+            new gz.OutputDevice(pin2),
+            new gz.OutputDevice(pin3)]),(device) => {
+            device.on();
+            assert (true === pin1.state(), "Pin 1 is not set to true");
+            assert (true === pin2.state(), "Pin 2 is not set to true");
+            assert (true === pin3.state(), "Pin 3 is not set to true");
+            device.off();
+            assert (false === pin1.state(), "Pin 1 is not set to false");
+            assert (false === pin2.state(), "Pin 2 is not set to false");
+            assert (false === pin3.state(), "Pin 3 is not set to false");
+        });
+    });
+
+    it('composite_output_toggle', () => {
+        const pin1 = new mp.MockPin(2);
+        const pin2 = new mp.MockPin(3);
+        const pin3 = new mp.MockPin(4);
+        with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
+            new gz.OutputDevice(pin2),
+            new gz.OutputDevice(pin3)]),(device) => {
+            device.toggle();
+            assert (true === pin1.state(), "Pin 1 is not set to true");
+            assert (true === pin2.state(), "Pin 2 is not set to true");
+            assert (true === pin3.state(), "Pin 3 is not set to true");
+            device[0].off();
+            device.toggle();
+            assert (true === pin1.state(), "Pin 1 is not set to false");
+            assert (false === pin2.state(), "Pin 2 is not set to false");
+            assert (false === pin3.state(), "Pin 3 is not set to false");
+        });
+    });
+
+    it('composite_output_value', () => {
+        const pin1 = new mp.MockPin(2);
+        const pin2 = new mp.MockPin(3);
+        const pin3 = new mp.MockPin(4);
+        with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
+            new gz.OutputDevice(pin2),
+            new gz.OutputDevice(pin3)]),(device) => {
+            let actual = device.value();
+            assert(false === actual[0], "Initial value for each device[0] is not false");
+            assert(false === actual[1], "Initial value for each device[1] is not false");
+            assert(false === actual[2], "Initial value for each device[2] is not false");
+            device.toggle();
+            actual = device.value();
+            assert(true === actual[0], "Initial value for each device[0] is not true");
+            assert(true === actual[1], "Initial value for each device[1] is not true");
+            assert(true === actual[2], "Initial value for each device[2] is not true");
+            device.value ([true, false, true]);
+            assert(true === device[0].is_active(), "State for device[0] is not true");
+            assert(false === device[1].is_active(), "State for device[1] is not false");
+            assert(true === device[2].is_active(), "State for device[2] is not true");
+        });
+    });
 });
 
 
 /*
-def test_traffic_lights():
-    red_pin = MockPin(2)
-    amber_pin = MockPin(3)
-    green_pin = MockPin(4)
-    with TrafficLights(red_pin, amber_pin, green_pin) as board:
-        board.red.on()
-        assert board.red.value
-        assert not board.amber.value
-        assert not board.yellow.value
-        assert not board.green.value
-        assert red_pin.state
-        assert not amber_pin.state
-        assert not green_pin.state
-        board.amber.on()
-        assert amber_pin.state
-        board.yellow.off()
-        assert not amber_pin.state
-    with TrafficLights(red=red_pin, yellow=amber_pin, green=green_pin) as board:
-        board.yellow.on()
-        assert not board.red.value
-        assert board.amber.value
-        assert board.yellow.value
-        assert not board.green.value
-        assert not red_pin.state
-        assert amber_pin.state
-        assert not green_pin.state
-        board.amber.off()
-        assert not amber_pin.state
-
-def test_traffic_lights_bad_init():
-    with pytest.raises(ValueError):
-        TrafficLights()
-    red_pin = MockPin(2)
-    amber_pin = MockPin(3)
-    green_pin = MockPin(4)
-    yellow_pin = MockPin(5)
-    with pytest.raises(ValueError):
-        TrafficLights(red=red_pin, amber=amber_pin, yellow=yellow_pin, green=green_pin)
+ def test_composite_output_value():
+ pin1 = MockPin(2)
+ pin2 = MockPin(3)
+ pin3 = MockPin(4)
+ with CompositeOutputDevice(OutputDevice(pin1), OutputDevice(pin2), foo=OutputDevice(pin3)) as device:
+ assert device.value == (0, 0, 0)
+ device.toggle()
+ assert device.value == (1, 1, 1)
+ device.value = (1, 0, 1)
+ assert device[0].is_active
+ assert not device[1].is_active
+ assert device[2].is_active
 
 def test_pi_traffic():
     pins = [MockPin(n) for n in (9, 10, 11)]
@@ -86,22 +126,6 @@ def test_pi_traffic():
 
 /*
 
-from __future__ import (
-    unicode_literals,
-    absolute_import,
-    print_function,
-    division,
-    )
-str = type('')
-
-
-import sys
-import pytest
-from time import sleep
-
-from gpiozero.pins.mock import MockPin, MockPWMPin
-from gpiozero import *
-
 
 def setup_function(function):
     import gpiozero.devices
@@ -115,41 +139,6 @@ def teardown_function(function):
     MockPin.clear_pins()
 
 
-def test_composite_output_on_off():
-    pin1 = MockPin(2)
-    pin2 = MockPin(3)
-    pin3 = MockPin(4)
-    with CompositeOutputDevice(OutputDevice(pin1), OutputDevice(pin2), foo=OutputDevice(pin3)) as device:
-        device.on()
-        assert all((pin1.state, pin2.state, pin3.state))
-        device.off()
-        assert not any((pin1.state, pin2.state, pin3.state))
-
-def test_composite_output_toggle():
-    pin1 = MockPin(2)
-    pin2 = MockPin(3)
-    pin3 = MockPin(4)
-    with CompositeOutputDevice(OutputDevice(pin1), OutputDevice(pin2), foo=OutputDevice(pin3)) as device:
-        device.toggle()
-        assert all((pin1.state, pin2.state, pin3.state))
-        device[0].off()
-        device.toggle()
-        assert pin1.state
-        assert not pin2.state
-        assert not pin3.state
-
-def test_composite_output_value():
-    pin1 = MockPin(2)
-    pin2 = MockPin(3)
-    pin3 = MockPin(4)
-    with CompositeOutputDevice(OutputDevice(pin1), OutputDevice(pin2), foo=OutputDevice(pin3)) as device:
-        assert device.value == (0, 0, 0)
-        device.toggle()
-        assert device.value == (1, 1, 1)
-        device.value = (1, 0, 1)
-        assert device[0].is_active
-        assert not device[1].is_active
-        assert device[2].is_active
 
 def test_led_board_on_off():
     pin1 = MockPin(2)

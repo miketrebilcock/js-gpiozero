@@ -1,13 +1,11 @@
 /*global it describe afterEach */
 
-var expect = require('chai').expect,
-    assert = require('chai').assert,
-    gz = require('../gpiozero/'),
-    mp = require('../gpiozero/pins/mock.js'),
-    with_close = require('../gpiozero/').with_close;
+const expect = require('chai').expect;
+const assert = require('chai').assert;
+const gz = require('../gpiozero/');
+const mp = require('../gpiozero/pins/mock.js');
+const with_close = require('../gpiozero/').with_close;
 
-
-//QUnit.module("devices");
 describe('devices', () => {
 
     afterEach(() => {

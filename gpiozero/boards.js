@@ -5,6 +5,118 @@ const PWMLED = require('./output_devices.js').PWMLED;
 const LED = require('./output_devices.js').LED;
 const exc = require('./exc.js');
 const CompositeDevice = require('./devices.js').CompositeDevice;
+const OutputDevice = require('./output_devices.js').OutputDevice;
+/**
+ *
+ * class CompositeOutputDevice(SourceMixin, CompositeDevice):
+ *  Extends :class:`CompositeDevice` with :meth:`on`, :meth:`off`, and
+ *  :meth:`toggle` methods for controlling subordinate output devices.  Also
+ *  extends :attr:`value` to be writeable.
+ */
+function CompositeOutputDevice (devices, kwdevices, options) {
+    CompositeDevice.call(this, devices, kwdevices, options);
+}
+
+CompositeOutputDevice.prototype = inherit(CompositeDevice.prototype);
+CompositeOutputDevice.prototype.constructor = CompositeOutputDevice;
+
+exports.CompositeOutputDevice = CompositeOutputDevice;
+
+CompositeOutputDevice.prototype.on = function () {
+    this._all.forEach((device) => {
+        if (device instanceof OutputDevice || device instanceof CompositeOutputDevice) {
+            device.on();
+        }
+    });
+};
+
+CompositeOutputDevice.prototype.off = function () {
+    this._all.forEach((device) => {
+        if (device instanceof OutputDevice || device instanceof CompositeOutputDevice) {
+            device.off();
+        }
+    });
+};
+
+CompositeOutputDevice.prototype.toggle = function () {
+    this._all.forEach((device) => {
+        if (device instanceof OutputDevice || device instanceof CompositeOutputDevice) {
+            device.toggle();
+        }
+    });
+};
+
+CompositeOutputDevice.prototype.value = function (value) {
+    if (value === undefined) {
+        return CompositeDevice.prototype.value.call(this);
+    }
+    if (value.length !== this._all.length) {
+        throw new exc.OutputDeviceError();
+    }
+    let i = 0;
+    for (i = 0; i<this._all.length; i++) {
+        this._all[i].value(value[i]);
+    }
+}
+
+/*
+ class CompositeOutputDevice(SourceMixin, CompositeDevice):
+ """
+ Extends :class:`CompositeDevice` with :meth:`on`, :meth:`off`, and
+ :meth:`toggle` methods for controlling subordinate output devices.  Also
+ extends :attr:`value` to be writeable.
+
+ :param list _order:
+ If specified, this is the order of named items specified by keyword
+ arguments (to ensure that the :attr:`value` tuple is constructed with a
+ specific order). All keyword arguments *must* be included in the
+ collection. If omitted, an alphabetically sorted order will be selected
+ for keyword arguments.
+ """
+
+ def on(self):
+ """
+ Turn all the output devices on.
+ """
+ for device in self:
+ if isinstance(device, (OutputDevice, CompositeOutputDevice)):
+ device.on()
+
+ def off(self):
+ """
+ Turn all the output devices off.
+ """
+ for device in self:
+ if isinstance(device, (OutputDevice, CompositeOutputDevice)):
+ device.off()
+
+ def toggle(self):
+ """
+ Toggle all the output devices. For each device, if it's on, turn it
+ off; if it's off, turn it on.
+ """
+ for device in self:
+ if isinstance(device, (OutputDevice, CompositeOutputDevice)):
+ device.toggle()
+
+ @property
+ def value(self):
+ """
+ A tuple containing a value for each subordinate device. This property
+ can also be set to update the state of all subordinate output devices.
+ """
+ return super(CompositeOutputDevice, self).value
+
+ @value.setter
+ def value(self, value):
+ for device, v in zip(self, value):
+ if isinstance(device, (OutputDevice, CompositeOutputDevice)):
+ device.value = v
+ # Simply ignore values for non-output devices
+
+
+ */
+
 
 exports.LEDCollection = LEDCollection;
 
@@ -43,10 +155,10 @@ function LEDCollection(_pins, _kwpins, _options) {
             ]);
         }
     }
-    CompositeDevice.call(this, this._leds, this._kwleds);
+    CompositeOutputDevice.call(this, this._leds, this._kwleds);
 }
 
-LEDCollection.prototype = inherit(CompositeDevice.prototype);
+LEDCollection.prototype = inherit(CompositeOutputDevice.prototype);
 LEDCollection.prototype.constructor = LEDCollection;
 
 /*
