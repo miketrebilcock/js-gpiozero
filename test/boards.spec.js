@@ -1,7 +1,7 @@
 /*global it describe afterEach */
 
-var expect = require('chai').expect,
-    //assert = require('chai').assert,
+const //expect = require('chai').expect,
+    assert = require('chai').assert,
     gz = require('../gpiozero/'),
     mp = require('../gpiozero/pins/mock.js'),
     //isclose = require('../gpiozero/compat.js').isclose,
@@ -15,19 +15,19 @@ describe('boards', () => {
     });
 
     it('traffic_lights', () => {
-        var red_pin = new mp.MockPin(2),
+        const red_pin = new mp.MockPin(2),
             amber_pin = new mp.MockPin(3),
             green_pin = new mp.MockPin(4);
         with_close(new gz.TrafficLights(red_pin, amber_pin, green_pin), (board) => {
             board.red.on();
-            expect(board.red.value).to.be(true);
-            expect(board.yellow.value).to.be(false);
-            expect(board.green.value).to.be(false);
+            assert(true === board.red.value());
+            assert(false === board.amber.value());
+            assert(false === board.green.value());
 
-            expect(red_pin.state).to.be(true);
-            expect(amber_pin.state).to.be(false);
-            expect(green_pin.state).to.be(false);
-
+            assert(true === red_pin.state());
+            assert(false === amber_pin.state());
+            assert(false === green_pin.state());
+            board.close();
         });
     });
 });

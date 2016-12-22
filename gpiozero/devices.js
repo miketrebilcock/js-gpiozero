@@ -1,10 +1,10 @@
-const ReadWriteLock = require('rwlock'),
-    exc = require('./exc.js'),
-    wiringpi = require('./pins/wiringpi.js').WiringPiPin,
-    inherit = require('./tools.js').inherit;
+const ReadWriteLock = require('rwlock');
+const exc = require('./exc.js');
+const wiringpi = require('./pins/wiringpi.js').WiringPiPin;
+const inherit = require('./tools.js').inherit;
 
-const _PINS = new Set(),
-    _PINS_LOCK = new ReadWriteLock(); //Yes, this needs to be re-entrant
+const _PINS = new Set();
+const _PINS_LOCK = new ReadWriteLock(); //Yes, this needs to be re-entrant
 
 /*    /*if(name == undefined) {
         name=process.env.GPIOZERO_PIN_FACTORY;
@@ -140,6 +140,12 @@ CompositeDevice.prototype.is_active = function () {
         }
     }
     return false;
+};
+
+CompositeDevice.prototype.close = function () {
+    this._all.forEach((device) => {
+        device.close();
+    })
 };
 
 exports.CompositeDevice = CompositeDevice;

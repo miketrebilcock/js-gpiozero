@@ -1,9 +1,10 @@
-var ReadWriteLock = require('rwlock'),
-    inherit = require('./tools.js').inherit,
-    extend = require('./tools.js').extend,
-    PWMLED = require('./output_devices.js').PWMLED,
-    LED = require('./output_devices.js').LED,
-    exc = require('./exc.js');
+const ReadWriteLock = require('rwlock');
+const inherit = require('./tools.js').inherit;
+const extend = require('./tools.js').extend;
+const PWMLED = require('./output_devices.js').PWMLED;
+const LED = require('./output_devices.js').LED;
+const exc = require('./exc.js');
+const CompositeDevice = require('./devices.js').CompositeDevice;
 
 exports.LEDCollection = LEDCollection;
 
@@ -14,8 +15,8 @@ exports.LEDCollection = LEDCollection;
  * @param {array}
  * @param {object}
  */
-function LEDCollection(_pins, _options) {
-    var defaults = {
+function LEDCollection(_pins, _kwpins, _options) {
+    const defaults = {
         pwm: false, //If true, creates PWMLED instances for each pin, else LED
         active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
         //associated pins to HIGH. If ``False``, the :meth:`on` method will set
@@ -26,11 +27,28 @@ function LEDCollection(_pins, _options) {
     };
     this.options = extend(defaults, _options);
     this._leds = [];
-    var i = 0;
-    for (i = 0; i < _pins.length; i++) {
-        this._leds[i] = this.options.pwm ? new PWMLED(_pins[i]) : new LED(_pins[i]);
+    this._kwleds = [];
+    let i;
+    if (_pins !== undefined) {
+        for (i = 0; i < _pins.length; i++) {
+            this._leds.push(this.options.pwm ? new PWMLED(_pins[i]) : new LED(_pins[i]));
+        }
     }
+
+    if (_kwpins !== undefined) {
+        for (i = 0; i < _kwpins.length; i++) {
+            this._kwleds.push([
+                    _kwpins[i][0],
+                    this.options.pwm ? new PWMLED(_kwpins[i][1]) : new LED(_kwpins[i][1])
+            ]);
+        }
+    }
+    CompositeDevice.call(this, this._leds, this._kwleds);
 }
+
+LEDCollection.prototype = inherit(CompositeDevice.prototype);
+LEDCollection.prototype.constructor = LEDCollection;
+
 /*
 class LEDCollection(CompositeOutputDevice):
 
@@ -45,9 +63,6 @@ class LEDCollection(CompositeOutputDevice):
     @property
     def active_high(self):
         return self[0].active_high
-
-
-
  */
 
 
@@ -60,12 +75,13 @@ exports.LEDBoard = LEDBoard;
  * 		from gpiozero import LEDBoard
  * 		leds = LEDBoard(2, 3, 4, 5, 6)
  * 		leds.on()
- * @param {array} pins Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary. You can also specify :class:`LEDBoard` instances to create trees of LEDs.
+ * @param {array} pins Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
+ * @param {array} kwpins Specify an array of arrays that has the Name of the device and the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
  * @param {object} _options [description]
  */
-function LEDBoard(pins, _options) {
+function LEDBoard(pins, kwpins, _options) {
 
-    var defaults = {
+    const defaults = {
         pwm: false, //If true, creates PWMLED instances for each pin, else LED
         active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
         //associated pins to HIGH. If ``False``, the :meth:`on` method will set
@@ -77,10 +93,15 @@ function LEDBoard(pins, _options) {
     this.options = extend(defaults, _options);
     this._blink_leds = [];
     this._blink_lock = new ReadWriteLock();
-    LEDCollection.call(this, pins, this.options);
+    LEDCollection.call(this, pins, kwpins, this.options);
 }
 LEDBoard.prototype = inherit(LEDCollection.prototype);
 LEDBoard.prototype.constructor = LEDBoard;
+
+LEDBoard.prototype.close = function () {
+    LEDCollection.prototype.close.call(this);
+}
+
 /*
 class LEDBoard(LEDCollection):
 
@@ -237,14 +258,9 @@ class LEDBoard(LEDCollection):
                     led._write(value)
             if self._blink_thread.stopping.wait(delay):
                 break
-
-
  */
 
-
-
 exports.TrafficLights = TrafficLights;
-
 
 /**
  * Extends :class:`LEDBoard` for devices containing red, yellow, and green LEDs.
@@ -255,53 +271,22 @@ exports.TrafficLights = TrafficLights;
  */
 function TrafficLights(red, amber, green, _options) {
 
-
-    var defaults = {
+    const defaults = {
         pwm: false, //If true, creates PWMLED instances, else LED
         initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-        // Switched on initialled
-
+                    // Switched on initialled
     };
     this.options = extend(defaults, _options);
-    this.devices = {
-        red,
-        amber,
-        green
-    };
-    if (this.devices.red === undefined ||
-        this.devices.amber === undefined ||
-        this.devices.green === undefined) {
+
+
+    if (red === undefined ||
+        amber === undefined ||
+        green === undefined) {
         throw new exc.GPIOPinMissing('Pins must be provided for all LEDs');
     }
-    LEDBoard.call(this, this.devices, this.options);
+    this.devices = [['red', red],['amber',amber],['green',green]];
+    LEDBoard.call(this,undefined, this.devices, this.options);
 }
 
 TrafficLights.prototype = inherit(LEDBoard.prototype);
 TrafficLights.prototype.constructor = TrafficLights;
-
-
-
-/*
-class TrafficLights(LEDBoard):
-    
-    def __init__(self, red=None, amber=None, green=None,
-                 pwm=False, initial_value=False, yellow=None):
-        if not all(p is not None for p in devices.values()):
-            raise GPIOPinMissing(
-                ', '.join(devices.keys())+' pins must be provided'
-            )
-        super(TrafficLights, self).__init__(
-            pwm=pwm, initial_value=initial_value,
-            _order=devices.keys(),
-            **devices)
-
-    def __getattr__(self, name):
-        if name == 'amber' and self._display_yellow:
-            name = 'yellow'
-        elif name == 'yellow' and not self._display_yellow:
-            name = 'amber'
-        return super(TrafficLights, self).__getattr__(name)
-
-
-
-*/
