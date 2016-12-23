@@ -1,33 +1,33 @@
-var Lock = require('rwlock'),
-    GPIODevice = require('./devices.js').GPIODevice,
-    Device = require('./devices.js').Device,
-    exc = require('./exc.js'),
-    inherit = require('./tools.js').inherit;
+const Lock = require('rwlock');
+const GPIODevice = require('./devices.js').GPIODevice;
+const Device = require('./devices.js').Device;
+const exc = require('./exc.js');
+const inherit = require('./tools.js').inherit;
 
 exports.OutputDevice = OutputDevice;
-
+/**
+ * Represents a generic GPIO output device.
+ * This class extends {@link GPIODevice} to add facilities common to GPIO
+ * output devices an :meth:`on` method to switch the device on, a
+ * corresponding :meth:`off` method, and a :meth:`toggle` method.
+ *
+ * @param {(int | Pin)} pin
+ * The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to. If
+ this is `undefined` a `GPIOPinMissing` Error will be raised.
+ * @param {boolean} [active_high = true]
+ *  If `true` (the default), the :meth:`on` method will set the GPIO to
+ *  HIGH. If `false`, the :meth:`on` method will set the GPIO to LOW (the
+ *  :meth:`off` method always does the opposite).
+ * @param {boolean} [initial_value = false]
+ *  If `false` (the default), the device will be off initially.  If
+ *  `undefined`, the device will be left in whatever state the pin is found in
+ *  when configured for output (warning: this can be on).  If `true`, the
+ *  device will be switched on initially.
+ * @constructor
+ *
+ * @throws {GPIOPinMissing} if pin is undefined.
+ */
 function OutputDevice(pin, active_high, initial_value) {
-    /*
-    Represents a generic GPIO output device.
-
-    This class extends :class:`GPIODevice` to add facilities common to GPIO
-    output devices: an :meth:`on` method to switch the device on, a
-    corresponding :meth:`off` method, and a :meth:`toggle` method.
-
-    :param int pin:
-        The GPIO pin (in BCM numbering) that the device is connected to. If
-        this is ``None`` a :exc:`GPIOPinMissing` will be raised.
-
-    :param bool active_high:
-        If ``True`` (the default), the :meth:`on` method will set the GPIO to
-        HIGH. If ``False``, the :meth:`on` method will set the GPIO to LOW (the
-        :meth:`off` method always does the opposite).
-
-    :param bool initial_value:
-        If ``False`` (the default), the device will be off initially.  If
-        ``None``, the device will be left in whatever state the pin is found in
-        when configured for output (warning: this can be on).  If ``True``, the
-        device will be switched on initially.*/
     GPIODevice.call(this, pin);
     this._lock = new Lock();
     this.active_high((active_high === undefined) ? true : active_high);
@@ -67,18 +67,19 @@ OutputDevice.prototype.off = function() {
     this._pin._stop_blink();
     this._write(false);
 };
-
+/**
+ * When ``True``, the :attr:`value` property is ``True`` when the device's
+ * :attr:`pin` is high. When ``False`` the :attr:`value` property is
+ * ``True`` when the device's pin is low (i.e. the value is inverted).
+ *
+ * This property can be set after construction; be warned that changing it
+ * will invert :attr:`value` (i.e. changing this property doesn't change
+ * the device's pin state - it just changes how that state is
+ * interpreted).
+ * @param value {boolean}
+ *
+ */
 OutputDevice.prototype.active_high = function(value) {
-    /*
-    When ``True``, the :attr:`value` property is ``True`` when the device's
-    :attr:`pin` is high. When ``False`` the :attr:`value` property is
-    ``True`` when the device's pin is low (i.e. the value is inverted).
-
-    This property can be set after construction; be warned that changing it
-    will invert :attr:`value` (i.e. changing this property doesn't change
-    the device's pin state - it just changes how that state is
-    interpreted).
-    */
     if (value === undefined) {
         return this._active_state;
     }
@@ -94,11 +95,11 @@ OutputDevice.prototype.value = function(value) {
     this._write(value);
 };
 
+/**
+ * Reverse the state of the device. If it's on, turn it off; if it's off,
+ turn it on.
+ */
 OutputDevice.prototype.toggle = function() {
-    /*
-    Reverse the state of the device. If it's on, turn it off; if it's off,
-        turn it on.
-    */
     var that = this;
     this._lock.readLock((release) => {
         if (that.is_active()) {
@@ -119,25 +120,19 @@ function DigitalOutputDevice(pin, active_high, initial_value) {
 DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
 DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
 
+/**
+ * Make the device turn on and off repeatedly.
+ *
+ * @param on_time {float}
+ * Number of seconds on. Defaults to 1 second.
+ * @param off_time {float}
+ * Number of seconds off. Defaults to 1 second.
+ * @param n
+ * Number of times to blink; ``None`` (the default) means forever.
+ * @param callback
+ * function to be called upon completion
+ */
 DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
-    /*
-    Make the device turn on and off repeatedly.
-
-    :param float on_time:
-        Number of seconds on. Defaults to 1 second.
-
-    :param float off_time:
-        Number of seconds off. Defaults to 1 second.
-
-    :param int n:
-        Number of times to blink; ``None`` (the default) means forever.
-
-    :param bool background:
-        If ``True`` (the default), start a background thread to continue
-        blinking and return immediately. If ``False``, only return when the
-        blink is finished (warning: the default value of *n* will result in
-        this method never returning).
-    */
     this._pin.blink(on_time, off_time, n, callback);
 };
 
@@ -594,46 +589,34 @@ PWMLED.prototype.constructor = PWMLED;
 PWMLED.prototype.is_lit = function() {
     return this.is_active();
 };
+/**
+ *
+ * Extends :class:`Device` and represents a full color LED component (composed of red, green, and blue LEDs).
+ *
+ * Connect the common cathode (longest leg) to a ground pin; connect each of
+ * the other legs (representing the red, green, and blue anodes) to any GPIO
+ * pins.  You can either use three limiting resistors (one per anode) or a
+ * single limiting resistor on the cathode.
+ *
+ * @param red
+ *      The GPIO pin that controls the red component of the RGB LED.
+ * @param green
+ *      The GPIO pin that controls the green component of the RGB LED.
+ * @param blue
+ *      The GPIO pin that controls the blue component of the RGB LED.
+ * @param active_high
+ *      Set to ``True`` (the default) for common cathode RGB LEDs. If you are
+ *      using a common anode RGB LED, set this to ``False``.
+ * @param initial_value
+ *      The initial color for the RGB LED. Defaults to black ``(0, 0, 0)``.
+ * @param pwm
+ *      If ``True`` (the default), construct :class:`PWMLED` instances for
+ *      each component of the RGBLED. If ``False``, construct regular
+ *      :class:`LED` instances, which prevents smooth color graduations.
+ * @constructor
+ */
 
 function RGBLED(red, green, blue, active_high, initial_value, pwm) {
-    /*
-    Extends :class:`Device` and represents a full color LED component (composed
-    of red, green, and blue LEDs).
-
-    Connect the common cathode (longest leg) to a ground pin; connect each of
-    the other legs (representing the red, green, and blue anodes) to any GPIO
-    pins.  You can either use three limiting resistors (one per anode) or a
-    single limiting resistor on the cathode.
-
-    The following code will make the LED purple::
-
-        from gpiozero import RGBLED
-
-        led = RGBLED(2, 3, 4)
-        led.color = (1, 0, 1)
-
-    :param int red:
-        The GPIO pin that controls the red component of the RGB LED.
-
-    :param int green:
-        The GPIO pin that controls the green component of the RGB LED.
-
-    :param int blue:
-        The GPIO pin that controls the blue component of the RGB LED.
-
-    :param bool active_high:
-        Set to ``True`` (the default) for common cathode RGB LEDs. If you are
-        using a common anode RGB LED, set this to ``False``.
-
-    :param tuple initial_value:
-        The initial color for the RGB LED. Defaults to black ``(0, 0, 0)``.
-
-    :param bool pwm:
-        If ``True`` (the default), construct :class:`PWMLED` instances for
-        each component of the RGBLED. If ``False``, construct regular
-        :class:`LED` instances, which prevents smooth color graduations.
-    */
-
     this._leds = [];
     if (red === undefined || blue === undefined || green === undefined) {
         throw new exc.GPIOPinMissing('red, green, and blue pins must be provided');

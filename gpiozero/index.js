@@ -4,6 +4,7 @@ const output_devices = require('./output_devices.js');
 const tools = require('./tools.js');
 const boards = require('./boards.js');
 
+//noinspection JSUnresolvedVariable
 module.exports = {
 	GPIOPinMissing	: exc.GPIOPinMissing,
 	GPIOPinInUse 	: exc.GPIOPinInUse,
@@ -27,8 +28,8 @@ module.exports = {
 
     CompositeOutputDevice : boards.CompositeOutputDevice,
 	TrafficLights : boards.TrafficLights,
+	PiTraffic: boards.PiTraffic,
 
 	with_close : tools.with_close,
 	inherit : tools.inherit
-
 };

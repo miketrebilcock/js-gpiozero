@@ -145,7 +145,7 @@ CompositeDevice.prototype.is_active = function () {
 CompositeDevice.prototype.close = function () {
     this._all.forEach((device) => {
         device.close();
-    })
+    });
 };
 
 exports.CompositeDevice = CompositeDevice;
@@ -242,11 +242,18 @@ class CompositeDevice(Device):
 
  */
 
-
+/**
+ * Extends :class:`Device`. Represents a generic GPIO device and provides
+ * the services common to all single-pin GPIO devices (like ensuring two
+ * GPIO devices do no share a {@link Pin}).
+ * @param {(int | Pin)} pin
+ * The GPIO pin (in BCM numbering) or a instance of {@link Pin} that the device is connected to. If
+ * this is `undefined`, {@link GPIOPinMissing} will be raised. If the pin is
+ * already in use by another device, {@link GPIOPinInUse} will be raised.
+ *
+ * @constructor
+ */
 function GPIODevice(pin) {
-    /*  self._pin must be set before any possible exceptions can be raised
-    because it's accessed in __del__. However, it mustn't be given the
-    value of pin until we've verified that it isn't already allocated*/
     Device.call(this);
     this._pin = undefined;
     if (pin === undefined) {
