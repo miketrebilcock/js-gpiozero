@@ -101,7 +101,7 @@ OutputDevice.prototype.value = function(value) {
  turn it on.
  */
 OutputDevice.prototype.toggle = function() {
-    var that = this;
+    const that = this;
     this._lock.readLock((release) => {
         if (that.is_active()) {
             that.off();
@@ -332,7 +332,7 @@ PWMOutputDevice.prototype.toggle = function() {
     toggle it to 0.9, and so on.
     */
     this._pin._stop_blink();
-    var newValue = 1 - this.value();
+    const newValue = 1 - this.value();
     this.value(newValue);
 };
 
@@ -380,7 +380,7 @@ PWMOutputDevice.prototype.pulse = function(fade_in_time, fade_out_time, n, callb
     :param int n:
         Number of times to blink; ``None`` (the default) means forever.
     */
-    var on_time = 0,
+    const on_time = 0,
         off_time = 0;
 
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);

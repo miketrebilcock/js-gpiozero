@@ -45,8 +45,9 @@ const _PINS_LOCK = new ReadWriteLock(); //Yes, this needs to be re-entrant
  *  property, the {@link Device#value|value} property, and the {@link Device#close|close} method).
  * @constructor
  */
-function Device() {
 
+function Device() {
+// eslint-disable-next-line no-empty-function
 }
 /**
  * Returns a value representing the device's state. Frequently, this is a
@@ -82,16 +83,17 @@ Device.prototype.close = function() {
 exports.Device = Device;
 
 /**
- *  Extends :class:`Device`. Represents a device composed of multiple devices
+ *  Represents a device composed of multiple devices
     like simple HATs, H-bridge motor controllers, robots composed of multiple
     motors, etc.
 
     The constructor accepts subordinate devices as positional or keyword
     arguments.  Positional arguments form unnamed devices accessed via the
-    :attr:`all` attribute, while keyword arguments are added to the device
-    as named (read-only) attributes.
+    (@link CompositeDevice#all|all) attribute, while keyword arguments are added to the device
+    as named attributes.
  * @param {[array]} devices
  * @param {[array]} kwdevices
+ * @extends Device
  */
 function CompositeDevice(devices, kwdevices) {
     this._all = [];
