@@ -6,10 +6,6 @@ install:
   - npm install
 script:
 - npm test
-before_deploy:
-- "documentation build gpiozero/** -f html -o docs"
-after_deploy:
-- "gh-pages -d docs"
 env:
   matrix:
   - CXX=g++-4.8
