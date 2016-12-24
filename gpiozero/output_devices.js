@@ -7,8 +7,8 @@ const inherit = require('./tools.js').inherit;
 exports.OutputDevice = OutputDevice;
 /**
  * Represents a generic GPIO output device.
- * This class extends {@link GPIODevice} to add facilities common to GPIO
- * output devices an :meth:`on` method to switch the device on, a
+ * Provides facilities common to GPIO
+ * output devices an {@link OutputDevice#on|on} method to switch the device on, a
  * corresponding :meth:`off` method, and a :meth:`toggle` method.
  *
  * @param {(int | Pin)} pin
@@ -24,6 +24,7 @@ exports.OutputDevice = OutputDevice;
  *  when configured for output (warning: this can be on).  If `true`, the
  *  device will be switched on initially.
  * @constructor
+ * @augments GPIODevice
  *
  * @throws {GPIOPinMissing} if pin is undefined.
  */

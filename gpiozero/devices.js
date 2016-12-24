@@ -38,30 +38,34 @@ const _PINS_LOCK = new ReadWriteLock(); //Yes, this needs to be re-entrant
 
 //var pin_factory = _default_pin_factory();
 
+/**
+ *  Represents a single device of any type; GPIO-based, SPI-based, I2C-based,
+ *  etc. This is the base class of the device hierarchy. It defines the
+ *  basic services applicable to all devices (specifically the {@link Device#is_active|is_active}
+ *  property, the {@link Device#value|value} property, and the {@link Device#close|close} method).
+ * @constructor
+ */
 function Device() {
-    /*
-    Represents a single device of any type; GPIO-based, SPI-based, I2C-based,
-    etc. This is the base class of the device hierarchy. It defines the
-    basic services applicable to all devices (specifically thhe :attr:`is_active`
-    property, the :attr:`value` property, and the :meth:`close` method).
-    */
-}
 
+}
+/**
+ * Returns a value representing the device's state. Frequently, this is a
+ * boolean value, or a number between 0 and 1 but some devices use larger
+ * ranges (e.g. -1 to +1) and composite devices usually use tuples to
+ * return the states of all their subordinate components.
+ */
 Device.prototype.value = function() {
-    /*Returns a value representing the device's state. Frequently, this is a
-    boolean value, or a number between 0 and 1 but some devices use larger
-    ranges (e.g. -1 to +1) and composite devices usually use tuples to
-    return the states of all their subordinate components.
-    */
+
     throw new exc.NotImplementedError();
 };
 
+/**
+ *  Returns ``True`` if the device is currently active and ``False``
+ *  otherwise. This property is usually derived from :attr:`value`. Unlike
+ *  :attr:`value`, this is *always* a boolean.
+ */
 Device.prototype.is_active = function() {
-    /*
-    Returns ``True`` if the device is currently active and ``False``
-    otherwise. This property is usually derived from :attr:`value`. Unlike
-    :attr:`value`, this is *always* a boolean.
-    */
+
     return (this.value !== undefined);
 };
 
@@ -243,15 +247,18 @@ class CompositeDevice(Device):
  */
 
 /**
- * Extends :class:`Device`. Represents a generic GPIO device and provides
+ * Represents a generic GPIO device and provides
  * the services common to all single-pin GPIO devices (like ensuring two
  * GPIO devices do no share a {@link Pin}).
  * @param {(int | Pin)} pin
- * The GPIO pin (in BCM numbering) or a instance of {@link Pin} that the device is connected to. If
- * this is `undefined`, {@link GPIOPinMissing} will be raised. If the pin is
- * already in use by another device, {@link GPIOPinInUse} will be raised.
+ * The GPIO pin (in BCM numbering) or a instance of {@link Pin} that the device is connected to.
  *
+ * @throws {GPIOPinMissing}
+ * If pin is 'undefined'
+ * @throws {GPIOPinInUse}
+ * If the pin is already in use by another device
  * @constructor
+ * @augments Device
  */
 function GPIODevice(pin) {
     Device.call(this);
