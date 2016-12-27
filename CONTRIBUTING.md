@@ -39,7 +39,10 @@ Release process:
 
 * Confirm that `master` passes CI tests
 * Bump version in `package.json`
+* Add Version Tag to Git
 * Run `npm run changelog`
 * Add updated CHANGELOG.md to master
-* Push commits
+* Push commits and new tag
 * Travis will run npm publish
+
+Working on automating as much of this as possible - one step at a time!

@@ -20,6 +20,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
+    "cz-conventional-changelog": "^1.2.0",
     "documentation": "^4.0.0-beta9",
     "eslint": "^3.12.2",
     "eslint-config-airbnb-base": "^11.0.0",
@@ -44,5 +45,10 @@
   "directories": {
     "doc": "docs",
     "test": "tests"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
