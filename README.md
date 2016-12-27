@@ -6,6 +6,11 @@ A port of the fanastic [python gpiozero](https://github.com/RPi-Distro/python-gp
 
 It's early days and a work in progress!
 
+##Documentation
+The API Documentation is available at the repos (github-pages)[https://i-am-digital.github.io/js-gpiozero/].  The current task is completing the documentation for all the parts that have been written.
+
+The documentation is produced by [documentation](https://www.npmjs.com/package/documentation), enabling the api documentation to be written within the source code.  Upon committing to git, a pre-commit task will run, this runs all tests and updates the documentation. Checkout (Git Hooks) [https://www.atlassian.com/git/tutorials/git-hooks/local-hooks] for more info.
+
 ##Using
 First of all we need to be running the latest version of nodejs (at least v6). The following command updates the Debian apt package repository to include the NodeSource packages
 
@@ -27,8 +32,9 @@ v7.3.0
 
 ```
 
-=======
 ## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/i-am-digital/js-gpiozero/issues)
+
+The project is very much a work in progress. Some far the output part of gpiozero has been followed through, completing a near direct translation from the original Python. This means the operating model hasn't really taken advantage of the nodejs programming paradigm.  That's next! It's mostly written in EMCAScript 5 with a splash of 6, the intention is to written everything in 6, then use babel to create an output that nodejs can use. The projects tab shows current work, planned and in progress, feel free to pick up a task and have a go.
 
 [![NPM](https://nodei.co/npm/js-gpiozero.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/js-gpiozero/)
 
