@@ -40,7 +40,7 @@
   "author": "Mike Trebilcock <mike@iamdigital.uk>",
   "contributors": [],
   "license": "BSD-2-Clause",
-  "homepage": "https://github.com/i-am-digital/js-gpiozero#readme",
+  "homepage": "https://i-am-digital.github.io/js-gpiozero",
   "directories": {
     "doc": "docs",
     "test": "tests"
