@@ -6,7 +6,7 @@ git stash -q --keep-index
 npm test
 RESULT=$?
 
-documentation build gpiozero/** -f html -o docs
+npm docs
 git add ./docs/**
 
 ## Restore the stashed files so the directory
