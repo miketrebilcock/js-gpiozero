@@ -42,7 +42,7 @@ To enable this the follow line needs to be executed:
 $ln -s ../../pre-commit.sh .git/hooks/pre-commit
 ```
 
-More info about contributing can be found [here] () 
+More info about contributing can be found [here] (https://github.com/i-am-digital/js-gpiozero/blob/master/CONTRIBUTING.md) 
 
 [![NPM](https://nodei.co/npm/js-gpiozero.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/js-gpiozero/)
 
