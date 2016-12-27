@@ -30,7 +30,7 @@ v7.3.0
 
 ```
 
-## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/i-am-digital/js-gpiozero/issues)
+## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/i-am-digital/js-gpiozero/issues) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 The project is very much a work in progress. Some far the output part of gpiozero has been followed through, completing a near direct translation from the original Python. This means the operating model hasn't really taken advantage of the nodejs programming paradigm.  That's next! It's mostly written in EMCAScript 5 with a splash of 6, the intention is to written everything in 6, then use babel to create an output that nodejs can use. The projects tab shows current work, planned and in progress, feel free to pick up a task and have a go.
 
@@ -41,6 +41,8 @@ To enable this the follow line needs to be executed:
 ```bash
 $ln -s ../../pre-commit.sh .git/hooks/pre-commit
 ```
+
+More info about contributing can be found [here] () 
 
 [![NPM](https://nodei.co/npm/js-gpiozero.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/js-gpiozero/)
 
