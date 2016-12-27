@@ -53,18 +53,18 @@ OutputDevice.prototype._write = function(value) {
     this._pin.state(this._value_to_state(value));
 };
 
+/**
+* Turns the device on.
+**/
 OutputDevice.prototype.on = function() {
-    /*
-    Turns the device on.
-    */
     this._pin._stop_blink();
     this._write(true);
 };
 
+/**
+ * Turns the device off.
+ */
 OutputDevice.prototype.off = function() {
-    /*
-    Turns the device off.
-    */
     this._pin._stop_blink();
     this._write(false);
 };
@@ -77,7 +77,7 @@ OutputDevice.prototype.off = function() {
  * will invert :attr:`value` (i.e. changing this property doesn't change
  * the device's pin state - it just changes how that state is
  * interpreted).
- * @param value {boolean}
+ * @param {boolean} [value]
  *
  */
 OutputDevice.prototype.active_high = function(value) {
@@ -124,13 +124,13 @@ DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
 /**
  * Make the device turn on and off repeatedly.
  *
- * @param on_time {float}
+ * @param {float} on_time
  * Number of seconds on. Defaults to 1 second.
- * @param off_time {float}
+ * @param {float} off_time
  * Number of seconds off. Defaults to 1 second.
- * @param n
+ * @param {int} n
  * Number of times to blink; ``None`` (the default) means forever.
- * @param callback
+ * @param @callback callback
  * function to be called upon completion
  */
 DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {

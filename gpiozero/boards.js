@@ -11,11 +11,11 @@ const OutputDevice = require('./output_devices.js').OutputDevice;
  *  Extends {@link CompositeDevice} with {@link CompositeDevice#on|on}, {@link CompositeDevice#off|off}, and
  *  {@link CompositeDevice#toggle|toggle} methods for controlling subordinate output devices.  Also
  *  extends {@link CompositeDevice#value|value} to be writeable.
- *  @param {array} devices
+ *  @param {array} [devices]
  *  An array of devices that create this composite device
- *  @param {array} kwdevices
+ *  @param {array} [kwdevices]
  *  An array of tuples that contain the device name and device eg ['red', new LED(1)]
- *  @param {array} options
+ *  @param {array} [options]
  *  @inheritdoc
  * @extends CompositeDevice
  * @constructor
@@ -30,6 +30,9 @@ CompositeOutputDevice.prototype.constructor = CompositeOutputDevice;
 
 exports.CompositeOutputDevice = CompositeOutputDevice;
 
+/**
+ * Calls the on method on all child devices within this composite device
+ */
 CompositeOutputDevice.prototype.on = function () {
     this._all.forEach((device) => {
         if (device instanceof OutputDevice || device instanceof CompositeOutputDevice) {
@@ -38,6 +41,9 @@ CompositeOutputDevice.prototype.on = function () {
     });
 };
 
+/**
+ * Calls the off method on all child devices within this composite device
+ */
 CompositeOutputDevice.prototype.off = function () {
     this._all.forEach((device) => {
         if (device instanceof OutputDevice || device instanceof CompositeOutputDevice) {
@@ -46,6 +52,10 @@ CompositeOutputDevice.prototype.off = function () {
     });
 };
 
+
+/**
+* Calls the toggle method on all child devices within this composite device
+**/
 CompositeOutputDevice.prototype.toggle = function () {
     this._all.forEach((device) => {
         if (device instanceof OutputDevice || device instanceof CompositeOutputDevice) {
@@ -54,6 +64,16 @@ CompositeOutputDevice.prototype.toggle = function () {
     });
 };
 
+/**
+ * when value is undefined then the function returns the value of all child
+ * devices as an array.
+ * when value is set, all child devices will have their value set according
+ * to the value array.
+ * @param {array} [value]
+ * The value to set all of the child devices to.
+ * @returns {array}
+ * The current value of each output device returned as an array.
+ */
 CompositeOutputDevice.prototype.value = function (value) {
     if (value === undefined) {
         return CompositeDevice.prototype.value.call(this);
@@ -67,84 +87,31 @@ CompositeOutputDevice.prototype.value = function (value) {
     }
 }
 
-/*
- class CompositeOutputDevice(SourceMixin, CompositeDevice):
- """
- Extends :class:`CompositeDevice` with :meth:`on`, :meth:`off`, and
- :meth:`toggle` methods for controlling subordinate output devices.  Also
- extends :attr:`value` to be writeable.
-
- :param list _order:
- If specified, this is the order of named items specified by keyword
- arguments (to ensure that the :attr:`value` tuple is constructed with a
- specific order). All keyword arguments *must* be included in the
- collection. If omitted, an alphabetically sorted order will be selected
- for keyword arguments.
- """
-
- def on(self):
- """
- Turn all the output devices on.
- """
- for device in self:
- if isinstance(device, (OutputDevice, CompositeOutputDevice)):
- device.on()
-
- def off(self):
- """
- Turn all the output devices off.
- """
- for device in self:
- if isinstance(device, (OutputDevice, CompositeOutputDevice)):
- device.off()
-
- def toggle(self):
- """
- Toggle all the output devices. For each device, if it's on, turn it
- off; if it's off, turn it on.
- """
- for device in self:
- if isinstance(device, (OutputDevice, CompositeOutputDevice)):
- device.toggle()
-
- @property
- def value(self):
- """
- A tuple containing a value for each subordinate device. This property
- can also be set to update the state of all subordinate output devices.
- """
- return super(CompositeOutputDevice, self).value
-
- @value.setter
- def value(self, value):
- for device, v in zip(self, value):
- if isinstance(device, (OutputDevice, CompositeOutputDevice)):
- device.value = v
- # Simply ignore values for non-output devices
-
-
- */
-
 
 exports.LEDCollection = LEDCollection;
 
 /**
- * Extends :class:`CompositeOutputDevice`. Abstract base class for
- * :class:`LEDBoard` and :class:`LEDBarGraph`.
+ * Abstract base class for @link{LEDBoard} and @link{LEDBarGraph}.
  * 
- * @param {array}
- * @param {object}
+ * @param {array} [_pins]
+ * Array of pins that LEDs are connect to.
+ * @param {array} [_kwpins]
+ * Array of tuples listing names for each pin eg [['red',17], ['amber',22]]
+ * @param {object} [_options]
+ * Set options for the Collection:
+ * *     pwm: Default: false, If true, creates PWMLED instances for each pin, else LED.
+ * *     active_high: Default: true, If true, the on method will set all the associated pins to HIGH.
+ *                                  If false, the on method will set all pins to LOW
+ *                                  (the `off` method always does the opposite).
+ * *    initial_value: If false, all LEDs will be off initially, if true the device will be Switched on initialled
+ * @extends CompositeOutputDevice
  */
 function LEDCollection(_pins, _kwpins, _options) {
     "use strict";
     const defaults = {
-        pwm: false, //If true, creates PWMLED instances for each pin, else LED
-        active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
-        //associated pins to HIGH. If ``False``, the :meth:`on` method will set
-        //all pins to LOW (the :meth:`off` method always does the opposite). This
-        //parameter can only be specified as a keyword parameter.
-        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-        // Switched on initialled
+        pwm: false,
+        active_high: true,
+        initial_value: false,
     };
     this.options = extend(defaults, _options);
     this._leds = [];
@@ -170,46 +137,51 @@ function LEDCollection(_pins, _kwpins, _options) {
 LEDCollection.prototype = inherit(CompositeOutputDevice.prototype);
 LEDCollection.prototype.constructor = LEDCollection;
 
-/*
-class LEDCollection(CompositeOutputDevice):
-
-    @property
-    def leds(self):
-        """
-        A flat tuple of all LEDs contained in this collection (and all
-        sub-collections).
-        """
-        return self._leds
-
-    @property
-    def active_high(self):
-        return self[0].active_high
+/**
+ * @returns {array}
+ * A flat array of tuples of all LEDs contained in this collection (and all sub-collections).
  */
+LEDCollection.prototype.leds = function (){
+    return this._leds;
+};
 
+/**
+ *
+ * @returns {boolean}
+ */
+LEDCollection.prototype.active_high = function (){
+    return this[0].active_high;
+}
 
 exports.LEDBoard = LEDBoard;
 
 /**
- * Extends :class:`LEDCollection` and represents a generic LED board or collection of LEDs.
+ * Represents a generic LED board or collection of LEDs.
  * The following example turns on all the LEDs on a board containing 5 LEDs
  * attached to GPIO pins 2 through 6::
- * 		from gpiozero import LEDBoard
- * 		leds = LEDBoard(2, 3, 4, 5, 6)
- * 		leds.on()
- * @param {array} pins Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
- * @param {array} kwpins Specify an array of arrays that has the Name of the device and the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
- * @param {object} _options [description]
+ * 		const LEDBoard = require('gpiozero').LEDBoard;
+ * 		var leds = new LEDBoard([2, 3, 4, 5, 6]);
+ * 		leds.on();
+ * @param {array} pins
+ * Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
+ * @param {array} kwpins
+ * Specify an array of arrays that has the Name of the device and the GPIO pins that the LEDs of the board are attached to.
+ * You can designate as many pins as necessary.
+ * @param {object} _options
+ * Set options for the Collection:
+ * *     pwm: Default: false, If true, creates PWMLED instances for each pin, else LED.
+ * *     active_high: Default: true, If true, the on method will set all the associated pins to HIGH.
+ *                                  If false, the on method will set all pins to LOW
+ *                                  (the `off` method always does the opposite).
+ *  *    initial_value: If false, all LEDs will be off initially, if true the device will be Switched on initialled
+ * @extends LEDCollection
  */
 function LEDBoard(pins, kwpins, _options) {
     "use strict";
     const defaults = {
-        pwm: false, //If true, creates PWMLED instances for each pin, else LED
-        active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
-        //associated pins to HIGH. If ``False``, the :meth:`on` method will set
-        //all pins to LOW (the :meth:`off` method always does the opposite). This
-        //parameter can only be specified as a keyword parameter.
-        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-        // Switched on initialled
+        pwm: false,
+        active_high: true,
+        initial_value: false,
     };
     this.options = extend(defaults, _options);
     this._blink_leds = [];
@@ -225,19 +197,6 @@ LEDBoard.prototype.close = function () {
 
 /*
 class LEDBoard(LEDCollection):
-
-
-    :param \*\*named_pins:
-        Specify GPIO pins that LEDs of the board are attached to, associating
-        each LED with a property name. You can designate as many pins as
-        necessary and use any names, provided they're not already in use by
-        something else. You can also specify :class:`LEDBoard` instances to
-        create trees of LEDs.
-    """
-    def __init__(self, *args, **kwargs):
-        self._blink_leds = []
-        self._blink_lock = Lock()
-        super(LEDBoard, self).__init__(*args, **kwargs)
 
     def close(self):
         self._stop_blink()
@@ -384,21 +343,26 @@ class LEDBoard(LEDCollection):
 exports.TrafficLights = TrafficLights;
 
 /**
- * Extends :class:`LEDBoard` for devices containing red, yellow, and green LEDs.
- * @param {number} red The GPIO pin that the red LED is attached to.
- * @param {number} amber The GPIO pin that the amber LED is attached to.
- * @param {number} green The GPIO pin that the green LED is attached to.
- * @param {object} _options 
+ * Represents a traffic light device containing red, amber, and green LEDs.
+ * @param {number} red
+ * The GPIO pin that the red LED is attached to.
+ * @param {number} amber
+ * The GPIO pin that the amber LED is attached to.
+ * @param {number} green
+ * The GPIO pin that the green LED is attached to.
+ * @param {object} [_options]
+ * * pwm: default: false. If true, creates PWMLED instances, else LED
+ * * initial_value: default: false. If false, all LEDs will be off initially, if true the device will be switched on initialled
+ * @extends LEDBoards
+ * @constructor
  */
 function TrafficLights(red, amber, green, _options) {
     "use strict";
     const defaults = {
-        pwm: false, //If true, creates PWMLED instances, else LED
-        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-                    // Switched on initialled
+        pwm: false,
+        initial_value: false
     };
     this.options = extend(defaults, _options);
-
 
     if (red === undefined ||
         amber === undefined ||
@@ -412,21 +376,22 @@ function TrafficLights(red, amber, green, _options) {
 TrafficLights.prototype = inherit(LEDBoard.prototype);
 TrafficLights.prototype.constructor = TrafficLights;
 /**
- * Extends :class:`TrafficLights` for the `Low Voltage Labs PI-TRAFFIC`_
+ * Represents the `Low Voltage Labs PI-TRAFFIC`_
  * vertical traffic lights board when attached to GPIO pins 9, 10, and 11.
-
  * There's no need to specify the pins if the PI-TRAFFIC is connected to the
  * default pins (9, 10, 11).
  * Low Voltage Labs PI-TRAFFIC: http://lowvoltagelabs.com/products/pi-traffic/
- * @param TrafficLights
+ * @param {object} [_options]
+ * * pwm: default: false. If true, creates PWMLED instances, else LED
+ * * initial_value: default: false. If false, all LEDs will be off initially, if true the device will be switched on initialled
  * @constructor
+ * @extends: TrafficLights
  */
 function PiTraffic(_options){
     "use strict";
     const defaults = {
-        pwm: false, //If true, creates PWMLED instances, else LED
-        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
-        // Switched on initialled
+        pwm: false,
+        initial_value: false
     };
     this.options = extend(defaults, _options);
     TrafficLights.call(this, 9,10,11, this.options);

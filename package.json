@@ -13,7 +13,7 @@
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov",
     "changelog": "standard-changelog -i CHANGELOG.md -w",
-    "docs": "documentation build gpiozero/** -f html -o docs"
+    "docs": "documentation build gpiozero/index.js -f html --sort-order alpha -o docs --document-exported"
   },
   "dependencies": {
     "rwlock": "5.0.0",

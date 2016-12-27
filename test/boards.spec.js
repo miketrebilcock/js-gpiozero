@@ -140,19 +140,6 @@ describe('boards', () => {
 
 /*
 
-def test_pi_traffic():
-    pins = [MockPin(n) for n in (9, 10, 11)]
-    with PiTraffic() as board:
-        assert [device.pin for device in board] == pins
-
-*/
-
-
-
-
-
-/*
-
 
 def setup_function(function):
     import gpiozero.devices
