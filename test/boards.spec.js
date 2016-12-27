@@ -1,4 +1,4 @@
-/*global it describe afterEach */
+/*global it describe afterEach context */
 
 const expect = require('chai').expect;
 const assert = require('chai').assert;
@@ -12,106 +12,133 @@ describe('boards', () => {
         mp.clear_pins();
 
     });
+    context("traffic_lights", ()=> {
+        it("lights exist", () => {
+            const red_pin = new mp.MockPin(2),
+                amber_pin = new mp.MockPin(3),
+                green_pin = new mp.MockPin(4);
+            with_close(new gz.TrafficLights(red_pin, amber_pin, green_pin), (board) => {
+                board.red.on();
+                assert(true === board.red.value());
+                assert(false === board.amber.value());
+                assert(false === board.green.value());
 
-    it('traffic_lights', () => {
-        const red_pin = new mp.MockPin(2),
-            amber_pin = new mp.MockPin(3),
-            green_pin = new mp.MockPin(4);
-        with_close(new gz.TrafficLights(red_pin, amber_pin, green_pin), (board) => {
-            board.red.on();
-            assert(true === board.red.value());
-            assert(false === board.amber.value());
-            assert(false === board.green.value());
+                assert(true === red_pin.state());
+                assert(false === amber_pin.state());
+                assert(false === green_pin.state());
 
-            assert(true === red_pin.state());
-            assert(false === amber_pin.state());
-            assert(false === green_pin.state());
-            board.close();
+                board.amber.on();
+                assert(true === board.red.value());
+                assert(true === board.amber.value());
+                assert(false === board.green.value());
+
+                assert(true === red_pin.state());
+                assert(true === amber_pin.state());
+                assert(false === green_pin.state());
+
+                board.green.on();
+                assert(true === board.red.value());
+                assert(true === board.amber.value());
+                assert(true === board.green.value());
+
+                assert(true === red_pin.state());
+                assert(true === amber_pin.state());
+                assert(true === green_pin.state());
+            });
+        });
+
+        it("bad_init", () => {
+            expect(() => {
+                /*eslint no-new: off*/
+                new gz.TrafficLights();
+            }).to.throw(gz.ValueError);
         });
     });
 
-    it('traffic_lights_bad_init', () => {
-        expect(() => {
-            /*eslint no-new: off*/
-            new gz.TrafficLights();
-        }).to.throw(gz.ValueError);
-    });
+    context("composite_output", ()=>{
+        it('on_off', () => {
+            const pin1 = new mp.MockPin(2);
+            const pin2 = new mp.MockPin(3);
+            const pin3 = new mp.MockPin(4);
+            with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
+                new gz.OutputDevice(pin2),
+                new gz.OutputDevice(pin3)]),(device) => {
+                device.on();
+                assert (true === pin1.state(), "Pin 1 is not set to true");
+                assert (true === pin2.state(), "Pin 2 is not set to true");
+                assert (true === pin3.state(), "Pin 3 is not set to true");
+                device.off();
+                assert (false === pin1.state(), "Pin 1 is not set to false");
+                assert (false === pin2.state(), "Pin 2 is not set to false");
+                assert (false === pin3.state(), "Pin 3 is not set to false");
+            });
+        });
 
-    it('composite_output_on_off', () => {
-        const pin1 = new mp.MockPin(2);
-        const pin2 = new mp.MockPin(3);
-        const pin3 = new mp.MockPin(4);
-        with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
-            new gz.OutputDevice(pin2),
-            new gz.OutputDevice(pin3)]),(device) => {
-            device.on();
-            assert (true === pin1.state(), "Pin 1 is not set to true");
-            assert (true === pin2.state(), "Pin 2 is not set to true");
-            assert (true === pin3.state(), "Pin 3 is not set to true");
-            device.off();
-            assert (false === pin1.state(), "Pin 1 is not set to false");
-            assert (false === pin2.state(), "Pin 2 is not set to false");
-            assert (false === pin3.state(), "Pin 3 is not set to false");
+        it('toggle', () => {
+            const pin1 = new mp.MockPin(2);
+            const pin2 = new mp.MockPin(3);
+            const pin3 = new mp.MockPin(4);
+            with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
+                new gz.OutputDevice(pin2),
+                new gz.OutputDevice(pin3)]),(device) => {
+                device.toggle();
+                assert (true === pin1.state(), "Pin 1 is not set to true");
+                assert (true === pin2.state(), "Pin 2 is not set to true");
+                assert (true === pin3.state(), "Pin 3 is not set to true");
+                device[0].off();
+                device.toggle();
+                assert (true === pin1.state(), "Pin 1 is not set to false");
+                assert (false === pin2.state(), "Pin 2 is not set to false");
+                assert (false === pin3.state(), "Pin 3 is not set to false");
+            });
+        });
+
+        it('value', () => {
+            const pin1 = new mp.MockPin(2);
+            const pin2 = new mp.MockPin(3);
+            const pin3 = new mp.MockPin(4);
+            with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
+                new gz.OutputDevice(pin2),
+                new gz.OutputDevice(pin3)]),(device) => {
+                let actual = device.value();
+                assert(false === actual[0], "Initial value for each device[0] is not false");
+                assert(false === actual[1], "Initial value for each device[1] is not false");
+                assert(false === actual[2], "Initial value for each device[2] is not false");
+                device.toggle();
+                actual = device.value();
+                assert(true === actual[0], "Initial value for each device[0] is not true");
+                assert(true === actual[1], "Initial value for each device[1] is not true");
+                assert(true === actual[2], "Initial value for each device[2] is not true");
+                device.value ([true, false, true]);
+                assert(true === device[0].is_active(), "State for device[0] is not true");
+                assert(false === device[1].is_active(), "State for device[1] is not false");
+                assert(true === device[2].is_active(), "State for device[2] is not true");
+            });
         });
     });
 
-    it('composite_output_toggle', () => {
-        const pin1 = new mp.MockPin(2);
-        const pin2 = new mp.MockPin(3);
-        const pin3 = new mp.MockPin(4);
-        with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
-            new gz.OutputDevice(pin2),
-            new gz.OutputDevice(pin3)]),(device) => {
-            device.toggle();
-            assert (true === pin1.state(), "Pin 1 is not set to true");
-            assert (true === pin2.state(), "Pin 2 is not set to true");
-            assert (true === pin3.state(), "Pin 3 is not set to true");
-            device[0].off();
-            device.toggle();
-            assert (true === pin1.state(), "Pin 1 is not set to false");
-            assert (false === pin2.state(), "Pin 2 is not set to false");
-            assert (false === pin3.state(), "Pin 3 is not set to false");
-        });
-    });
+    /*
+    Can't use this test at the moment as it requires sudo
+    due to wiring pi config
+     */
+    /*context("PiTraffic", ()=>{
+       it("initaites on correct pins", ()=>{
+           "use strict";
+           const pin1 = new mp.MockPin(9);
+           const pin2 = new mp.MockPin(10);
+           const pin3 = new mp.MockPin(11);
+           with_close( new gz.PiTraffic(), (board)=>{
+               assert(pin1 === board.device[0]._pin);
+               assert(pin2 === board.device[1]._pin);
+               assert(pin3 === board.device[2]._pin);
+           });
+       });
+    });*/
 
-    it('composite_output_value', () => {
-        const pin1 = new mp.MockPin(2);
-        const pin2 = new mp.MockPin(3);
-        const pin3 = new mp.MockPin(4);
-        with_close( new gz.CompositeOutputDevice ( [new gz.OutputDevice(pin1),
-            new gz.OutputDevice(pin2),
-            new gz.OutputDevice(pin3)]),(device) => {
-            let actual = device.value();
-            assert(false === actual[0], "Initial value for each device[0] is not false");
-            assert(false === actual[1], "Initial value for each device[1] is not false");
-            assert(false === actual[2], "Initial value for each device[2] is not false");
-            device.toggle();
-            actual = device.value();
-            assert(true === actual[0], "Initial value for each device[0] is not true");
-            assert(true === actual[1], "Initial value for each device[1] is not true");
-            assert(true === actual[2], "Initial value for each device[2] is not true");
-            device.value ([true, false, true]);
-            assert(true === device[0].is_active(), "State for device[0] is not true");
-            assert(false === device[1].is_active(), "State for device[1] is not false");
-            assert(true === device[2].is_active(), "State for device[2] is not true");
-        });
-    });
 });
 
 
 /*
- def test_composite_output_value():
- pin1 = MockPin(2)
- pin2 = MockPin(3)
- pin3 = MockPin(4)
- with CompositeOutputDevice(OutputDevice(pin1), OutputDevice(pin2), foo=OutputDevice(pin3)) as device:
- assert device.value == (0, 0, 0)
- device.toggle()
- assert device.value == (1, 1, 1)
- device.value = (1, 0, 1)
- assert device[0].is_active
- assert not device[1].is_active
- assert device[2].is_active
 
 def test_pi_traffic():
     pins = [MockPin(n) for n in (9, 10, 11)]

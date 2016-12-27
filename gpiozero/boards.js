@@ -14,6 +14,7 @@ const OutputDevice = require('./output_devices.js').OutputDevice;
  *  extends :attr:`value` to be writeable.
  */
 function CompositeOutputDevice (devices, kwdevices, options) {
+    "use strict";
     CompositeDevice.call(this, devices, kwdevices, options);
 }
 
@@ -128,6 +129,7 @@ exports.LEDCollection = LEDCollection;
  * @param {object}
  */
 function LEDCollection(_pins, _kwpins, _options) {
+    "use strict";
     const defaults = {
         pwm: false, //If true, creates PWMLED instances for each pin, else LED
         active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
@@ -192,7 +194,7 @@ exports.LEDBoard = LEDBoard;
  * @param {object} _options [description]
  */
 function LEDBoard(pins, kwpins, _options) {
-
+    "use strict";
     const defaults = {
         pwm: false, //If true, creates PWMLED instances for each pin, else LED
         active_high: true, //If ``True`` (the default), the :meth:`on` method will set all the
@@ -382,7 +384,7 @@ exports.TrafficLights = TrafficLights;
  * @param {object} _options 
  */
 function TrafficLights(red, amber, green, _options) {
-
+    "use strict";
     const defaults = {
         pwm: false, //If true, creates PWMLED instances, else LED
         initial_value: false, // If False, all LEDs will be off initially, if True the device will be
@@ -402,3 +404,27 @@ function TrafficLights(red, amber, green, _options) {
 
 TrafficLights.prototype = inherit(LEDBoard.prototype);
 TrafficLights.prototype.constructor = TrafficLights;
+/**
+ * Extends :class:`TrafficLights` for the `Low Voltage Labs PI-TRAFFIC`_
+ * vertical traffic lights board when attached to GPIO pins 9, 10, and 11.
+
+ * There's no need to specify the pins if the PI-TRAFFIC is connected to the
+ * default pins (9, 10, 11).
+ * Low Voltage Labs PI-TRAFFIC: http://lowvoltagelabs.com/products/pi-traffic/
+ * @param TrafficLights
+ * @constructor
+ */
+function PiTraffic(_options){
+    "use strict";
+    const defaults = {
+        pwm: false, //If true, creates PWMLED instances, else LED
+        initial_value: false, // If False, all LEDs will be off initially, if True the device will be
+        // Switched on initialled
+    };
+    this.options = extend(defaults, _options);
+    TrafficLights.call(this, 9,10,11, this.options);
+}
+
+exports.PiTraffic = PiTraffic;
+PiTraffic.prototype = inherit(TrafficLights.prototype);
+PiTraffic.prototype.constructor = PiTraffic;
