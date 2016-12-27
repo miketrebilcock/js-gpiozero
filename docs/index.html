@@ -193,23 +193,27 @@
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='compositeoutputdevice'>
       CompositeOutputDevice
     </h3>
     
-    
   </div>
   
 
-  <p>class CompositeOutputDevice(SourceMixin, CompositeDevice):
-Extends :class:<code>CompositeDevice</code> with :meth:<code>on</code>, :meth:<code>off</code>, and
-:meth:<code>toggle</code> methods for controlling subordinate output devices.  Also
-extends :attr:<code>value</code> to be writeable.</p>
+  <p>Extends <a href="#compositedevice">CompositeDevice</a> with <a href="CompositeDevice#on">on</a>, <a href="CompositeDevice#off">off</a>, and
+<a href="CompositeDevice#toggle">toggle</a> methods for controlling subordinate output devices.  Also
+extends <a href="CompositeDevice#value">value</a> to be writeable.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new CompositeOutputDevice(devices: any, kwdevices: any, options: any)</div>
+  <div class='pre p1 fill-light mt0'>new CompositeOutputDevice(devices: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>, kwdevices: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</div>
+
   
+    <p>
+      Extends
+      
+        <a href="#compositedevice">CompositeDevice</a>
+      
+    </p>
   
 
   
@@ -224,24 +228,24 @@ extends :attr:<code>value</code> to be writeable.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>devices</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>devices</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code> An array of devices that create this composite device
+
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>kwdevices</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>kwdevices</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code> An array of tuples that contain the device name and device eg 
+[&#x27;red&#x27;, new LED(1)]
+
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code> 
           </div>
           
         </div>
@@ -271,11 +275,9 @@ extends :attr:<code>value</code> to be writeable.</p>
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='ledcollection'>
       LEDCollection
     </h3>
-    
     
   </div>
   
@@ -284,8 +286,8 @@ extends :attr:<code>value</code> to be writeable.</p>
 :class:<code>LEDBoard</code> and :class:<code>LEDBarGraph</code>.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new LEDCollection(array: any, object: any, _pins: any, _kwpins: any, _options: any)</div>
-  
+  <div class='pre p1 fill-light mt0'>new LEDCollection(array: Any, object: Any, _pins: Any, _kwpins: Any, _options: Any)</div>
+
   
 
   
@@ -300,40 +302,35 @@ extends :attr:<code>value</code> to be writeable.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>array</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>array</span> <code class='quiet'>(Any)</code> 
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>object</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>object</span> <code class='quiet'>(Any)</code> 
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>_pins</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>_pins</span> <code class='quiet'>(Any)</code> 
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>_kwpins</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>_kwpins</span> <code class='quiet'>(Any)</code> 
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>_options</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>_options</span> <code class='quiet'>(Any)</code> 
           </div>
           
         </div>
@@ -363,11 +360,9 @@ extends :attr:<code>value</code> to be writeable.</p>
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='ledboard'>
       LEDBoard
     </h3>
-    
     
   </div>
   
@@ -375,13 +370,13 @@ extends :attr:<code>value</code> to be writeable.</p>
   <p>Extends :class:<code>LEDCollection</code> and represents a generic LED board or collection of LEDs.
 The following example turns on all the LEDs on a board containing 5 LEDs
 attached to GPIO pins 2 through 6::
-from gpiozero import LEDBoard
-leds = LEDBoard(2, 3, 4, 5, 6)
-leds.on()</p>
+&#x9;&#x9;from gpiozero import LEDBoard
+&#x9;&#x9;leds = LEDBoard(2, 3, 4, 5, 6)
+&#x9;&#x9;leds.on()</p>
 
 
   <div class='pre p1 fill-light mt0'>new LEDBoard(pins: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>, kwpins: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>, _options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</div>
-  
+
   
 
   
@@ -396,8 +391,7 @@ leds.on()</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>pins</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code>
-	    Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
+            <span class='code bold'>pins</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code> Specify the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
 
           </div>
           
@@ -405,8 +399,7 @@ leds.on()</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>kwpins</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code>
-	    Specify an array of arrays that has the Name of the device and the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
+            <span class='code bold'>kwpins</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code> Specify an array of arrays that has the Name of the device and the GPIO pins that the LEDs of the board are attached to. You can designate as many pins as necessary.
 
           </div>
           
@@ -414,10 +407,7 @@ leds.on()</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>_options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    [
-description
-]
+            <span class='code bold'>_options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code> [description]
 
           </div>
           
@@ -448,11 +438,9 @@ description
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='trafficlights'>
       TrafficLights
     </h3>
-    
     
   </div>
   
@@ -461,7 +449,7 @@ description
 
 
   <div class='pre p1 fill-light mt0'>new TrafficLights(red: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, amber: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, green: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, _options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</div>
-  
+
   
 
   
@@ -476,8 +464,7 @@ description
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>red</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    The GPIO pin that the red LED is attached to.
+            <span class='code bold'>red</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> The GPIO pin that the red LED is attached to.
 
           </div>
           
@@ -485,8 +472,7 @@ description
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>amber</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    The GPIO pin that the amber LED is attached to.
+            <span class='code bold'>amber</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> The GPIO pin that the amber LED is attached to.
 
           </div>
           
@@ -494,8 +480,7 @@ description
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>green</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    The GPIO pin that the green LED is attached to.
+            <span class='code bold'>green</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> The GPIO pin that the green LED is attached to.
 
           </div>
           
@@ -503,8 +488,7 @@ description
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>_options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    
+            <span class='code bold'>_options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code> 
           </div>
           
         </div>
@@ -534,24 +518,22 @@ description
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='pitraffic'>
       PiTraffic
     </h3>
-    
     
   </div>
   
 
   <p>Extends :class:<code>TrafficLights</code> for the <code>Low Voltage Labs PI-TRAFFIC</code>_
 vertical traffic lights board when attached to GPIO pins 9, 10, and 11.</p>
-<p>There's no need to specify the pins if the PI-TRAFFIC is connected to the
+<p>There&#x27;s no need to specify the pins if the PI-TRAFFIC is connected to the
 default pins (9, 10, 11).
 Low Voltage Labs PI-TRAFFIC: <a href="http://lowvoltagelabs.com/products/pi-traffic/">http://lowvoltagelabs.com/products/pi-traffic/</a></p>
 
 
-  <div class='pre p1 fill-light mt0'>new PiTraffic(TrafficLights: any, _options: any)</div>
-  
+  <div class='pre p1 fill-light mt0'>new PiTraffic(TrafficLights: Any, _options: Any)</div>
+
   
 
   
@@ -566,16 +548,14 @@ Low Voltage Labs PI-TRAFFIC: <a href="http://lowvoltagelabs.com/products/pi-traf
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>TrafficLights</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>TrafficLights</span> <code class='quiet'>(Any)</code> 
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>_options</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>_options</span> <code class='quiet'>(Any)</code> 
           </div>
           
         </div>
@@ -605,11 +585,9 @@ Low Voltage Labs PI-TRAFFIC: <a href="http://lowvoltagelabs.com/products/pi-traf
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='device'>
       Device
     </h3>
-    
     
   </div>
   
@@ -621,7 +599,7 @@ property, the <a href="#devicevalue">value</a> property, and the <a href="Device
 
 
   <div class='pre p1 fill-light mt0'>new Device()</div>
-  
+
   
 
   
@@ -658,14 +636,14 @@ property, the <a href="#devicevalue">value</a> property, and the <a href="Device
 
   
 
-  <p>Returns a value representing the device's state. Frequently, this is a
+  <p>Returns a value representing the device&#x27;s state. Frequently, this is a
 boolean value, or a number between 0 and 1 but some devices use larger
 ranges (e.g. -1 to +1) and composite devices usually use tuples to
 return the states of all their subordinate components.</p>
 
 
   <div class='pre p1 fill-light mt0'>value()</div>
-  
+
   
 
   
@@ -712,7 +690,7 @@ otherwise. This property is usually derived from :attr:<code>value</code>. Unlik
 
 
   <div class='pre p1 fill-light mt0'>is_active()</div>
-  
+
   
 
   
@@ -755,11 +733,9 @@ otherwise. This property is usually derived from :attr:<code>value</code>. Unlik
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='compositedevice'>
       CompositeDevice
     </h3>
-    
     
   </div>
   
@@ -774,7 +750,7 @@ as named attributes.</p>
 
 
   <div class='pre p1 fill-light mt0'>new CompositeDevice(devices: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>], kwdevices: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>])</div>
-  
+
   
     <p>
       Extends
@@ -796,16 +772,14 @@ as named attributes.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>devices</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>])</code>
-	    
+            <span class='code bold'>devices</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>])</code> 
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>kwdevices</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>])</code>
-	    
+            <span class='code bold'>kwdevices</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>])</code> 
           </div>
           
         </div>
@@ -835,11 +809,9 @@ as named attributes.</p>
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='gpiodevice'>
       GPIODevice
     </h3>
-    
     
   </div>
   
@@ -850,7 +822,7 @@ GPIO devices do no share a <a href="Pin">Pin</a>).</p>
 
 
   <div class='pre p1 fill-light mt0'>new GPIODevice(pin: (int | Pin))</div>
-  
+
   
     <p>
       Extends
@@ -872,8 +844,7 @@ GPIO devices do no share a <a href="Pin">Pin</a>).</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>pin</span> <code class='quiet'>((int | Pin))</code>
-	    The GPIO pin (in BCM numbering) or a instance of 
+            <span class='code bold'>pin</span> <code class='quiet'>((int | Pin))</code> The GPIO pin (in BCM numbering) or a instance of 
 <a href="Pin">Pin</a>
  that the device is connected to.
 
@@ -892,7 +863,7 @@ GPIO devices do no share a <a href="Pin">Pin</a>).</p>
     <div class='py1 quiet mt1 prose-big'>Throws</div>
     <ul>
       
-        <li>GPIOPinMissing: If pin is 'undefined'
+        <li>GPIOPinMissing: If pin is &#x27;undefined&#x27;
 </li>
       
         <li>GPIOPinInUse: If the pin is already in use by another device
@@ -917,11 +888,9 @@ GPIO devices do no share a <a href="Pin">Pin</a>).</p>
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='outputdevice'>
       OutputDevice
     </h3>
-    
     
   </div>
   
@@ -932,8 +901,8 @@ output devices an <a href="OutputDevice#on">on</a> method to switch the device o
 corresponding :meth:<code>off</code> method, and a :meth:<code>toggle</code> method.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new OutputDevice(pin: (int | Pin), active_high: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?, initial_value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?)</div>
-  
+  <div class='pre p1 fill-light mt0'>new OutputDevice(pin: (int | Pin), active_high: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>], initial_value: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</div>
+
   
     <p>
       Extends
@@ -955,8 +924,7 @@ corresponding :meth:<code>off</code> method, and a :meth:<code>toggle</code> met
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>pin</span> <code class='quiet'>((int | Pin))</code>
-	    The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to. If
+            <span class='code bold'>pin</span> <code class='quiet'>((int | Pin))</code> The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to. If
 this is 
 <code>undefined</code>
  a 
@@ -969,9 +937,9 @@ this is
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>active_high</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
-            = <code>true</code>)</code>
-	    If 
+            <span class='code bold'>active_high</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
+            (default <code>true</code>)
+            )</code> If 
 <code>true</code>
  (the default), the :meth:
 <code>on</code>
@@ -991,9 +959,9 @@ HIGH. If
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>initial_value</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
-            = <code>false</code>)</code>
-	    If 
+            <span class='code bold'>initial_value</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>]
+            (default <code>false</code>)
+            )</code> If 
 <code>false</code>
  (the default), the device will be off initially.  If
 
@@ -1045,17 +1013,17 @@ device will be switched on initially.
 
   
 
-  <p>When <code>True</code>, the :attr:<code>value</code> property is <code>True</code> when the device's
+  <p>When <code>True</code>, the :attr:<code>value</code> property is <code>True</code> when the device&#x27;s
 :attr:<code>pin</code> is high. When <code>False</code> the :attr:<code>value</code> property is
-<code>True</code> when the device's pin is low (i.e. the value is inverted).</p>
+<code>True</code> when the device&#x27;s pin is low (i.e. the value is inverted).</p>
 <p>This property can be set after construction; be warned that changing it
-will invert :attr:<code>value</code> (i.e. changing this property doesn't change
-the device's pin state - it just changes how that state is
+will invert :attr:<code>value</code> (i.e. changing this property doesn&#x27;t change
+the device&#x27;s pin state - it just changes how that state is
 interpreted).</p>
 
 
-  <div class='pre p1 fill-light mt0'>active_high(value: any)</div>
-  
+  <div class='pre p1 fill-light mt0'>active_high(value: Any)</div>
+
   
 
   
@@ -1070,8 +1038,7 @@ interpreted).</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>value</span> <code class='quiet'>(any)</code>
-	    {boolean}
+            <span class='code bold'>value</span> <code class='quiet'>(Any)</code> {boolean}
 
           </div>
           
@@ -1110,12 +1077,12 @@ interpreted).</p>
 
   
 
-  <p>Reverse the state of the device. If it's on, turn it off; if it's off,
+  <p>Reverse the state of the device. If it&#x27;s on, turn it off; if it&#x27;s off,
 turn it on.</p>
 
 
   <div class='pre p1 fill-light mt0'>toggle()</div>
-  
+
   
 
   
@@ -1158,11 +1125,9 @@ turn it on.</p>
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='blink'>
       blink
     </h3>
-    
     
   </div>
   
@@ -1170,8 +1135,8 @@ turn it on.</p>
   <p>Make the device turn on and off repeatedly.</p>
 
 
-  <div class='pre p1 fill-light mt0'>blink(on_time: any, off_time: any, n: any, callback: any)</div>
-  
+  <div class='pre p1 fill-light mt0'>blink(on_time: Any, off_time: Any, n: Any, callback: Any)</div>
+
   
 
   
@@ -1186,8 +1151,7 @@ turn it on.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>on_time</span> <code class='quiet'>(any)</code>
-	    {float}
+            <span class='code bold'>on_time</span> <code class='quiet'>(Any)</code> {float}
 Number of seconds on. Defaults to 1 second.
 
           </div>
@@ -1196,8 +1160,7 @@ Number of seconds on. Defaults to 1 second.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>off_time</span> <code class='quiet'>(any)</code>
-	    {float}
+            <span class='code bold'>off_time</span> <code class='quiet'>(Any)</code> {float}
 Number of seconds off. Defaults to 1 second.
 
           </div>
@@ -1206,8 +1169,7 @@ Number of seconds off. Defaults to 1 second.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>n</span> <code class='quiet'>(any)</code>
-	    Number of times to blink; 
+            <span class='code bold'>n</span> <code class='quiet'>(Any)</code> Number of times to blink; 
 <code>None</code>
  (the default) means forever.
 
@@ -1217,8 +1179,7 @@ Number of seconds off. Defaults to 1 second.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(any)</code>
-	    function to be called upon completion
+            <span class='code bold'>callback</span> <code class='quiet'>(Any)</code> function to be called upon completion
 
           </div>
           
@@ -1249,11 +1210,9 @@ Number of seconds off. Defaults to 1 second.
 
   
   <div class='clearfix'>
-    
     <h3 class='fl m0' id='rgbled'>
       RGBLED
     </h3>
-    
     
   </div>
   
@@ -1265,8 +1224,8 @@ pins.  You can either use three limiting resistors (one per anode) or a
 single limiting resistor on the cathode.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new RGBLED(red: any, green: any, blue: any, active_high: any, initial_value: any, pwm: any)</div>
-  
+  <div class='pre p1 fill-light mt0'>new RGBLED(red: Any, green: Any, blue: Any, active_high: Any, initial_value: Any, pwm: Any)</div>
+
   
 
   
@@ -1281,8 +1240,7 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>red</span> <code class='quiet'>(any)</code>
-	    The GPIO pin that controls the red component of the RGB LED.
+            <span class='code bold'>red</span> <code class='quiet'>(Any)</code> The GPIO pin that controls the red component of the RGB LED.
 
           </div>
           
@@ -1290,8 +1248,7 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>green</span> <code class='quiet'>(any)</code>
-	    The GPIO pin that controls the green component of the RGB LED.
+            <span class='code bold'>green</span> <code class='quiet'>(Any)</code> The GPIO pin that controls the green component of the RGB LED.
 
           </div>
           
@@ -1299,8 +1256,7 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>blue</span> <code class='quiet'>(any)</code>
-	    The GPIO pin that controls the blue component of the RGB LED.
+            <span class='code bold'>blue</span> <code class='quiet'>(Any)</code> The GPIO pin that controls the blue component of the RGB LED.
 
           </div>
           
@@ -1308,8 +1264,7 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>active_high</span> <code class='quiet'>(any)</code>
-	    Set to 
+            <span class='code bold'>active_high</span> <code class='quiet'>(Any)</code> Set to 
 <code>True</code>
  (the default) for common cathode RGB LEDs. If you are
 using a common anode RGB LED, set this to 
@@ -1322,8 +1277,7 @@ using a common anode RGB LED, set this to
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>initial_value</span> <code class='quiet'>(any)</code>
-	    The initial color for the RGB LED. Defaults to black 
+            <span class='code bold'>initial_value</span> <code class='quiet'>(Any)</code> The initial color for the RGB LED. Defaults to black 
 <code>(0, 0, 0)</code>
 .
 
@@ -1333,8 +1287,7 @@ using a common anode RGB LED, set this to
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>pwm</span> <code class='quiet'>(any)</code>
-	    If 
+            <span class='code bold'>pwm</span> <code class='quiet'>(Any)</code> If 
 <code>True</code>
  (the default), construct :class:
 <code>PWMLED</code>

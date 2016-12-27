@@ -8,10 +8,17 @@ const CompositeDevice = require('./devices.js').CompositeDevice;
 const OutputDevice = require('./output_devices.js').OutputDevice;
 /**
  *
- * class CompositeOutputDevice(SourceMixin, CompositeDevice):
- *  Extends :class:`CompositeDevice` with :meth:`on`, :meth:`off`, and
- *  :meth:`toggle` methods for controlling subordinate output devices.  Also
- *  extends :attr:`value` to be writeable.
+ *  Extends {@link CompositeDevice} with {@link CompositeDevice#on|on}, {@link CompositeDevice#off|off}, and
+ *  {@link CompositeDevice#toggle|toggle} methods for controlling subordinate output devices.  Also
+ *  extends {@link CompositeDevice#value|value} to be writeable.
+ *  @param {array} devices
+ *  An array of devices that create this composite device
+ *  @param {array} kwdevices
+ *  An array of tuples that contain the device name and device eg ['red', new LED(1)]
+ *  @param {array} options
+ *  @inheritdoc
+ * @extends CompositeDevice
+ * @constructor
  */
 function CompositeOutputDevice (devices, kwdevices, options) {
     "use strict";

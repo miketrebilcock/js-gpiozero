@@ -6,7 +6,7 @@ git stash -q --keep-index
 npm test
 RESULT=$?
 
-npm docs
+npm run docs
 git add ./docs/**
 
 ## Restore the stashed files so the directory
