@@ -1,4 +1,4 @@
-#js.gpiozero
+#js-gpiozero
 
 [![Build Tests](https://travis-ci.org/i-am-digital/js-gpiozero.svg?branch=master)](https://travis-ci.org/i-am-digital/js-gpiozero) [![Code Coverage](https://codecov.io/gh/i-am-digital/js-gpiozero/branch/master/graph/badge.svg)](https://codecov.io/gh/i-am-digital/js-gpiozero) [![npm version](https://badge.fury.io/js/js-gpiozero.svg)](https://badge.fury.io/js/js-gpiozero) [![NSP Status](https://nodesecurity.io/orgs/iamdigital/projects/4bd73f7b-9fb7-43b8-823e-49064af553e4/badge)](https://nodesecurity.io/orgs/iamdigital/projects/4bd73f7b-9fb7-43b8-823e-49064af553e4) [![Issue Count](https://codeclimate.com/github/i-am-digital/js-gpiozero/badges/issue_count.svg)](https://codeclimate.com/github/i-am-digital/js-gpiozero) [![bitHound Dependencies](https://www.bithound.io/github/i-am-digital/js-gpiozero/badges/dependencies.svg)](https://www.bithound.io/github/i-am-digital/js-gpiozero/master/dependencies/npm) [![bitHound Code](https://www.bithound.io/github/i-am-digital/js-gpiozero/badges/code.svg)](https://www.bithound.io/github/i-am-digital/js-gpiozero) [![bitHound Overall Score](https://www.bithound.io/github/i-am-digital/js-gpiozero/badges/score.svg)](https://www.bithound.io/github/i-am-digital/js-gpiozero) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
@@ -40,6 +40,12 @@ To enable this the follow line needs to be executed:
 
 ```bash
 $ln -s ../../pre-commit.sh .git/hooks/pre-commit
+```
+
+or you can simply run the following command:
+
+```bash
+$npm run docs
 ```
 
 More info about contributing can be found [here] (https://github.com/i-am-digital/js-gpiozero/blob/master/CONTRIBUTING.md) 

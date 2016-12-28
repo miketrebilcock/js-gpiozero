@@ -30,12 +30,12 @@ This is an experiment and feedback is welcome! This document may also be subject
 
 ## Releasing
 
-js-gpiozero aims to **release often**. We use [standard-changelog](https://github.com/conventional-changelog/standard-changelog)
+js-gpiozero uses [semantic-release](https://github.com/semantic-release/semantic-release) to deploy code as often as possible. We use [standard-changelog](https://github.com/conventional-changelog/standard-changelog)
 to generate CHANGELOG.md entries and [commitizen](https://github.com/commitizen/cz-cli) to standardize
 commit messages. Pull Request messages should be standardized to commitizen syntax (aka angular standard)
 before merge.
 
-Release process:
+Release process (completed by semantic-release):
 
 * Confirm that `master` passes CI tests
 * Bump version in `package.json`
@@ -43,6 +43,5 @@ Release process:
 * Run `npm run changelog`
 * Add updated CHANGELOG.md to master
 * Push commits and new tag
-* Travis will run npm publish
+* npm publish
 
-Working on automating as much of this as possible - one step at a time!
