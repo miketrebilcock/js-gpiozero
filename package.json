@@ -1,5 +1,5 @@
 {
-  "version": "0.1.5",
+  "version": "0.0.0-development",
   "name": "js-gpiozero",
   "description": "A port of python gpiozero to node.js",
   "main": "./gpiozero/index.js",
@@ -13,7 +13,8 @@
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov",
     "changelog": "standard-changelog -i CHANGELOG.md -w",
-    "docs": "documentation build gpiozero/index.js -f html --sort-order alpha -o docs --document-exported"
+    "docs": "documentation build gpiozero/index.js -f html --sort-order alpha -o docs --document-exported",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
     "rwlock": "5.0.0",
@@ -30,7 +31,8 @@
     "eslint-plugin-import": "^2.2.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
-    "mocha-eslint": "^3.0.1"
+    "mocha-eslint": "^3.0.1",
+    "semantic-release": "^6.3.2"
   },
   "keywords": [
     "wiringPi",
