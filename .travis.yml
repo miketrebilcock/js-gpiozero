@@ -1,4 +1,7 @@
 language: node_js
+cache:
+  directories:
+    - node_modules
 node_js:
   - '7'
   - '6'
@@ -17,11 +20,10 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-deploy:
-  provider: npm
-  email: headgeek@iamdigital.uk
-  api_key:
-    secure: vK5MTs2zl8Z0mexVQ/gdn8Pm9cNLfQqV1b4rpDoo/R6vrz1FB7FW3gHDChqafFjbdky6SkmSSvKPAns1kiFys+O4g2WAgswGvUkGHcpccks1eBjp4IGBBKfvh4xKsuexZzltVFzkYQyYmAbSQofPHvorjs6vQ3aK4xbqQt6uFrqg0QWZfU1LhSMxD9WQfrdA3H1KQKI0XvhpbnEGwQxnmRnxB732IAEeBwUhdj6J6cjvuotV329Ou432EzPJ7rcj/c39cQ8IZ87tDq1cXbqs/QB7XXVG1HZ+SemywXGAnGVVUsDTAgu0vU6H/Q8QPStxyxQ8iBvsFrc0wa7sAjeDJZ+dzpnRrgH8arV21F3uQ1KJAVB7JQD5U3GIRwq+s48iO8EUlgY/mBb96iwLYsz3/aK4XH9G1guPPRW8G3gCobK27Kn9BaGn526TwCSXWr+N3YnGEY9gtecBmXZuR7ow5VJJO1QHvvqzrvpO6IkEpnMVZvf5DAtFgeOToAIpKwdBTDsTCl6qg98VVI6fL3wZ2BzLAWNJP9nD7kpWjMid81D1ifoAdmv9u+IcHzkFGGOHaX4eTFmPjuPOR/YTq6zj7qnzRR8SerA7Hya6JQq65P1av4GcP1p5cAJ3/0wUBB5mOs+v1MQOSR4WqWb79APx75qNkdmQkECJvQ6m8NiHniA=
-  on:
-    tags: true
-    repo: i-am-digital/js-gpiozero
+before_script:
+  - npm prune
+after_success:
+  - npm run semantic-release
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
