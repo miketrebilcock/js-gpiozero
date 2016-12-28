@@ -1,6 +1,7 @@
 const Lock = require('rwlock');
 const GPIODevice = require('./devices.js').GPIODevice;
 const Device = require('./devices.js').Device;
+const CompositeDevice = require('./devices.js').CompositeDevice;
 const exc = require('./exc.js');
 const inherit = require('./tools.js').inherit;
 
@@ -73,6 +74,7 @@ OutputDevice.prototype.off = function() {
     this._pin._stop_blink();
     this._write(false);
 };
+
 /**
  *
  * This property can be set after construction; be warned that changing it
@@ -160,6 +162,12 @@ exports.LED = LED;
 /**
  * Represents a light emitting diode (LED).
  *
+ * Connect the cathode (short leg, flat side) of the LED to a ground pin; connect the anode (longer leg) to a limiting resistor; connect the other side of the limiting resistor to a GPIO pin (the limiting resistor can be placed either side of the LED).
+ *
+ * @example const LED = require('gpiozero').LED;
+ *          var led = new LED(17);
+ *          led.on();
+ *
  * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the LED is connected to.
  * @param {boolean} [active_high] - If ``True`` (the default), the LED will operate normally with the circuit described above. If ``False`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
  * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
@@ -167,10 +175,6 @@ exports.LED = LED;
  * @augments DigitalOutputDevice
  * @class
  *
- * @example Connect the cathode (short leg, flat side) of the LED to a ground pin; connect the anode (longer leg) to a limiting resistor; connect the other side of the limiting resistor to a GPIO pin (the limiting resistor can be placed either side of the LED).
- * @example const LED = require('gpiozero').LED;
- *          var led = new LED(17);
- *          led.on();
  */
 function LED(pin, active_high, initial_value) {
     DigitalOutputDevice.call(this, pin, active_high, initial_value);
@@ -269,7 +273,12 @@ PWMOutputDevice.prototype.value = function(value) {
     this._pin._stop_blink();
     this._write(value);
 };
-
+/**
+ * Internal method that converts the actual pin value to it's logical value.
+ *
+ * @returns {number} - Logical pin value.
+ * @private
+ */
 PWMOutputDevice.prototype._read = function() {
     this._check_open();
     if (this.active_high()) {
@@ -278,6 +287,13 @@ PWMOutputDevice.prototype._read = function() {
     return 1 - this._pin.state();
 };
 
+/**
+ * Internal method used to convert a logical value to the state the pin needs to change to.
+ *
+ * @param {float} value - Logical value to set the device to.
+ * @private
+ * @throws OutputDeviceBadValue - Occurs if the value specified is not between 0 and 1.
+ */
 PWMOutputDevice.prototype._write = function(value) {
     if (!this.active_high()) {
         value = 1 - value;
@@ -289,6 +305,12 @@ PWMOutputDevice.prototype._write = function(value) {
     this._pin.state(value);
 };
 
+/**
+ * Sets or Gets the device frequency.
+ *
+ * @param {int} [value] - The new frequency for the device.
+ * @returns {int} - If value is undefined then the current device frequency is returned.
+ */
 PWMOutputDevice.prototype.frequency = function(value) {
     if (value === undefined) {
         return this._pin.frequency();
@@ -296,76 +318,73 @@ PWMOutputDevice.prototype.frequency = function(value) {
     this._pin.frequency(value);
 };
 
+/**
+ *
+ * @returns {boolean} - If the device has a value other than 0 then true.
+ */
 PWMOutputDevice.prototype.is_active = function() {
     return this.value() !== 0;
 };
 
+/**
+ * Turn the device fully on.
+ */
 PWMOutputDevice.prototype.on = function() {
     this._pin._stop_blink();
     this._write(1);
 };
 
+/**
+ * Turn the device off.
+ */
 PWMOutputDevice.prototype.off = function() {
     this._pin._stop_blink();
     this._write(0);
 };
 
+/**
+ * Toggle the state of the device. If the device is currently off (value` is 0.0),
+ * this changes it to "fully" on (`value` is 1.0).
+ * If the device has a duty cycle (`value`) of 0.1, this will toggle it to 0.9, and so on.
+ */
 PWMOutputDevice.prototype.toggle = function() {
-    /*
-    Toggle the state of the device. If the device is currently off
-    (:attr:`value` is 0.0), this changes it to "fully" on (:attr:`value` is
-    1.0).  If the device has a duty cycle (:attr:`value`) of 0.1, this will
-    toggle it to 0.9, and so on.
-    */
     this._pin._stop_blink();
     const newValue = 1 - this.value();
     this.value(newValue);
 };
 
+/**
+ * Stop any actions such as blink and unlink from pin.
+ */
 PWMOutputDevice.prototype.close = function() {
     this._pin._stop_blink();
     this._pin.frequency(-1);
     OutputDevice.prototype.close.call(this);
 };
 
-
+/**
+ * Make the device turn on and off repeatedly.
+ *
+ * @param {float} [on_time] - Number of seconds on. Defaults to 1 second.
+ * @param {float} [off_time] - Number of seconds off. Defaults to 1 second.
+ * @param {float} [fade_in_time] - Number of seconds to spend fading in. Defaults to 0.
+ * @param {float} [fade_out_time] - Number of seconds to spend fading out. Defaults to 0.
+ * @param {int} [n] - Number of times to blink; ``undefined`` (the default) means forever.
+ * @param {@callback} [callback] - Function to be called after n loops.
+ */
 PWMOutputDevice.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, callback) {
-
-    /*
-    Make the device turn on and off repeatedly.
-
-    :param float on_time:
-        Number of seconds on. Defaults to 1 second.
-
-    :param float off_time:
-        Number of seconds off. Defaults to 1 second.
-
-    :param float fade_in_time:
-        Number of seconds to spend fading in. Defaults to 0.
-
-    :param float fade_out_time:
-        Number of seconds to spend fading out. Defaults to 0.
-
-    :param int n:
-        Number of times to blink; ``None`` (the default) means forever.
-
-    */
     this._pin.blink(on_time, off_time, fade_in_time, fade_out_time, n, undefined, callback);
 };
 
+/**
+ * Make the device fade in and out repeatedly.
+ *
+ * @param {float} [fade_in_time] - Number of seconds to spend fading in. Defaults to 0.
+ * @param {float} [fade_out_time] - Number of seconds to spend fading out. Defaults to 0.
+ * @param {int} [n] - Number of times to blink; ``undefined`` (the default) means forever.
+ * @param {@callback} [callback] - Function to be called after n loops.
+ */
 PWMOutputDevice.prototype.pulse = function(fade_in_time, fade_out_time, n, callback) {
-    /*
-    Make the device fade in and out repeatedly.
-
-    :param float fade_in_time:
-        Number of seconds to spend fading in. Defaults to 1.
-
-    :param float fade_out_time:
-        Number of seconds to spend fading out. Defaults to 1.
-
-    :param int n:
-        Number of times to blink; ``None`` (the default) means forever.
-    */
     const on_time = 0,
         off_time = 0;
 
@@ -374,59 +393,37 @@ PWMOutputDevice.prototype.pulse = function(fade_in_time, fade_out_time, n, callb
 
 exports.Motor = Motor;
 
+/**
+ * Represents a generic motor connected to a bi-directional motor driver circuit (i.e.  an `H-bridge`_).
+ * Attach an `H-bridge`_ motor controller to your Pi; connect a power source (e.g. a battery pack or the 5V pin) to the controller; connect the outputs
+ * of the controller board to the two terminals of the motor; connect the inputs of the controller board to two GPIO pins.
+ *
+ * @param {int} forward - The GPIO pin that the forward input of the motor driver chip is connected to.
+ * @param {int} backward - The GPIO pin that the backward input of the motor driver chip is connected to.
+ * @param {boolean} [pwm] - If ``true`` (the default), construct {@link PWMOutputDevice} instances for the motor controller pins, allowing both direction and variable speed control. If ``False``, construct {@link DigitalOutputDevice} instances, allowing only direction control.
+ * @class
+ * @augments CompositeDevice
+ * @throws GPIOPinMissing - If either Forward or Backward pin is not provided.
+ */
 function Motor(forward, backward, pwm) {
-    /*
-    Extends :class:`CompositeDevice` and represents a generic motor
-    connected to a bi-directional motor driver circuit (i.e.  an `H-bridge`_).
-
-    Attach an `H-bridge`_ motor controller to your Pi; connect a power source
-    (e.g. a battery pack or the 5V pin) to the controller; connect the outputs
-    of the controller board to the two terminals of the motor; connect the
-    inputs of the controller board to two GPIO pins.
-
-    .. _H-bridge: https://en.wikipedia.org/wiki/H_bridge
-
-    The following code will make the motor turn "forwards"::
-
-        from gpiozero import Motor
-
-        motor = Motor(17, 18)
-        motor.forward()
-
-    :param int forward:
-        The GPIO pin that the forward input of the motor driver chip is
-        connected to.
-
-    :param int backward:
-        The GPIO pin that the backward input of the motor driver chip is
-        connected to.
-
-    :param bool pwm:
-        If ``True`` (the default), construct :class:`PWMOutputDevice`
-        instances for the motor controller pins, allowing both direction and
-        variable speed control. If ``False``, construct
-        :class:`DigitalOutputDevice` instances, allowing only direction
-        control.
-    */
-
     if (forward === undefined || backward === undefined) {
         throw new exc.GPIOPinMissing('Forward and Backward pins must be provided');
     }
     if (pwm === undefined || pwm === true) {
-        this.forward_device = new PWMOutputDevice(forward);
-        this.backward_device = new PWMOutputDevice(backward);
-        //this._order = ('forward_device', 'backward_device');
+        CompositeDevice.call(this,undefined, [['forward_device', new PWMOutputDevice(forward)],
+                                                ['backward_device', new PWMOutputDevice(backward)]]);
     } else {
-        this.forward_device = new DigitalOutputDevice(forward);
-        this.backward_device = new DigitalOutputDevice(backward);
+        CompositeDevice.call(this, undefined, [['forward_device', new DigitalOutputDevice(forward)],
+            ['backward_device', new DigitalOutputDevice(backward)]]);
     }
 }
 
-
-Motor.prototype = inherit(Device.prototype);
+Motor.prototype = inherit(CompositeDevice.prototype);
 Motor.prototype.constructor = Motor;
 
-
+/**
+ * Close down the output devices and release the pins.
+ */
 Motor.prototype.close = function() {
     if (this.forward_device !== undefined) {
         this.forward_device.close();
@@ -440,10 +437,20 @@ Motor.prototype.close = function() {
     OutputDevice.prototype.close.call(this);
 };
 
+/**
+ *
+ * @returns {boolean} - If true then the forward and backward devices are undefined.
+ */
 Motor.prototype.closed = function() {
     return (this.forward_device === undefined && this.backward_device === undefined);
 };
-
+/**
+ * Gets and Sets the motor speed between -1 (full backwards) and 1 (full forwards).
+ *
+ * @param {int} [value] - Motor speed.
+ * @returns {number} - If value is undefined then returns the current speed.
+ * @throws OutputDeviceBadValue - If the value is defined but not between 1 and -1.
+ */
 Motor.prototype.value = function(value) {
     if (value === undefined) {
         return this.forward_device.value() - this.backward_device.value();
@@ -461,24 +468,27 @@ Motor.prototype.value = function(value) {
         this.stop();
     }
 };
-
+/**
+ *
+ * @returns {boolean} - If the motor is currently running then ``true`` otherwise ``false``.
+ */
 Motor.prototype.is_active = function() {
     /*
-    Returns ``True`` if the motor is currently running and ``False``
-    otherwise.
+
     */
     return this.value() !== 0;
 };
 
+/**
+ * Drive the motor forwards.
+ *
+ * @param {float} speed - The speed at which the motor should turn. Can be any value between 0 (stopped)
+ * and the default 1 (maximum speed) if ``pwm`` was ``true`` when the class was constructed (and only 0 or 1 if not).
+ *
+ * @throws ValueError - When the speed is less than 0 or greater than 1.
+ * @throws ValueError - When the speed is between 0 and 1 on non-pwm motors.
+ */
 Motor.prototype.forward = function(speed) {
-    /*
-    Drive the motor forwards.
-
-    :param float speed:
-        The speed at which the motor should turn. Can be any value between
-        0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
-        ``True`` when the class was constructed (and only 0 or 1 if not).
-    */
     if (speed === undefined) {
         speed = 1;
     }
@@ -495,15 +505,16 @@ Motor.prototype.forward = function(speed) {
     this.forward_device.value(speed);
 };
 
+/**
+ * Drive the motor backwards.
+ *
+ * @param {float} speed - The speed at which the motor should turn. Can be any value between 0 (stopped)
+ * and the default 1 (maximum speed) if ``pwm`` was ``true`` when the class was constructed (and only 0 or 1 if not).
+ *
+ * @throws ValueError - When the speed is less than 0 or greater than 1.
+ * @throws ValueError - When the speed is between 0 and 1 on non-pwm motors.
+ */
 Motor.prototype.backward = function(speed) {
-    /*
-    Drive the motor forwards.
-
-    :param float speed:
-        The speed at which the motor should turn. Can be any value between
-        0 (stopped) and the default 1 (maximum speed) if ``pwm`` was
-        ``True`` when the class was constructed (and only 0 or 1 if not).
-    */
     if (speed === undefined) {
         speed = 1;
     }
@@ -520,62 +531,58 @@ Motor.prototype.backward = function(speed) {
     this.backward_device.value(speed);
 };
 
+/**
+ *     Reverse the current direction of the motor. If the motor is currently
+ *     idle this does nothing. Otherwise, the motor's direction will be
+ *     reversed at the current speed.
+ */
 Motor.prototype.reverse = function() {
-    /*
-    Reverse the current direction of the motor. If the motor is currently
-    idle this does nothing. Otherwise, the motor's direction will be
-    reversed at the current speed.
-    */
     this.value(-1 * this.value());
 };
 
+/**
+ * Stop the motor.
+ */
 Motor.prototype.stop = function() {
-    /*
-    Stop the motor.
-    */
     this.forward_device.off();
     this.backward_device.off();
 };
 
 exports.PWMLED = PWMLED;
 
+/**
+ * Represents a light emitting diode (LED) with variable brightness.
+ *
+ * A typical configuration of such a device is to connect a GPIO pin to the
+ * anode (long leg) of the LED, and the cathode (short leg) to ground, with
+ * an optional resistor to prevent the LED from burning out.
+ *
+ * @param {int} pin - The GPIO pin which the LED is attached to.
+ * @param {boolean} [active_high] - If ``true`` (the default), the {@link PWMLED#on|on} method will set the GPIO to HIGH.
+ * If ``false``, the {@link PWMLED#on|on} method will set the GPIO to LOW (the {@link PWMLED#off|off} method always does
+ * the opposite).
+ * @param {float} [initial_value] - If ``0`` (the default), the LED will be off initially. Other values
+ * between 0 and 1 can be specified as an initial brightness for the LED. Note that ``undefined`` cannot be specified
+ * (unlike the parent class) as there is no way to tell PWM not to alter the state of the pin.
+ * @param {int} [frequency] - The frequency (in Hz) of pulses emitted to drive the LED. Defaults to 100Hz.
+ * @class
+ * @augments PWMOutputDevice
+ */
 function PWMLED(pin, active_high, initial_value, frequency) {
-    /*
-    Extends :class:`PWMOutputDevice` and represents a light emitting diode
-    (LED) with variable brightness.
-
-    A typical configuration of such a device is to connect a GPIO pin to the
-    anode (long leg) of the LED, and the cathode (short leg) to ground, with
-    an optional resistor to prevent the LED from burning out.
-
-    :param int pin:
-        The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
-        valid pin numbers.
-
-    :param bool active_high:
-        If ``True`` (the default), the :meth:`on` method will set the GPIO to
-        HIGH. If ``False``, the :meth:`on` method will set the GPIO to LOW (the
-        :meth:`off` method always does the opposite).
-
-    :param float initial_value:
-        If ``0`` (the default), the LED will be off initially. Other values
-        between 0 and 1 can be specified as an initial brightness for the LED.
-        Note that ``None`` cannot be specified (unlike the parent class) as
-        there is no way to tell PWM not to alter the state of the pin.
-
-    :param int frequency:
-        The frequency (in Hz) of pulses emitted to drive the LED. Defaults
-        to 100Hz.
-    */
     PWMOutputDevice.call(this, pin, active_high, initial_value, frequency);
 }
 
 PWMLED.prototype = inherit(PWMOutputDevice.prototype);
 PWMLED.prototype.constructor = PWMLED;
 
+/**
+ *
+ * @returns {boolean} - Alias for {@link PWMOutputDevice#is_active|is_active}.
+ */
 PWMLED.prototype.is_lit = function() {
     return this.is_active();
 };
+
 /**
  *
  * Extends :class:`Device` and represents a full color LED component (composed of red, green, and blue LEDs).
@@ -585,22 +592,17 @@ PWMLED.prototype.is_lit = function() {
  * pins.  You can either use three limiting resistors (one per anode) or a
  * single limiting resistor on the cathode.
  *
- * @param red
- *      The GPIO pin that controls the red component of the RGB LED.
- * @param green
- *      The GPIO pin that controls the green component of the RGB LED.
- * @param blue
- *      The GPIO pin that controls the blue component of the RGB LED.
- * @param active_high
- *      Set to ``True`` (the default) for common cathode RGB LEDs. If you are
- *      using a common anode RGB LED, set this to ``False``.
- * @param initial_value
- *      The initial color for the RGB LED. Defaults to black ``(0, 0, 0)``.
- * @param pwm
- *      If ``True`` (the default), construct :class:`PWMLED` instances for
- *      each component of the RGBLED. If ``False``, construct regular
- *      :class:`LED` instances, which prevents smooth color graduations.
- * @constructor
+ * @param {int} red - The GPIO pin that controls the red component of the RGB LED.
+ * @param {int} green - The GPIO pin that controls the green component of the RGB LED.
+ * @param {int} blue - The GPIO pin that controls the blue component of the RGB LED.
+ * @param {boolean} [active_high] - Set to ``true`` (the default) for common cathode RGB LEDs. If you are
+ *      using a common anode RGB LED, set this to ``false``.
+ * @param {Array} [initial_value] - The initial color for the RGB LED. Defaults to black ``[0, 0, 0]``.
+ * @param {boolean} [pwm] - If ``true`` (the default), construct {@link PWMLED} instances for
+ *      each component of the RGBLED. If ``false``, construct regular {@link LED} instances,
+ *      which prevents smooth color graduations.
+ * @class
+ * @throws GPIOPinMissing - If one of the pins is not specified.
  */
 
 function RGBLED(red, green, blue, active_high, initial_value, pwm) {
@@ -622,16 +624,20 @@ exports.RGBLED = RGBLED;
 RGBLED.prototype = inherit(Device.prototype);
 RGBLED.prototype.constructor = RGBLED;
 
+/**
+ *  Represents the color of the LED as an RGB 3-tuple of ``[red, green, blue]``
+ *  where each value is between 0 and 1 if ``pwm`` was ``true`` when the class was constructed
+ *  (and only 0 or 1 if not).
+ *
+ * @param {Array} [value] - If set, the value for each component will be updated.
+ * @returns {Array} - If ``value`` is ``undefined`` then returns the current value for each component.
+ *
+ * @throws OutputDeviceBadValue - If three values are not passed as an array in value.
+ * @throws OutputDeviceBadValue - If any of the RGB values are not between 0 and 1.
+ * @throws OutputDeviceBadValue - If pwm is false but a value is between 0 and 1.
+ */
 RGBLED.prototype.value = function(value) {
     if (value === undefined) {
-        /*
-        Represents the color of the LED as an RGB 3-tuple of ``(red, green,
-        blue)`` where each value is between 0 and 1 if ``pwm`` was ``True``
-        when the class was constructed (and only 0 or 1 if not).
-
-        For example, purple would be ``(1, 0, 1)`` and yellow would be ``(1, 1,
-        0)``, while orange would be ``(1, 0.5, 0)``.
-        */
         return [this.red, this.green, this.blue];
     }
     if (value.length < 3) {
@@ -657,6 +663,9 @@ RGBLED.prototype.value = function(value) {
     this.blue = this._leds[2].value();
 };
 
+/**
+ * Close each pin and release for reuse.
+ */
 RGBLED.prototype.close = function() {
     var i;
     for (i = 0; i < 3; i++) {
@@ -669,37 +678,34 @@ RGBLED.prototype.close = function() {
     Device.prototype.close.call(this);
 };
 
+/**
+ *
+ * @returns {boolean} - If the LED is currently active (not black) then ``true`` otherwise ``false``.
+ */
 RGBLED.prototype.is_active = function() {
-    /*
-    Returns ``True`` if the LED is currently active (not black) and
-    ``False`` otherwise.
-    */
     return (this.value()[0] + this.value()[1] + this.value()[2] > 0);
 };
 
+/**
+ * Turn the LED on. This equivalent to setting the LED color to white ``[1, 1, 1]``.
+ */
 RGBLED.prototype.on = function() {
-    /*
-    Turn the LED on. This equivalent to setting the LED color to white
-    ``(1, 1, 1)``.
-    */
     this.value([1, 1, 1]);
 };
 
+/**
+ * Turn the LED off. This equivalent to setting the LED color to black ``[0, 0, 0]``.
+ */
 RGBLED.prototype.off = function() {
-    /*
-    Turn the LED on. This equivalent to setting the LED color to white
-    ``(1, 1, 1)``.
-    */
     this.value([0, 0, 0]);
 };
 
+/**
+ * Toggle the state of the device. If the device is currently off (`value` is ``[0, 0, 0[``),
+ * this changes it to "fully" on (`value` is ``[1, 1, 1]``).
+ * If the device has a specific color, this method inverts the color.
+ */
 RGBLED.prototype.toggle = function() {
-    /*
-    Toggle the state of the device. If the device is currently off
-    (:attr:`value` is ``(0, 0, 0)``), this changes it to "fully" on
-    (:attr:`value` is ``(1, 1, 1)``).  If the device has a specific color,
-    this method inverts the color.
-    */
     var current = this.value();
     this.value([1 - current[0], 1 - current[1], 1 - current[2]]);
 };

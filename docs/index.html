@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>  | Documentation</title>
+  <title>js-gpiozero  | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -13,7 +13,7 @@
     <div class='clearfix md-mxn2'>
       <div class='fixed xs-hide fix-3 overflow-auto max-height-100'>
         <div class='py1 px2'>
-          <h3 class='mb0 no-anchor'></h3>
+          <h3 class='mb0 no-anchor'>js-gpiozero</h3>
           <div class='mb1'><code></code></div>
           <input
             placeholder='Filter'
@@ -322,6 +322,150 @@
                         #value
                       </a></li>
                       
+                      <li><a
+                        href='#PWMOutputDevice#frequency'
+                        class='regular pre-open'>
+                        #frequency
+                      </a></li>
+                      
+                      <li><a
+                        href='#PWMOutputDevice#is_active'
+                        class='regular pre-open'>
+                        #is_active
+                      </a></li>
+                      
+                      <li><a
+                        href='#PWMOutputDevice#on'
+                        class='regular pre-open'>
+                        #on
+                      </a></li>
+                      
+                      <li><a
+                        href='#PWMOutputDevice#off'
+                        class='regular pre-open'>
+                        #off
+                      </a></li>
+                      
+                      <li><a
+                        href='#PWMOutputDevice#toggle'
+                        class='regular pre-open'>
+                        #toggle
+                      </a></li>
+                      
+                      <li><a
+                        href='#PWMOutputDevice#close'
+                        class='regular pre-open'>
+                        #close
+                      </a></li>
+                      
+                      <li><a
+                        href='#PWMOutputDevice#blink'
+                        class='regular pre-open'>
+                        #blink
+                      </a></li>
+                      
+                      <li><a
+                        href='#PWMOutputDevice#pulse'
+                        class='regular pre-open'>
+                        #pulse
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#motor'
+                  class=" toggle-sibling">
+                  Motor
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#Motor#close'
+                        class='regular pre-open'>
+                        #close
+                      </a></li>
+                      
+                      <li><a
+                        href='#Motor#closed'
+                        class='regular pre-open'>
+                        #closed
+                      </a></li>
+                      
+                      <li><a
+                        href='#Motor#value'
+                        class='regular pre-open'>
+                        #value
+                      </a></li>
+                      
+                      <li><a
+                        href='#Motor#is_active'
+                        class='regular pre-open'>
+                        #is_active
+                      </a></li>
+                      
+                      <li><a
+                        href='#Motor#forward'
+                        class='regular pre-open'>
+                        #forward
+                      </a></li>
+                      
+                      <li><a
+                        href='#Motor#backward'
+                        class='regular pre-open'>
+                        #backward
+                      </a></li>
+                      
+                      <li><a
+                        href='#Motor#reverse'
+                        class='regular pre-open'>
+                        #reverse
+                      </a></li>
+                      
+                      <li><a
+                        href='#Motor#stop'
+                        class='regular pre-open'>
+                        #stop
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#pwmled'
+                  class=" toggle-sibling">
+                  PWMLED
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#PWMLED#is_lit'
+                        class='regular pre-open'>
+                        #is_lit
+                      </a></li>
+                      
                     </ul>
                   
                   
@@ -332,10 +476,57 @@
                 
                 <li><a
                   href='#rgbled'
-                  class="">
+                  class=" toggle-sibling">
                   RGBLED
-                  
+                  <span class='icon'>▸</span>
                 </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#RGBLED#value'
+                        class='regular pre-open'>
+                        #value
+                      </a></li>
+                      
+                      <li><a
+                        href='#RGBLED#close'
+                        class='regular pre-open'>
+                        #close
+                      </a></li>
+                      
+                      <li><a
+                        href='#RGBLED#is_active'
+                        class='regular pre-open'>
+                        #is_active
+                      </a></li>
+                      
+                      <li><a
+                        href='#RGBLED#on'
+                        class='regular pre-open'>
+                        #on
+                      </a></li>
+                      
+                      <li><a
+                        href='#RGBLED#off'
+                        class='regular pre-open'>
+                        #off
+                      </a></li>
+                      
+                      <li><a
+                        href='#RGBLED#toggle'
+                        class='regular pre-open'>
+                        #toggle
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                </div>
                 
                 </li>
               
@@ -1983,6 +2174,7 @@ If
   
 
   <p>Represents a light emitting diode (LED).</p>
+<p>Connect the cathode (short leg, flat side) of the LED to a ground pin; connect the anode (longer leg) to a limiting resistor; connect the other side of the limiting resistor to a GPIO pin (the limiting resistor can be placed either side of the LED).</p>
 
 
   <div class='pre p1 fill-light mt0'>new LED(pin: (int | Pin), active_high: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>], initial_value: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</div>
@@ -2052,9 +2244,6 @@ If
 
   
     <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>Connect the cathode (short leg, flat side) <span class="hljs-keyword">of</span> the LED to a ground pin; connect the anode (longer leg) to a limiting resistor; connect the other side <span class="hljs-keyword">of</span> the limiting resistor to a GPIO pin (the limiting resistor can be placed either side <span class="hljs-keyword">of</span> the LED).</pre>
     
       
       <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">const</span> LED = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gpiozero'</span>).LED;
@@ -2325,14 +2514,14 @@ when configured for output (warning: this can be on).  If
             <span class='code bold'>active_high</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code> If 
 <code>true</code>
  (the default), the 
-<a href="PWMOutputDevice#on">on</a>
+<a href="#pwmoutputdeviceon">on</a>
  method will set the GPIO to HIGH.
 If 
 <code>false</code>
 , the 
-<a href="PWMOutputDevice#on">on</a>
+<a href="#pwmoutputdeviceon">on</a>
  method will set the GPIO to LOW (the 
-<a href="PWMOutputDevice#off">off</a>
+<a href="#pwmoutputdeviceoff">off</a>
  method always does the opposite).
 
           </div>
@@ -2455,6 +2644,1228 @@ Values in between may be specified for varying levels of power in the device.</p
       </div>
     </div>
   
+    <div class='border-bottom' id='PWMOutputDevice#frequency'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>frequency([value])</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Sets or Gets the device frequency.</p>
+
+
+  <div class='pre p1 fill-light mt0'>frequency(value: [int]): int</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>value</span> <code class='quiet'>([int])</code> The new frequency for the device.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>int</code>:
+        If value is undefined then the current device frequency is returned.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='PWMOutputDevice#is_active'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>is_active()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>is_active(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        If the device has a value other than 0 then true.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='PWMOutputDevice#on'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>on()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Turn the device fully on.</p>
+
+
+  <div class='pre p1 fill-light mt0'>on()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='PWMOutputDevice#off'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>off()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Turn the device off.</p>
+
+
+  <div class='pre p1 fill-light mt0'>off()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='PWMOutputDevice#toggle'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>toggle()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Toggle the state of the device. If the device is currently off (value<code>is 0.0), this changes it to &quot;fully&quot; on (</code>value<code>is 1.0). If the device has a duty cycle (</code>value&#x60;) of 0.1, this will toggle it to 0.9, and so on.</p>
+
+
+  <div class='pre p1 fill-light mt0'>toggle()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='PWMOutputDevice#close'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>close()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Stop any actions such as blink and unlink from pin.</p>
+
+
+  <div class='pre p1 fill-light mt0'>close()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='PWMOutputDevice#blink'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>blink([on_time], [off_time], [fade_in_time], [fade_out_time], [n], [callback])</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Make the device turn on and off repeatedly.</p>
+
+
+  <div class='pre p1 fill-light mt0'>blink(on_time: [float], off_time: [float], fade_in_time: [float], fade_out_time: [float], n: [int], callback: [@callback])</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>on_time</span> <code class='quiet'>([float])</code> Number of seconds on. Defaults to 1 second.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>off_time</span> <code class='quiet'>([float])</code> Number of seconds off. Defaults to 1 second.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fade_in_time</span> <code class='quiet'>([float])</code> Number of seconds to spend fading in. Defaults to 0.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fade_out_time</span> <code class='quiet'>([float])</code> Number of seconds to spend fading out. Defaults to 0.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>n</span> <code class='quiet'>([int])</code> Number of times to blink; 
+<code>undefined</code>
+ (the default) means forever.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>([@callback])</code> Function to be called after n loops.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='PWMOutputDevice#pulse'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>pulse([fade_in_time], [fade_out_time], [n], [callback])</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Make the device fade in and out repeatedly.</p>
+
+
+  <div class='pre p1 fill-light mt0'>pulse(fade_in_time: [float], fade_out_time: [float], n: [int], callback: [@callback])</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fade_in_time</span> <code class='quiet'>([float])</code> Number of seconds to spend fading in. Defaults to 0.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fade_out_time</span> <code class='quiet'>([float])</code> Number of seconds to spend fading out. Defaults to 0.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>n</span> <code class='quiet'>([int])</code> Number of times to blink; 
+<code>undefined</code>
+ (the default) means forever.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>([@callback])</code> Function to be called after n loops.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    <h3 class='fl m0' id='motor'>
+      Motor
+    </h3>
+    
+  </div>
+  
+
+  <p>Represents a generic motor connected to a bi-directional motor driver circuit (i.e.  an <code>H-bridge</code><em>).
+Attach an <code>H-bridge</code></em> motor controller to your Pi; connect a power source (e.g. a battery pack or the 5V pin) to the controller; connect the outputs
+of the controller board to the two terminals of the motor; connect the inputs of the controller board to two GPIO pins.</p>
+
+
+  <div class='pre p1 fill-light mt0'>new Motor(forward: int, backward: int, pwm: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</div>
+
+  
+    <p>
+      Extends
+      
+        <a href="#compositedevice">CompositeDevice</a>
+      
+    </p>
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>forward</span> <code class='quiet'>(int)</code> The GPIO pin that the forward input of the motor driver chip is connected to.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>backward</span> <code class='quiet'>(int)</code> The GPIO pin that the backward input of the motor driver chip is connected to.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>pwm</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</code> If 
+<code>true</code>
+ (the default), construct 
+<a href="#pwmoutputdevice">PWMOutputDevice</a>
+ instances for the motor controller pins, allowing both direction and variable speed control. If 
+<code>False</code>
+, construct 
+<a href="#digitaloutputdevice">DigitalOutputDevice</a>
+ instances, allowing only direction control.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>Any: GPIOPinMissing - If either Forward or Backward pin is not provided.
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='Motor#close'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>close()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Close down the output devices and release the pins.</p>
+
+
+  <div class='pre p1 fill-light mt0'>close()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Motor#closed'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>closed()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>closed(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        If true then the forward and backward devices are undefined.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Motor#value'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>value([value])</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Gets and Sets the motor speed between -1 (full backwards) and 1 (full forwards).</p>
+
+
+  <div class='pre p1 fill-light mt0'>value(value: [int]): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>value</span> <code class='quiet'>([int])</code> Motor speed.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>:
+        If value is undefined then returns the current speed.
+
+      
+    
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>Any: OutputDeviceBadValue - If the value is defined but not between 1 and -1.
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Motor#is_active'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>is_active()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>is_active(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        If the motor is currently running then 
+<code>true</code>
+ otherwise 
+<code>false</code>
+.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Motor#forward'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>forward(speed)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Drive the motor forwards.</p>
+
+
+  <div class='pre p1 fill-light mt0'>forward(speed: float)</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>speed</span> <code class='quiet'>(float)</code> The speed at which the motor should turn. Can be any value between 0 (stopped)
+and the default 1 (maximum speed) if 
+<code>pwm</code>
+ was 
+<code>true</code>
+ when the class was constructed (and only 0 or 1 if not).
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>Any: ValueError - When the speed is less than 0 or greater than 1.
+</li>
+      
+        <li>Any: ValueError - When the speed is between 0 and 1 on non-pwm motors.
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Motor#backward'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>backward(speed)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Drive the motor backwards.</p>
+
+
+  <div class='pre p1 fill-light mt0'>backward(speed: float)</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>speed</span> <code class='quiet'>(float)</code> The speed at which the motor should turn. Can be any value between 0 (stopped)
+and the default 1 (maximum speed) if 
+<code>pwm</code>
+ was 
+<code>true</code>
+ when the class was constructed (and only 0 or 1 if not).
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>Any: ValueError - When the speed is less than 0 or greater than 1.
+</li>
+      
+        <li>Any: ValueError - When the speed is between 0 and 1 on non-pwm motors.
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Motor#reverse'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>reverse()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Reverse the current direction of the motor. If the motor is currently
+idle this does nothing. Otherwise, the motor&#x27;s direction will be
+reversed at the current speed.</p>
+
+
+  <div class='pre p1 fill-light mt0'>reverse()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Motor#stop'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>stop()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Stop the motor.</p>
+
+
+  <div class='pre p1 fill-light mt0'>stop()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    <h3 class='fl m0' id='pwmled'>
+      PWMLED
+    </h3>
+    
+  </div>
+  
+
+  <p>Represents a light emitting diode (LED) with variable brightness.</p>
+<p>A typical configuration of such a device is to connect a GPIO pin to the
+anode (long leg) of the LED, and the cathode (short leg) to ground, with
+an optional resistor to prevent the LED from burning out.</p>
+
+
+  <div class='pre p1 fill-light mt0'>new PWMLED(pin: int, active_high: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>], initial_value: [float], frequency: [int])</div>
+
+  
+    <p>
+      Extends
+      
+        <a href="#pwmoutputdevice">PWMOutputDevice</a>
+      
+    </p>
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>pin</span> <code class='quiet'>(int)</code> The GPIO pin which the LED is attached to.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>active_high</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</code> If 
+<code>true</code>
+ (the default), the 
+<a href="PWMLED#on">on</a>
+ method will set the GPIO to HIGH.
+If 
+<code>false</code>
+, the 
+<a href="PWMLED#on">on</a>
+ method will set the GPIO to LOW (the 
+<a href="PWMLED#off">off</a>
+ method always does
+the opposite).
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>initial_value</span> <code class='quiet'>([float])</code> If 
+<code>0</code>
+ (the default), the LED will be off initially. Other values
+between 0 and 1 can be specified as an initial brightness for the LED. Note that 
+<code>undefined</code>
+ cannot be specified
+(unlike the parent class) as there is no way to tell PWM not to alter the state of the pin.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>frequency</span> <code class='quiet'>([int])</code> The frequency (in Hz) of pulses emitted to drive the LED. Defaults to 100Hz.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='PWMLED#is_lit'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>is_lit()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>is_lit(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        Alias for 
+<a href="#pwmoutputdeviceis_active">is_active</a>
+.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
 </div>
 
   
@@ -2483,7 +3894,7 @@ pins.  You can either use three limiting resistors (one per anode) or a
 single limiting resistor on the cathode.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new RGBLED(red: Any, green: Any, blue: Any, active_high: Any, initial_value: Any, pwm: Any)</div>
+  <div class='pre p1 fill-light mt0'>new RGBLED(red: int, green: int, blue: int, active_high: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>], initial_value: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>], pwm: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</div>
 
   
 
@@ -2499,7 +3910,7 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>red</span> <code class='quiet'>(Any)</code> The GPIO pin that controls the red component of the RGB LED.
+            <span class='code bold'>red</span> <code class='quiet'>(int)</code> The GPIO pin that controls the red component of the RGB LED.
 
           </div>
           
@@ -2507,7 +3918,7 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>green</span> <code class='quiet'>(Any)</code> The GPIO pin that controls the green component of the RGB LED.
+            <span class='code bold'>green</span> <code class='quiet'>(int)</code> The GPIO pin that controls the green component of the RGB LED.
 
           </div>
           
@@ -2515,7 +3926,7 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>blue</span> <code class='quiet'>(Any)</code> The GPIO pin that controls the blue component of the RGB LED.
+            <span class='code bold'>blue</span> <code class='quiet'>(int)</code> The GPIO pin that controls the blue component of the RGB LED.
 
           </div>
           
@@ -2523,11 +3934,11 @@ single limiting resistor on the cathode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>active_high</span> <code class='quiet'>(Any)</code> Set to 
-<code>True</code>
+            <span class='code bold'>active_high</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</code> Set to 
+<code>true</code>
  (the default) for common cathode RGB LEDs. If you are
 using a common anode RGB LED, set this to 
-<code>False</code>
+<code>false</code>
 .
 
           </div>
@@ -2536,8 +3947,8 @@ using a common anode RGB LED, set this to
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>initial_value</span> <code class='quiet'>(Any)</code> The initial color for the RGB LED. Defaults to black 
-<code>(0, 0, 0)</code>
+            <span class='code bold'>initial_value</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>])</code> The initial color for the RGB LED. Defaults to black 
+<code>[0, 0, 0]</code>
 .
 
           </div>
@@ -2546,17 +3957,17 @@ using a common anode RGB LED, set this to
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>pwm</span> <code class='quiet'>(Any)</code> If 
-<code>True</code>
- (the default), construct :class:
-<code>PWMLED</code>
+            <span class='code bold'>pwm</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>])</code> If 
+<code>true</code>
+ (the default), construct 
+<a href="#pwmled">PWMLED</a>
  instances for
 each component of the RGBLED. If 
-<code>False</code>
-, construct regular
-:class:
-<code>LED</code>
- instances, which prevents smooth color graduations.
+<code>false</code>
+, construct regular 
+<a href="#led">LED</a>
+ instances,
+which prevents smooth color graduations.
 
           </div>
           
@@ -2570,10 +3981,348 @@ each component of the RGBLED. If
   
 
   
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>Any: GPIOPinMissing - If one of the pins is not specified.
+</li>
+      
+    </ul>
+  
+
+  
 
   
 
   
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='RGBLED#value'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>value([value])</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Represents the color of the LED as an RGB 3-tuple of <code>[red, green, blue]</code>
+where each value is between 0 and 1 if <code>pwm</code> was <code>true</code> when the class was constructed
+(and only 0 or 1 if not).</p>
+
+
+  <div class='pre p1 fill-light mt0'>value(value: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>]): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>value</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>])</code> If set, the value for each component will be updated.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+        If 
+<code>value</code>
+ is 
+<code>undefined</code>
+ then returns the current value for each component.
+
+      
+    
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>Any: OutputDeviceBadValue - If three values are not passed as an array in value.
+</li>
+      
+        <li>Any: OutputDeviceBadValue - If any of the RGB values are not between 0 and 1.
+</li>
+      
+        <li>Any: OutputDeviceBadValue - If pwm is false but a value is between 0 and 1.
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='RGBLED#close'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>close()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Close each pin and release for reuse.</p>
+
+
+  <div class='pre p1 fill-light mt0'>close()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='RGBLED#is_active'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>is_active()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>is_active(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        If the LED is currently active (not black) then 
+<code>true</code>
+ otherwise 
+<code>false</code>
+.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='RGBLED#on'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>on()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Turn the LED on. This equivalent to setting the LED color to white <code>[1, 1, 1]</code>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>on()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='RGBLED#off'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>off()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Turn the LED off. This equivalent to setting the LED color to black <code>[0, 0, 0]</code>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>off()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='RGBLED#toggle'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>toggle()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Toggle the state of the device. If the device is currently off (<code>value</code> is <code>[0, 0, 0[</code>),
+this changes it to &quot;fully&quot; on (<code>value</code> is <code>[1, 1, 1]</code>).
+If the device has a specific color, this method inverts the color.</p>
+
+
+  <div class='pre p1 fill-light mt0'>toggle()</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
 
   
 

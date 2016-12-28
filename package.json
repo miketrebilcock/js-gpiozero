@@ -14,7 +14,7 @@
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov",
     "changelog": "standard-changelog -i CHANGELOG.md -w",
     "lint": "eslint ./gpiozero/**/*.js ./test/**/*.js",
-    "docs": "documentation build gpiozero/index.js -f html --sort-order alpha -o docs --document-exported",
+    "docs": "documentation build gpiozero/index.js -f html --sort-order alpha -o docs --document-exported --name js-gpiozero",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
