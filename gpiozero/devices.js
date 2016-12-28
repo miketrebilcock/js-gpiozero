@@ -43,9 +43,9 @@ const _PINS_LOCK = new ReadWriteLock(); //Yes, this needs to be re-entrant
  *  etc. This is the base class of the device hierarchy. It defines the
  *  basic services applicable to all devices (specifically the {@link Device#is_active|is_active}
  *  property, the {@link Device#value|value} property, and the {@link Device#close|close} method).
- * @constructor
+ *
+ * @class
  */
-
 function Device() {
 // eslint-disable-next-line no-empty-function
 }
@@ -61,21 +61,27 @@ Device.prototype.value = function() {
 };
 
 /**
- *  Returns ``True`` if the device is currently active and ``False``
- *  otherwise. This property is usually derived from :attr:`value`. Unlike
- *  :attr:`value`, this is *always* a boolean.
+ *  Returns `true` if the device is currently active and `false`
+ *  otherwise. This property is usually derived from `value` attribute. Unlike
+ *  `value` attribute, this is *always* a boolean.
  */
 Device.prototype.is_active = function() {
 
     return (this.value !== undefined);
 };
-
+/**
+ * Internal method to check if device is available.
+ *
+ * @private
+ */
 Device.prototype._check_open = function() {
     if (this.closed()) {
         throw new exc.DeviceClosed('is closed or uninitialized');
     }
 };
-
+/**
+ * @abstract
+ */
 Device.prototype.close = function() {
     return;
 };
@@ -83,17 +89,15 @@ Device.prototype.close = function() {
 exports.Device = Device;
 
 /**
- *  Represents a device composed of multiple devices
-    like simple HATs, H-bridge motor controllers, robots composed of multiple
-    motors, etc.
-
-    The constructor accepts subordinate devices as positional or keyword
-    arguments.  Positional arguments form unnamed devices accessed via the
-    (@link CompositeDevice#all|all) attribute, while keyword arguments are added to the device
-    as named attributes.
- * @param {[array]} devices
- * @param {[array]} kwdevices
- * @extends Device
+ *  Represents a device composed of multiple devices like simple HATs, H-bridge motor controllers, robots composed of multiple motors, etc.
+ *  The constructor accepts subordinate devices as positional or keyword arguments.
+ *  Positional arguments form unnamed devices accessed via the (@link CompositeDevice#all|all) attribute,
+ *  while keyword arguments are added to the device as named attributes.
+ *
+ * @param {Array} devices - An Array of positional devices.
+ * @param {Array} kwdevices - An Array of tuples containing device name and device.
+ * @class
+ * @augments Device
  */
 function CompositeDevice(devices, kwdevices) {
     this._all = [];
@@ -121,14 +125,26 @@ function CompositeDevice(devices, kwdevices) {
 CompositeDevice.prototype = inherit(Device.prototype);
 CompositeDevice.prototype.constructor = CompositeDevice;
 
+/**
+ *
+ * @returns {number} - The number of subordinate devices.
+ */
 CompositeDevice.prototype.length = function() {
     return this._all.length;
 };
 
+/**
+ *
+ * @returns {Array} - An array of subordinate device names.
+ */
 CompositeDevice.prototype.namedtuple = function() {
     return this._namedtuple;
 };
 
+/**
+ *
+ * @returns {Array} - An array of all subordinate device values.
+ */
 CompositeDevice.prototype.value = function () {
     let i;
     const result = [];
@@ -138,6 +154,10 @@ CompositeDevice.prototype.value = function () {
     return result;
 };
 
+/**
+ *
+ * @returns {boolean} - An array of each subordinate devices active state.
+ */
 CompositeDevice.prototype.is_active = function () {
     let i;
     for (i = 0; i < this._all.length; i++) {
@@ -148,6 +168,9 @@ CompositeDevice.prototype.is_active = function () {
     return false;
 };
 
+/**
+ * Close all subordinate devices.
+ */
 CompositeDevice.prototype.close = function () {
     this._all.forEach((device) => {
         device.close();
@@ -249,17 +272,14 @@ class CompositeDevice(Device):
  */
 
 /**
- * Represents a generic GPIO device and provides
- * the services common to all single-pin GPIO devices (like ensuring two
- * GPIO devices do no share a {@link Pin}).
- * @param {(int | Pin)} pin
- * The GPIO pin (in BCM numbering) or a instance of {@link Pin} that the device is connected to.
+ * Represents a generic GPIO device and provides the services common to all single-pin GPIO devices
+ * (like ensuring two GPIO devices do no share a {@link Pin}).
  *
- * @throws {GPIOPinMissing}
- * If pin is 'undefined'
- * @throws {GPIOPinInUse}
- * If the pin is already in use by another device
- * @constructor
+ * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or a instance of {@link Pin} that the device is connected to.
+ *
+ * @throws {GPIOPinMissing} - If pin is 'undefined'
+ * @throws {GPIOPinInUse} - If the pin is already in use by another device
+ * @class
  * @augments Device
  */
 function GPIODevice(pin) {
@@ -288,6 +308,9 @@ function GPIODevice(pin) {
 GPIODevice.prototype = inherit(Device.prototype);
 GPIODevice.prototype.constructor = GPIODevice;
 
+/**
+ * Close the device and remove the pin allocation allowing it to be reused.
+ */
 GPIODevice.prototype.close = function() {
     const that = this;
     _PINS_LOCK.readLock((release) => {
@@ -301,94 +324,65 @@ GPIODevice.prototype.close = function() {
     });
 };
 
+/**
+ *
+ * @returns {boolean} - Is ``true`` is no pin is allocated.
+ */
 GPIODevice.prototype.closed = function() {
     return (this._pin === undefined);
 };
 
+/**
+ *
+ * @returns {undefined|*|int|Pin} - The {@link Pin} that the device is connected to. This will be ``undefined``
+ * if the device has been closed (see the :meth:`close` method). When dealing with GPIO pins, query ``pin.number``
+ * to discover the GPIO pin (in BCM numbering) that the device is connected to.
+ */
 GPIODevice.prototype.pin = function() {
-    /*
-    The :class:`Pin` that the device is connected to. This will be ``None``
-    if the device has been closed (see the :meth:`close` method). When
-    dealing with GPIO pins, query ``pin.number`` to discover the GPIO
-    pin (in BCM numbering) that the device is connected to.
-    */
     return this._pin;
 };
 
+/**
+ * @returns {int|Boolean} - Current value of the pin.
+ */
 GPIODevice.prototype.value = function() {
     return this._read();
 };
 
+/**
+ * Internal method to read the pin value.
+ *
+ * @private
+ */
 GPIODevice.prototype._read = function() {
     this._check_open();
     return this._state_to_value(this.pin().state());
 };
 
+/**
+ * Internal method to apply active state high and convert the actual value to a logical value.
+ *
+ * @param {boolean|float} state - The value to be converted.
+ * @returns {boolean} - The logical value of the pin.
+ * @private
+ */
 GPIODevice.prototype._state_to_value = function(state) {
     return Boolean(state === this._active_state);
 };
-
+/**
+ *
+ * @returns {boolean} - Is true is the device value is currently set.
+ */
 GPIODevice.prototype.is_active = function() {
-    /*
-    The :class:`Pin` that the device is connected to. This will be ``None``
-    if the device has been closed (see the :meth:`close` method). When
-    dealing with GPIO pins, query ``pin.number`` to discover the GPIO
-    pin (in BCM numbering) that the device is connected to.
-    */
     return Boolean(this.value());
 };
 
-
-
+/**
+ *
+ * @returns {string} - Description of the device.
+ */
 GPIODevice.prototype.toString = function() {
-    /*
-    The :class:`Pin` that the device is connected to. This will be ``None``
-    if the device has been closed (see the :meth:`close` method). When
-    dealing with GPIO pins, query ``pin.number`` to discover the GPIO
-    pin (in BCM numbering) that the device is connected to.
-    */
     return "<gpiozero.GPIODevice object on pin " + this._pin._number.toString() + ", is_active=" + this.is_active() + ">";
 };
 
 exports.GPIODevice = GPIODevice;
-
-/*
-    def _state_to_value(self, state):
-        return bool(state == self._active_state)
-
-    def _read(self):
-        try:
-            return self._state_to_value(self.pin.state)
-        except (AttributeError, TypeError):
-            self._check_open()
-            raise
-
-
-    def _check_open(self):
-        try:
-            super(GPIODevice, self)._check_open()
-        except DeviceClosed as e:
-            # For backwards compatibility; GPIODeviceClosed is deprecated
-            raise GPIODeviceClosed(str(e))
-
-    @property
-    def pin(self):
-        """
-        The :class:`Pin` that the device is connected to. This will be ``None``
-        if the device has been closed (see the :meth:`close` method). When
-        dealing with GPIO pins, query ``pin.number`` to discover the GPIO
-        pin (in BCM numbering) that the device is connected to.
-        """
-        return self._pin
-
-    @property
-    def value(self):
-        return self._read()
-
-    def __repr__(self):
-        try:
-            return "<gpiozero.%s object on pin %r, is_active=%s>" % (
-                self.__class__.__name__, self.pin, self.is_active)
-        except DeviceClosed:
-            return "<gpiozero.%s object closed>" % self.__class__.__name__
-*/

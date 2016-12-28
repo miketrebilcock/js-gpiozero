@@ -7,26 +7,18 @@ const inherit = require('./tools.js').inherit;
 exports.OutputDevice = OutputDevice;
 /**
  * Represents a generic GPIO output device.
- * Provides facilities common to GPIO
- * output devices an {@link OutputDevice#on|on} method to switch the device on, a
- * corresponding :meth:`off` method, and a :meth:`toggle` method.
+ * Provides facilities common to GPIO output devices an {@link OutputDevice#on|on} method to switch the device on, a
+ * corresponding {@link OutputDevice#off|off} method, and a {@link OutputDevice#toggle|toggle} method.
  *
- * @param {(int | Pin)} pin
- * The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to. If
- this is `undefined` a `GPIOPinMissing` Error will be raised.
- * @param {boolean} [active_high = true]
- *  If `true` (the default), the :meth:`on` method will set the GPIO to
- *  HIGH. If `false`, the :meth:`on` method will set the GPIO to LOW (the
- *  :meth:`off` method always does the opposite).
- * @param {boolean} [initial_value = false]
- *  If `false` (the default), the device will be off initially.  If
- *  `undefined`, the device will be left in whatever state the pin is found in
- *  when configured for output (warning: this can be on).  If `true`, the
- *  device will be switched on initially.
- * @constructor
+ * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to.
+ * @param {boolean} [active_high] - If `true` (the default), the {@link OutputDevice#on|on} method will set the GPIO to HIGH.
+ * If `false`, the :{@link OutputDevice#on|on} method will set the GPIO to LOW (the {@link OutputDevice#off|off} method always does the opposite).
+ * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
+ * If `undefined`, the device will be left in whatever state the pin is found in when configured for output (warning: this can be on).  If `true`, the device will be switched on initially.
+ *
+ * @throws GPIOPinMissing - When pin is undefined.
+ * @class
  * @augments GPIODevice
- *
- * @throws {GPIOPinMissing} if pin is undefined.
  */
 function OutputDevice(pin, active_high, initial_value) {
     GPIODevice.call(this, pin);
@@ -44,10 +36,23 @@ function OutputDevice(pin, active_high, initial_value) {
 OutputDevice.prototype = inherit(GPIODevice.prototype);
 OutputDevice.prototype.constructor = OutputDevice;
 
+/**
+ * Internal method to apply active state high and convert the actual value to a logical value.
+ *
+ * @param {boolean|float} value - The value to be converted.
+ * @returns {boolean} - The logical value of the pin.
+ * @private
+ */
 OutputDevice.prototype._value_to_state = function(value) {
     return (value) ? this._active_state : this._inactive_state;
 };
 
+/**
+ * Internal method used to write to the pin after mapping the request value.
+ *
+ * @param {float | boolean} value - The logical value that the pin should be changed to.
+ * @private
+ */
 OutputDevice.prototype._write = function(value) {
     this._check_open(this);
     this._pin.state(this._value_to_state(value));
@@ -69,15 +74,14 @@ OutputDevice.prototype.off = function() {
     this._write(false);
 };
 /**
- * When ``True``, the :attr:`value` property is ``True`` when the device's
- * :attr:`pin` is high. When ``False`` the :attr:`value` property is
- * ``True`` when the device's pin is low (i.e. the value is inverted).
  *
  * This property can be set after construction; be warned that changing it
- * will invert :attr:`value` (i.e. changing this property doesn't change
- * the device's pin state - it just changes how that state is
- * interpreted).
- * @param {boolean} [value]
+ * will invert {@link OutputDevice#value|value} (i.e. changing this property doesn't change
+ * the device's pin state - it just changes how that state is interpreted).
+ *
+ * @param {boolean} [value] - When ``true``, the {@link OutputDevice#value|value} property is ``true`` when the device's
+ * {@link OutputDevice#pin|pin} is high. When ``false`` the {@link OutputDevice#value|value} property is
+ * ``true`` when the device's pin is low (i.e. the value is inverted).
  *
  */
 OutputDevice.prototype.active_high = function(value) {
@@ -88,6 +92,11 @@ OutputDevice.prototype.active_high = function(value) {
     this._inactive_state = !value;
 };
 
+/**
+ *
+ * @param {boolean | float} [value] - When supplied the device output is changed to the value.
+ * @returns {boolean | float} - When value is undefined, the function returns the current value of the device.
+ */
 OutputDevice.prototype.value = function(value) {
     if (value === undefined) {
         return this._read();
@@ -97,8 +106,7 @@ OutputDevice.prototype.value = function(value) {
 };
 
 /**
- * Reverse the state of the device. If it's on, turn it off; if it's off,
- turn it on.
+ * Reverse the state of the device. If it's on, turn it off; if it's off, turn it on.
  */
 OutputDevice.prototype.toggle = function() {
     const that = this;
@@ -114,6 +122,20 @@ OutputDevice.prototype.toggle = function() {
 
 exports.DigitalOutputDevice = DigitalOutputDevice;
 
+/**
+ * Represents a generic output device with typical on/off behaviour. This class extends {@link OutputDevice}
+ * with a {@link DigitalOutputDevice#blink|blink} method which toggles the device state without further interaction.
+ *
+ * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to.
+ * @param {boolean} [active_high] - If `true` (the default), the {@link OutputDevice#on|on} method will set the GPIO to HIGH.
+ * If `false`, the {@link OutputDevice#on|on} method will set the GPIO to LOW (the {@link OutputDevice#off|off} method always does the opposite).
+ * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
+ * If `undefined`, the device will be left in whatever state the pin is found in when configured for output (warning: this can be on).  If `true`, the device will be switched on initially.
+ *
+ * @throws GPIOPinMissing - When pin is undefined.
+ * @class
+ * @augments OutputDevice
+ */
 function DigitalOutputDevice(pin, active_high, initial_value) {
     OutputDevice.call(this, pin, active_high, initial_value);
 }
@@ -124,14 +146,10 @@ DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
 /**
  * Make the device turn on and off repeatedly.
  *
- * @param {float} on_time
- * Number of seconds on. Defaults to 1 second.
- * @param {float} off_time
- * Number of seconds off. Defaults to 1 second.
- * @param {int} n
- * Number of times to blink; ``None`` (the default) means forever.
- * @param @callback callback
- * function to be called upon completion
+ * @param {float} on_time - Number of seconds on. Defaults to 1 second.
+ * @param {float} off_time - Number of seconds off. Defaults to 1 second.
+ * @param {int} n - Number of times to blink; ``None`` (the default) means forever.
+ * @param {@callback} callback - Function to be called upon completion in the form (error, data).
  */
 DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
     this._pin.blink(on_time, off_time, n, callback);
@@ -139,119 +157,85 @@ DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
 
 exports.LED = LED;
 
+/**
+ * Represents a light emitting diode (LED).
+ *
+ * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the LED is connected to.
+ * @param {boolean} [active_high] - If ``True`` (the default), the LED will operate normally with the circuit described above. If ``False`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
+ * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
+ * If `undefined`, the device will be left in whatever state the pin is found in when configured for output (warning: this can be on).  If `true`, the device will be switched on initially.
+ * @augments DigitalOutputDevice
+ * @class
+ *
+ * @example Connect the cathode (short leg, flat side) of the LED to a ground pin; connect the anode (longer leg) to a limiting resistor; connect the other side of the limiting resistor to a GPIO pin (the limiting resistor can be placed either side of the LED).
+ * @example const LED = require('gpiozero').LED;
+ *          var led = new LED(17);
+ *          led.on();
+ */
 function LED(pin, active_high, initial_value) {
-    /*
-        Extends :class:`DigitalOutputDevice` and represents a light emitting diode
-        (LED).
-
-        Connect the cathode (short leg, flat side) of the LED to a ground pin;
-        connect the anode (longer leg) to a limiting resistor; connect the other
-        side of the limiting resistor to a GPIO pin (the limiting resistor can be
-        placed either side of the LED).
-
-        The following example will light the LED::
-
-            from gpiozero import LED
-
-            led = LED(17)
-            led.on()
-
-        :param int pin:
-            The GPIO pin which the LED is attached to. See :ref:`pin_numbering` for
-            valid pin numbers.
-
-        :param bool active_high:
-            If ``True`` (the default), the LED will operate normally with the
-            circuit described above. If ``False`` you should wire the cathode to
-            the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
-
-        :param bool initial_value:
-            If ``False`` (the default), the LED will be off initially.  If
-            ``None``, the LED will be left in whatever state the pin is found in
-            when configured for output (warning: this can be on).  If ``True``, the
-            LED will be switched on initially.
-        """
-        pass
-    */
     DigitalOutputDevice.call(this, pin, active_high, initial_value);
 }
 
 LED.prototype = inherit(DigitalOutputDevice.prototype);
 LED.prototype.constructor = LED;
-
+/**
+ * Friendly name for is_active.
+ *
+ * @returns {boolean} - Is true is LED is lit.
+ */
 LED.prototype.is_lit = function() {
     return this.is_active();
 };
 
 
 exports.Buzzer = Buzzer;
-
+/**
+ * Represents a digital buzzer component.
+ *
+ * @example const Buzzer = require ('gpiozero').Buzzer;
+ *          bz = new Buzzer(3);
+ *          bz.on();
+ *
+ * @param {int | Pin} pin -  The GPIO pin which the buzzer is attached to.
+ * @param {boolean} active_high - If ``true`` (the default), the buzzer will operate normally with the circuit described above.
+ * If ``false`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin.
+ * @param {boolean} initial_value - If ``false`` (the default), the buzzer will be silent initially.
+ * If ``undefined``, the buzzer will be left in whatever state the pin is found in
+ * when configured for output (warning: this can be on).  If ``true``, the buzzer will be switched on initially.
+ * @class
+ * @augments DigitalOutputDevice
+ */
 function Buzzer(pin, active_high, initial_value) {
-    /*
-    Extends :class:`DigitalOutputDevice` and represents a digital buzzer
-        component.
-
-        Connect the cathode (negative pin) of the buzzer to a ground pin; connect
-        the other side to any GPIO pin.
-
-        The following example will sound the buzzer::
-
-            from gpiozero import Buzzer
-
-            bz = Buzzer(3)
-            bz.on()
-
-        :param int pin:
-            The GPIO pin which the buzzer is attached to. See :ref:`pin_numbering`
-            for valid pin numbers.
-
-        :param bool active_high:
-            If ``True`` (the default), the buzzer will operate normally with the
-            circuit described above. If ``False`` you should wire the cathode to
-            the GPIO pin, and the anode to a 3V3 pin.
-
-        :param bool initial_value:
-            If ``False`` (the default), the buzzer will be silent initially.  If
-            ``None``, the buzzer will be left in whatever state the pin is found in
-            when configured for output (warning: this can be on).  If ``True``, the
-            buzzer will be switched on initially.
-    */
     DigitalOutputDevice.call(this, pin, active_high, initial_value);
 }
 
 Buzzer.prototype = inherit(DigitalOutputDevice.prototype);
 Buzzer.prototype.constructor = Buzzer;
 
+/**
+ * Make the buzzer switch on and off once a second.
+ */
 Buzzer.prototype.beep = function() {
     this.blink();
 };
 
 exports.PWMOutputDevice = PWMOutputDevice;
 
+/**
+ * Generic output device configured for pulse-width modulation (PWM).
+ *
+ * @param {int | Pin} pin - The GPIO pin which the device is attached to.
+ * @param {boolean} active_high - If ``true`` (the default), the {@link PWMOutputDevice#on|on} method will set the GPIO to HIGH.
+ * If ``false``, the {@link PWMOutputDevice#on|on} method will set the GPIO to LOW (the {@link PWMOutputDevice#off|off} method always does the opposite).
+ * @param {int} initial_value - If ``0`` (the default), the device's duty cycle will be 0 initially.
+ * Other values between 0 and 1 can be specified as an initial duty cycle.
+ * Note that ``undefined`` cannot be specified (unlike the parent class) as there is no way to tell PWM not to alter the state of the pin.
+ * @param {int} frequency - The frequency (in Hz) of pulses emitted to drive the device. Defaults to 100Hz.
+ * @class
+ *
+ * @throws OutputDeviceBadValue - When intial_value is ``undefined``.
+ */
 function PWMOutputDevice(pin, active_high, initial_value, frequency) {
-    /*
-    Generic output device configured for pulse-width modulation (PWM).
-
-    :param int pin:
-        The GPIO pin which the device is attached to. See :doc:`notes` for
-        valid pin numbers.
-
-    :param bool active_high:
-        If ``True`` (the default), the :meth:`on` method will set the GPIO to
-        HIGH. If ``False``, the :meth:`on` method will set the GPIO to LOW (the
-        :meth:`off` method always does the opposite).
-
-    :param bool initial_value:
-        If ``0`` (the default), the device's duty cycle will be 0 initially.
-        Other values between 0 and 1 can be specified as an initial duty cycle.
-        Note that ``None`` cannot be specified (unlike the parent class) as
-        there is no way to tell PWM not to alter the state of the pin.
-
-    :param int frequency:
-        The frequency (in Hz) of pulses emitted to drive the device. Defaults
-        to 100Hz.
-    */
-
     if (initial_value !== undefined) {
         if (initial_value < 0 || initial_value > 1) {
             throw new exc.OutputDeviceBadValue("initial_value must be between 0 and 1, actual=:" + initial_value);
@@ -271,12 +255,14 @@ function PWMOutputDevice(pin, active_high, initial_value, frequency) {
 
 PWMOutputDevice.prototype = inherit(OutputDevice.prototype);
 PWMOutputDevice.prototype.constructor = PWMOutputDevice;
-
+/**
+ * The duty cycle of the PWM device. 0.0 is off, 1.0 is fully on.
+ * Values in between may be specified for varying levels of power in the device.
+ *
+ * @param {float} [value] - When defined then sets the device duty cycle.
+ * @returns {float} - When value is undefined then the current duty cycle is returned.
+ */
 PWMOutputDevice.prototype.value = function(value) {
-    /*
-        The duty cycle of the PWM device. 0.0 is off, 1.0 is fully on. Values
-        in between may be specified for varying levels of power in the device.
-    */
     if (value === undefined) {
         return this._read();
     }

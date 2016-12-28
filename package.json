@@ -13,6 +13,7 @@
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov",
     "changelog": "standard-changelog -i CHANGELOG.md -w",
+    "lint": "eslint ./gpiozero/**/*.js ./test/**/*.js",
     "docs": "documentation build gpiozero/index.js -f html --sort-order alpha -o docs --document-exported",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
@@ -29,6 +30,7 @@
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-config-node": "^1.6.0",
     "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsdoc": "^2.4.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-eslint": "^3.0.1",
