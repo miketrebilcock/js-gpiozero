@@ -48,7 +48,7 @@ or you can simply run the following command:
 $npm run docs
 ```
 
-More info about contributing can be found [here] (https://github.com/i-am-digital/js-gpiozero/blob/master/CONTRIBUTING.md) 
+More info about contributing can be found [here](https://github.com/i-am-digital/js-gpiozero/blob/master/CONTRIBUTING.md) 
 
 [![NPM](https://nodei.co/npm/js-gpiozero.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/js-gpiozero/)
 
