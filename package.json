@@ -1,7 +1,7 @@
 {
   "version": "0.0.0-development",
   "name": "js-gpiozero",
-  "description": "A port of python gpiozero to node.js",
+  "description": "A simple interface to GPIO devices with Raspberry Pi using nodejs",
   "main": "./gpiozero/index.js",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov",
     "changelog": "standard-changelog -i CHANGELOG.md -w",
     "lint": "eslint ./gpiozero/**/*.js ./test/**/*.js",
-    "docs": "documentation build gpiozero/index.js -f html --sort-order alpha -o docs --document-exported --name js-gpiozero",
+    "docs": "jsdoc ./gpiozero -R ./README.md -d docs -c jsdoc.json",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
@@ -25,13 +25,14 @@
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
     "cz-conventional-changelog": "^1.2.0",
-    "documentation": "^4.0.0-beta9",
+    "docdash": "^0.4.0",
     "eslint": "^3.12.2",
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-config-node": "^1.6.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsdoc": "^2.4.0",
     "istanbul": "^0.4.5",
+    "jsdoc": "^3.4.3",
     "mocha": "^3.2.0",
     "mocha-eslint": "^3.0.1",
     "semantic-release": "^6.3.2"

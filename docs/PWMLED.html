@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>PWMLED - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Buzzer.html">Buzzer</a><ul class='methods'><li data-type='method'><a href="Buzzer.html#active_high">active_high</a></li><li data-type='method'><a href="Buzzer.html#beep">beep</a></li><li data-type='method'><a href="Buzzer.html#blink">blink</a></li><li data-type='method'><a href="Buzzer.html#close">close</a></li><li data-type='method'><a href="Buzzer.html#closed">closed</a></li><li data-type='method'><a href="Buzzer.html#is_active">is_active</a></li><li data-type='method'><a href="Buzzer.html#off">off</a></li><li data-type='method'><a href="Buzzer.html#on">on</a></li><li data-type='method'><a href="Buzzer.html#pin">pin</a></li><li data-type='method'><a href="Buzzer.html#toggle">toggle</a></li><li data-type='method'><a href="Buzzer.html#toString">toString</a></li><li data-type='method'><a href="Buzzer.html#value">value</a></li></ul></li><li><a href="CompositeDevice.html">CompositeDevice</a><ul class='methods'><li data-type='method'><a href="CompositeDevice.html#close">close</a></li><li data-type='method'><a href="CompositeDevice.html#is_active">is_active</a></li><li data-type='method'><a href="CompositeDevice.html#length">length</a></li><li data-type='method'><a href="CompositeDevice.html#namedtuple">namedtuple</a></li><li data-type='method'><a href="CompositeDevice.html#value">value</a></li></ul></li><li><a href="CompositeOutputDevice.html">CompositeOutputDevice</a><ul class='methods'><li data-type='method'><a href="CompositeOutputDevice.html#close">close</a></li><li data-type='method'><a href="CompositeOutputDevice.html#is_active">is_active</a></li><li data-type='method'><a href="CompositeOutputDevice.html#length">length</a></li><li data-type='method'><a href="CompositeOutputDevice.html#namedtuple">namedtuple</a></li><li data-type='method'><a href="CompositeOutputDevice.html#off">off</a></li><li data-type='method'><a href="CompositeOutputDevice.html#on">on</a></li><li data-type='method'><a href="CompositeOutputDevice.html#toggle">toggle</a></li><li data-type='method'><a href="CompositeOutputDevice.html#value">value</a></li></ul></li><li><a href="Device.html">Device</a><ul class='methods'><li data-type='method'><a href="Device.html#close">close</a></li><li data-type='method'><a href="Device.html#is_active">is_active</a></li><li data-type='method'><a href="Device.html#value">value</a></li></ul></li><li><a href="DigitalOutputDevice.html">DigitalOutputDevice</a><ul class='methods'><li data-type='method'><a href="DigitalOutputDevice.html#active_high">active_high</a></li><li data-type='method'><a href="DigitalOutputDevice.html#blink">blink</a></li><li data-type='method'><a href="DigitalOutputDevice.html#close">close</a></li><li data-type='method'><a href="DigitalOutputDevice.html#closed">closed</a></li><li data-type='method'><a href="DigitalOutputDevice.html#is_active">is_active</a></li><li data-type='method'><a href="DigitalOutputDevice.html#off">off</a></li><li data-type='method'><a href="DigitalOutputDevice.html#on">on</a></li><li data-type='method'><a href="DigitalOutputDevice.html#pin">pin</a></li><li data-type='method'><a href="DigitalOutputDevice.html#toggle">toggle</a></li><li data-type='method'><a href="DigitalOutputDevice.html#toString">toString</a></li><li data-type='method'><a href="DigitalOutputDevice.html#value">value</a></li></ul></li><li><a href="GPIODevice.html">GPIODevice</a><ul class='methods'><li data-type='method'><a href="GPIODevice.html#close">close</a></li><li data-type='method'><a href="GPIODevice.html#closed">closed</a></li><li data-type='method'><a href="GPIODevice.html#is_active">is_active</a></li><li data-type='method'><a href="GPIODevice.html#pin">pin</a></li><li data-type='method'><a href="GPIODevice.html#toString">toString</a></li><li data-type='method'><a href="GPIODevice.html#value">value</a></li></ul></li><li><a href="LED.html">LED</a><ul class='methods'><li data-type='method'><a href="LED.html#active_high">active_high</a></li><li data-type='method'><a href="LED.html#blink">blink</a></li><li data-type='method'><a href="LED.html#close">close</a></li><li data-type='method'><a href="LED.html#closed">closed</a></li><li data-type='method'><a href="LED.html#is_active">is_active</a></li><li data-type='method'><a href="LED.html#is_lit">is_lit</a></li><li data-type='method'><a href="LED.html#off">off</a></li><li data-type='method'><a href="LED.html#on">on</a></li><li data-type='method'><a href="LED.html#pin">pin</a></li><li data-type='method'><a href="LED.html#toggle">toggle</a></li><li data-type='method'><a href="LED.html#toString">toString</a></li><li data-type='method'><a href="LED.html#value">value</a></li></ul></li><li><a href="LEDBoard.html">LEDBoard</a><ul class='methods'><li data-type='method'><a href="LEDBoard.html#active_high">active_high</a></li><li data-type='method'><a href="LEDBoard.html#close">close</a></li><li data-type='method'><a href="LEDBoard.html#is_active">is_active</a></li><li data-type='method'><a href="LEDBoard.html#leds">leds</a></li><li data-type='method'><a href="LEDBoard.html#length">length</a></li><li data-type='method'><a href="LEDBoard.html#namedtuple">namedtuple</a></li><li data-type='method'><a href="LEDBoard.html#off">off</a></li><li data-type='method'><a href="LEDBoard.html#on">on</a></li><li data-type='method'><a href="LEDBoard.html#toggle">toggle</a></li><li data-type='method'><a href="LEDBoard.html#value">value</a></li></ul></li><li><a href="LEDCollection.html">LEDCollection</a><ul class='methods'><li data-type='method'><a href="LEDCollection.html#active_high">active_high</a></li><li data-type='method'><a href="LEDCollection.html#close">close</a></li><li data-type='method'><a href="LEDCollection.html#is_active">is_active</a></li><li data-type='method'><a href="LEDCollection.html#leds">leds</a></li><li data-type='method'><a href="LEDCollection.html#length">length</a></li><li data-type='method'><a href="LEDCollection.html#namedtuple">namedtuple</a></li><li data-type='method'><a href="LEDCollection.html#off">off</a></li><li data-type='method'><a href="LEDCollection.html#on">on</a></li><li data-type='method'><a href="LEDCollection.html#toggle">toggle</a></li><li data-type='method'><a href="LEDCollection.html#value">value</a></li></ul></li><li><a href="Motor.html">Motor</a><ul class='methods'><li data-type='method'><a href="Motor.html#backward">backward</a></li><li data-type='method'><a href="Motor.html#close">close</a></li><li data-type='method'><a href="Motor.html#closed">closed</a></li><li data-type='method'><a href="Motor.html#forward">forward</a></li><li data-type='method'><a href="Motor.html#is_active">is_active</a></li><li data-type='method'><a href="Motor.html#length">length</a></li><li data-type='method'><a href="Motor.html#namedtuple">namedtuple</a></li><li data-type='method'><a href="Motor.html#reverse">reverse</a></li><li data-type='method'><a href="Motor.html#stop">stop</a></li><li data-type='method'><a href="Motor.html#value">value</a></li></ul></li><li><a href="OutputDevice.html">OutputDevice</a><ul class='methods'><li data-type='method'><a href="OutputDevice.html#active_high">active_high</a></li><li data-type='method'><a href="OutputDevice.html#close">close</a></li><li data-type='method'><a href="OutputDevice.html#closed">closed</a></li><li data-type='method'><a href="OutputDevice.html#is_active">is_active</a></li><li data-type='method'><a href="OutputDevice.html#off">off</a></li><li data-type='method'><a href="OutputDevice.html#on">on</a></li><li data-type='method'><a href="OutputDevice.html#pin">pin</a></li><li data-type='method'><a href="OutputDevice.html#toggle">toggle</a></li><li data-type='method'><a href="OutputDevice.html#toString">toString</a></li><li data-type='method'><a href="OutputDevice.html#value">value</a></li></ul></li><li><a href="PiTraffic.html">PiTraffic</a></li><li><a href="PWMLED.html">PWMLED</a><ul class='methods'><li data-type='method'><a href="PWMLED.html#blink">blink</a></li><li data-type='method'><a href="PWMLED.html#close">close</a></li><li data-type='method'><a href="PWMLED.html#frequency">frequency</a></li><li data-type='method'><a href="PWMLED.html#is_active">is_active</a></li><li data-type='method'><a href="PWMLED.html#is_lit">is_lit</a></li><li data-type='method'><a href="PWMLED.html#off">off</a></li><li data-type='method'><a href="PWMLED.html#on">on</a></li><li data-type='method'><a href="PWMLED.html#pulse">pulse</a></li><li data-type='method'><a href="PWMLED.html#toggle">toggle</a></li><li data-type='method'><a href="PWMLED.html#value">value</a></li></ul></li><li><a href="PWMOutputDevice.html">PWMOutputDevice</a><ul class='methods'><li data-type='method'><a href="PWMOutputDevice.html#blink">blink</a></li><li data-type='method'><a href="PWMOutputDevice.html#close">close</a></li><li data-type='method'><a href="PWMOutputDevice.html#frequency">frequency</a></li><li data-type='method'><a href="PWMOutputDevice.html#is_active">is_active</a></li><li data-type='method'><a href="PWMOutputDevice.html#off">off</a></li><li data-type='method'><a href="PWMOutputDevice.html#on">on</a></li><li data-type='method'><a href="PWMOutputDevice.html#pulse">pulse</a></li><li data-type='method'><a href="PWMOutputDevice.html#toggle">toggle</a></li><li data-type='method'><a href="PWMOutputDevice.html#value">value</a></li></ul></li><li><a href="RGBLED.html">RGBLED</a><ul class='methods'><li data-type='method'><a href="RGBLED.html#close">close</a></li><li data-type='method'><a href="RGBLED.html#is_active">is_active</a></li><li data-type='method'><a href="RGBLED.html#off">off</a></li><li data-type='method'><a href="RGBLED.html#on">on</a></li><li data-type='method'><a href="RGBLED.html#toggle">toggle</a></li><li data-type='method'><a href="RGBLED.html#value">value</a></li></ul></li><li><a href="TrafficLights.html">TrafficLights</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">PWMLED</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        PWMLED
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    <h4 class="name" id="PWMLED"><span class="type-signature"></span>new PWMLED<span class="signature">(pin, active_high<span class="signature-attributes">opt</span>, initial_value<span class="signature-attributes">opt</span>, frequency<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line571">line 571</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Represents a light emitting diode (LED) with variable brightness.
+
+A typical configuration of such a device is to connect a GPIO pin to the
+anode (long leg) of the LED, and the cathode (short leg) to ground, with
+an optional resistor to prevent the LED from burning out.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The GPIO pin which the LED is attached to.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>active_high</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">If ``true`` (the default), the <a href="PWMLED.html#on">on</a> method will set the GPIO to HIGH.
+If ``false``, the <a href="PWMLED.html#on">on</a> method will set the GPIO to LOW (the <a href="PWMLED.html#off">off</a> method always does
+the opposite).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>initial_value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">If ``0`` (the default), the LED will be off initially. Other values
+between 0 and 1 can be specified as an initial brightness for the LED. Note that ``undefined`` cannot be specified
+(unlike the parent class) as there is no way to tell PWM not to alter the state of the pin.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frequency</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The frequency (in Hz) of pulses emitted to drive the LED. Defaults to 100Hz.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="PWMOutputDevice.html">PWMOutputDevice</a></li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="blink"><span class="type-signature"></span>blink<span class="signature">(on_time<span class="signature-attributes">opt</span>, off_time<span class="signature-attributes">opt</span>, fade_in_time<span class="signature-attributes">opt</span>, fade_out_time<span class="signature-attributes">opt</span>, n<span class="signature-attributes">opt</span>, {@callback})</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line375">line 375</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#blink">PWMOutputDevice#blink</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Make the device turn on and off repeatedly.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>on_time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of seconds on. Defaults to 1 second.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>off_time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of seconds off. Defaults to 1 second.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fade_in_time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of seconds to spend fading in. Defaults to 0.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fade_out_time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of seconds to spend fading out. Defaults to 0.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of times to blink; ``undefined`` (the default) means forever.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>{@callback}</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">[callback] - Function to be called after n loops.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="close"><span class="type-signature"></span>close<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line359">line 359</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#close">PWMOutputDevice#close</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Stop any actions such as blink and unlink from pin.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="frequency"><span class="type-signature"></span>frequency<span class="signature">(value<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {int}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line314">line 314</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#frequency">PWMOutputDevice#frequency</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Sets or Gets the device frequency.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The new frequency for the device.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - If value is undefined then the current device frequency is returned.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">int</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="is_active"><span class="type-signature"></span>is_active<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line325">line 325</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#is_active">PWMOutputDevice#is_active</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - If the device has a value other than 0 then true.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="is_lit"><span class="type-signature"></span>is_lit<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line582">line 582</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Alias for <a href="PWMOutputDevice.html#is_active">is_active</a>.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="off"><span class="type-signature"></span>off<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line340">line 340</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#off">PWMOutputDevice#off</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Turn the device off.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="on"><span class="type-signature"></span>on<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line332">line 332</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#on">PWMOutputDevice#on</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Turn the device fully on.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="pulse"><span class="type-signature"></span>pulse<span class="signature">(fade_in_time<span class="signature-attributes">opt</span>, fade_out_time<span class="signature-attributes">opt</span>, n<span class="signature-attributes">opt</span>, {@callback})</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line387">line 387</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#pulse">PWMOutputDevice#pulse</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Make the device fade in and out repeatedly.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fade_in_time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of seconds to spend fading in. Defaults to 0.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fade_out_time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of seconds to spend fading out. Defaults to 0.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Number of times to blink; ``undefined`` (the default) means forever.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>{@callback}</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">[callback] - Function to be called after n loops.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="toggle"><span class="type-signature"></span>toggle<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line350">line 350</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#toggle">PWMOutputDevice#toggle</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Toggle the state of the device. If the device is currently off (value` is 0.0),
+this changes it to "fully" on (`value` is 1.0).
+If the device has a duty cycle (`value`) of 0.1, this will toggle it to 0.9, and so on.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="value"><span class="type-signature"></span>value<span class="signature">(value<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {float}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="output_devices.js.html">output_devices.js</a>, <a href="output_devices.js.html#line269">line 269</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="PWMOutputDevice.html#value">PWMOutputDevice#value</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    The duty cycle of the PWM device. 0.0 is off, 1.0 is fully on.
+Values in between may be specified for varying levels of power in the device.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">When defined then sets the device duty cycle.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - When value is undefined then the current duty cycle is returned.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">float</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+<<<<<<< Updated upstream
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Dec 28 2016 22:07:10 GMT+0000 (GMT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+=======
+<<<<<<< Updated upstream
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Dec 28 2016 22:05:35 GMT+0000 (GMT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+=======
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Dec 28 2016 22:04:32 GMT+0000 (GMT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
