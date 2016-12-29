@@ -16,8 +16,8 @@ const PiTrafficClass = require('./boards/PiTraffic.js').PiTraffic;
 
 //noinspection JSUnresolvedVariable
 module.exports = {
-	GPIOPinMissing	: exc.GPIOPinMissing
-	,GPIOPinInUse 	: exc.GPIOPinInUse
+	GPIOPinInUse 	: exc.GPIOPinInUse
+	,GPIOPinMissing	: exc.GPIOPinMissing
 	,OutputDeviceBadValue : exc.OutputDeviceBadValue
 	,PinPWMUnsupported : exc.PinPWMUnsupported
 	,PinInputState 	: exc.PinInputState
