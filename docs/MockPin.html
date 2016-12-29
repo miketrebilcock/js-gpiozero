@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>RGBLED - Documentation</title>
+    <title>MockPin - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">RGBLED</h1>
+    <h1 class="page-title">MockPin</h1>
     
 
     
@@ -40,7 +40,7 @@
 <header>
     
         <h2>
-        RGBLED
+        MockPin
         </h2>
         
     
@@ -53,7 +53,7 @@
 
     
 
-    <h4 class="name" id="RGBLED"><span class="type-signature"></span>new RGBLED<span class="signature">(red, green, blue, active_high<span class="signature-attributes">opt</span>, initial_value<span class="signature-attributes">opt</span>, pwm<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="MockPin"><span class="type-signature"></span>new MockPin<span class="signature">(number)</span><span class="type-signature"> &rarr; {<a href="MockPin.html">MockPin</a>}</span></h4>
 
     
 
@@ -65,7 +65,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_RGBLED.js.html">output_devices/RGBLED.js</a>, <a href="output_devices_RGBLED.js.html#line31">line 31</a>
+        <a href="pins_mock.js.html">pins/mock.js</a>, <a href="pins_mock.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -105,12 +105,7 @@
 
 
 <div class="description">
-    Represents a full color LED component (composed of red, green, and blue LEDs).
-
-Connect the common cathode (longest leg) to a ground pin; connect each of
-the other legs (representing the red, green, and blue anodes) to any GPIO
-pins.  You can either use three limiting resistors (one per anode) or a
-single limiting resistor on the cathode.
+    A mock pin used primarily for testing. This class does *not* support PWM.
 </div>
 
 
@@ -136,8 +131,6 @@ single limiting resistor on the cathode.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -150,7 +143,7 @@ single limiting resistor on the cathode.
 
         <tr>
             
-                <td class="name"><code>red</code></td>
+                <td class="name"><code>number</code></td>
             
 
             <td class="type">
@@ -163,182 +156,10 @@ single limiting resistor on the cathode.
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last">The GPIO pin that controls the red component of the RGB LED.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>green</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that controls the green component of the RGB LED.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>blue</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that controls the blue component of the RGB LED.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>active_high</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Set to ``true`` (the default) for common cathode RGB LEDs. If you are
-     using a common anode RGB LED, set this to ``false``.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>initial_value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The initial color for the RGB LED. Defaults to black ``[0, 0, 0]``.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pwm</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">If ``true`` (the default), construct <a href="PWMLED.html">PWMLED</a> instances for
-     each component of the RGBLED. If ``false``, construct regular <a href="LED.html">LED</a> instances,
-     which prevents smooth color graduations.</td>
+            <td class="description last">GPIO Pin to simulate.</td>
         </tr>
 
     
@@ -356,20 +177,30 @@ single limiting resistor on the cathode.
 
 
 
-<h5>Throws:</h5>
+
+
+<h5>Returns:</h5>
 
         
+<div class="param-desc">
+    - The pin that has been instatiated or the pin already associated with this pin number.
+</div>
 
-    <div class="param-desc">
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="MockPin.html">MockPin</a></span>
+
+
+    </dd>
+</dl>
+
     
-        GPIOPinMissing - If one of the pins is not specified.
-    
-    </div>
-
-
-    
-
-
 
 
     
@@ -382,7 +213,7 @@ single limiting resistor on the cathode.
 
 
     <ul>
-        <li><a href="Device.html">Device</a></li>
+        <li><a href="Pin.html">Pin</a></li>
     </ul>
 
 
@@ -398,666 +229,6 @@ single limiting resistor on the cathode.
 
     
 
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="close"><span class="type-signature"></span>close<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_RGBLED.js.html">output_devices/RGBLED.js</a>, <a href="output_devices_RGBLED.js.html#line91">line 91</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Device.html#close">Device#close</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Close each pin and release for reuse.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="is_active"><span class="type-signature"></span>is_active<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_RGBLED.js.html">output_devices/RGBLED.js</a>, <a href="output_devices_RGBLED.js.html#line107">line 107</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Device.html#is_active">Device#is_active</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - If the LED is currently active (not black) then ``true`` otherwise ``false``.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="off"><span class="type-signature"></span>off<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_RGBLED.js.html">output_devices/RGBLED.js</a>, <a href="output_devices_RGBLED.js.html#line121">line 121</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Turn the LED off. This equivalent to setting the LED color to black ``[0, 0, 0]``.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="on"><span class="type-signature"></span>on<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_RGBLED.js.html">output_devices/RGBLED.js</a>, <a href="output_devices_RGBLED.js.html#line114">line 114</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Turn the LED on. This equivalent to setting the LED color to white ``[1, 1, 1]``.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="toggle"><span class="type-signature"></span>toggle<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_RGBLED.js.html">output_devices/RGBLED.js</a>, <a href="output_devices_RGBLED.js.html#line130">line 130</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Toggle the state of the device. If the device is currently off (`value` is ``[0, 0, 0[``),
-this changes it to "fully" on (`value` is ``[1, 1, 1]``).
-If the device has a specific color, this method inverts the color.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="value"><span class="type-signature"></span>value<span class="signature">(value<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_RGBLED.js.html">output_devices/RGBLED.js</a>, <a href="output_devices_RGBLED.js.html#line61">line 61</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Device.html#value">Device#value</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Represents the color of the LED as an RGB 3-tuple of ``[red, green, blue]``
- where each value is between 0 and 1 if ``pwm`` was ``true`` when the class was constructed
- (and only 0 or 1 if not).
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">If set, the value for each component will be updated.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Throws:</h5>
-<ul>
-        <li>
-
-    <div class="param-desc">
-    
-        OutputDeviceBadValue - If three values are not passed as an array in value.
-    
-    </div>
-
-</li>
-    
-        <li>
-
-    <div class="param-desc">
-    
-        OutputDeviceBadValue - If any of the RGB values are not between 0 and 1.
-    
-    </div>
-
-</li>
-    
-        <li>
-
-    <div class="param-desc">
-    
-        OutputDeviceBadValue - If pwm is false but a value is between 0 and 1.
-    
-    </div>
-
-</li>
-    </ul>
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - If ``value`` is ``undefined`` then returns the current value for each component.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-        
     
 
     

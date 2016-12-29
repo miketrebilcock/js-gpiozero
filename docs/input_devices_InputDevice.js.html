@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/Buzzer.js - Documentation</title>
+    <title>input_devices/InputDevice.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/Buzzer.js</h1>
+    <h1 class="page-title">input_devices/InputDevice.js</h1>
     
 
     
@@ -37,41 +37,54 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const inherit = require('../tools.js').inherit;
-const DigitalOutputDevice = require('./DigitalOutputDevice.js').DigitalOutputDevice;
+            <pre class="prettyprint source linenums"><code>const GPIODevice = require('../devices/GPIODevice.js').GPIODevice;
+const inherit = require('../tools.js').inherit;
 
-exports.Buzzer = Buzzer;
+exports.InputDevice = InputDevice;
+
 /**
- * Represents a digital buzzer component.
+ * Represents a generic GPIO input device.
+ * This class extends {@link GPIODevice} to add facilities common to GPIO
+ * input devices.  The constructor adds the optional *pull_up* parameter to
+ * specify how the pin should be pulled by the internal resistors. The
+ * {@link InputDevice#is_active|is_active} property is adjusted accordingly so that
+ * ``true`` still means active regardless of the {@link InputDevice#pull_up|pullup} setting.
  *
- * @example const Buzzer = require ('gpiozero').Buzzer;
- *          bz = new Buzzer(3);
- *          bz.on();
- *
- * @param {int | Pin} pin -  The GPIO pin which the buzzer is attached to.
- * @param {boolean} active_high - If ``true`` (the default), the buzzer will operate normally with the circuit described above.
- * If ``false`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin.
- * @param {boolean} initial_value - If ``false`` (the default), the buzzer will be silent initially.
- * If ``undefined``, the buzzer will be left in whatever state the pin is found in
- * when configured for output (warning: this can be on).  If ``true``, the buzzer will be switched on initially.
+ * @param {int | Pin} pin - The GPIO pin (in Broadcom numbering) that the device is connected to.
+ * @param {boolean} [pullup] - If ``true``, the pin will be pulled high with an internal resistor. If
+ * ``false`` (the default), the pin will be pulled low.
  * @class
- * @augments DigitalOutputDevice
+ * @augments GPIODevice
+ * @throws GPIODeviceError
  */
-function Buzzer(pin, active_high, initial_value) {
-    DigitalOutputDevice.call(this, pin, active_high, initial_value);
+function InputDevice (pin, pullup) {
+    GPIODevice.call(this, pin);
+
+    if (typeof pullup === 'undefined') {
+        pullup = false;
+    }
+
+    const pull = pullup ? 'up' : 'down';
+    if (this._pin.pull() !== pull) {
+        this._pin.pull(pull);
+    }
+    this._active_state = !pullup;
+    this._inactive_state = pullup;
 }
 
-Buzzer.prototype = inherit(DigitalOutputDevice.prototype);
-Buzzer.prototype.constructor = Buzzer;
+InputDevice.prototype = inherit(GPIODevice.prototype);
+InputDevice.prototype.constructor = InputDevice;
 
 /**
- * Make the buzzer switch on and off once a second.
+ * If ``true``, the device uses a pull-up resistor to set the GPIO pin "high" by default.
  */
-Buzzer.prototype.beep = function() {
-    this.blink();
+InputDevice.prototype.pull_up = function () {
+    return (this._pin.pull() === 'up');
 };
 
-</code></pre>
+InputDevice.prototype.toString = function () {
+    return '&lt;gpiozero.InputDevice object on pin ' + this._pin + ', pull_up=' + this.pull_up() + ', is_active=' + this.is_active() + '>';
+}</code></pre>
         </article>
     </section>
 

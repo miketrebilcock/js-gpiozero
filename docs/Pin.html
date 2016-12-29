@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/Buzzer.js - Documentation</title>
+    <title>Pin - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,53 +27,139 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/Buzzer.js</h1>
+    <h1 class="page-title">Pin</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const inherit = require('../tools.js').inherit;
-const DigitalOutputDevice = require('./DigitalOutputDevice.js').DigitalOutputDevice;
+        <h2>
+        Pin
+        </h2>
+        
+    
+</header>
 
-exports.Buzzer = Buzzer;
-/**
- * Represents a digital buzzer component.
- *
- * @example const Buzzer = require ('gpiozero').Buzzer;
- *          bz = new Buzzer(3);
- *          bz.on();
- *
- * @param {int | Pin} pin -  The GPIO pin which the buzzer is attached to.
- * @param {boolean} active_high - If ``true`` (the default), the buzzer will operate normally with the circuit described above.
- * If ``false`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin.
- * @param {boolean} initial_value - If ``false`` (the default), the buzzer will be silent initially.
- * If ``undefined``, the buzzer will be left in whatever state the pin is found in
- * when configured for output (warning: this can be on).  If ``true``, the buzzer will be switched on initially.
- * @class
- * @augments DigitalOutputDevice
- */
-function Buzzer(pin, active_high, initial_value) {
-    DigitalOutputDevice.call(this, pin, active_high, initial_value);
-}
+<article>
+    <div class="container-overview">
+    
+        
 
-Buzzer.prototype = inherit(DigitalOutputDevice.prototype);
-Buzzer.prototype.constructor = Buzzer;
+    
 
-/**
- * Make the buzzer switch on and off once a second.
- */
-Buzzer.prototype.beep = function() {
-    this.blink();
-};
+    <h4 class="name" id="Pin"><span class="type-signature"></span>new Pin<span class="signature">()</span><span class="type-signature"></span></h4>
 
-</code></pre>
-        </article>
-    </section>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pins_index.js.html">pins/index.js</a>, <a href="pins_index.js.html#line14">line 14</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Abstract base class representing a GPIO pin or a pin from an IO extender.
+
+ Descendents should override property getters and setters to accurately
+ represent the capabilities of pins. The following functions *must* be
+ overridden:
+ * `pin_function`.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

@@ -5,6 +5,7 @@ const OutputDeviceClass = require ('./output_devices/OutputDevice.js').OutputDev
 const DigitalOutputDeviceClass = require ('./output_devices/DigitalOutputDevice.js').DigitalOutputDevice;
 const PWMOutputDeviceClass = require ('./output_devices/PWMOutputDevice.js').PWMOutputDevice;
 const CompositeOutputDeviceClass = require('./output_devices/CompositeOutputDevice.js').CompositeOutputDevice;
+const InputDeviceClass = require ('./input_devices/InputDevice.js').InputDevice;
 const LEDClass = require ('./output_devices/LED.js').LED;
 const RGBLEDClass = require ('./output_devices/RGBLED.js').RGBLED;
 const PWMLEDClass = require ('./output_devices/PWMLED.js').PWMLED;
@@ -16,11 +17,12 @@ const PiTrafficClass = require('./boards/PiTraffic.js').PiTraffic;
 
 //noinspection JSUnresolvedVariable
 module.exports = {
-	GPIOPinInUse 	: exc.GPIOPinInUse
-	,GPIOPinMissing	: exc.GPIOPinMissing
+	GPIOPinInUse 	    : exc.GPIOPinInUse
+	,GPIOPinMissing	    : exc.GPIOPinMissing
 	,OutputDeviceBadValue : exc.OutputDeviceBadValue
-	,PinPWMUnsupported : exc.PinPWMUnsupported
-	,PinInputState 	: exc.PinInputState
+	,PinPWMUnsupported  : exc.PinPWMUnsupported
+	,PinInputState 	    : exc.PinInputState
+    ,PinFixedPull       : exc.PinFixedPull
 
 	,CompositeDevice    : CompositeDeviceClass
 	,GPIODevice 		: GPIODeviceClass
@@ -30,6 +32,8 @@ module.exports = {
 	,DigitalOutputDevice: DigitalOutputDeviceClass
 	,PWMOutputDevice    : PWMOutputDeviceClass
     ,CompositeOutputDevice : CompositeOutputDeviceClass
+
+    ,InputDevice        : InputDeviceClass
 
 	,LED 	: LEDClass
 	,Buzzer : BuzzerClass

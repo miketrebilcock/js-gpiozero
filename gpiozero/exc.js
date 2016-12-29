@@ -98,3 +98,10 @@ PinPWMUnsupported.prototype = inherit(AttributeError.prototype);
 PinPWMUnsupported.prototype.constructor = PinPWMUnsupported;
 exports.PinPWMUnsupported = PinPWMUnsupported;
 
+function PinFixedPull(message) {
+    AttributeError.call(this, message !== undefined?message:"PError raised when attempting to set the pull of a pin with fixed pull-up");
+}
+
+PinFixedPull.prototype = inherit(AttributeError.prototype);
+PinPWMUnsupported.prototype.constructor = PinFixedPull;
+exports.PinFixedPull = PinFixedPull;
