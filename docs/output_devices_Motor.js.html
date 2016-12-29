@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TrafficLights - Documentation</title>
+    <title>output_devices/Motor.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,301 +27,182 @@
 
 <div id="main">
     
-    <h1 class="page-title">TrafficLights</h1>
+    <h1 class="page-title">output_devices/Motor.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        TrafficLights
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-
-    <h4 class="name" id="TrafficLights"><span class="type-signature"></span>new TrafficLights<span class="signature">(red, amber, green, _options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="boards.js.html">boards.js</a>, <a href="boards.js.html#line349">line 349</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Represents a traffic light device containing red, amber, and green LEDs.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>red</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the red LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>amber</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the amber LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>green</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the green LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>_options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Options for device:
-* pwm: default: false. If true, creates PWMLED instances, else LED.
-* initial_value: default: false. If false, all LEDs will be off initially, if true the device will be switched on initialled.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li>LEDBoards</li>
-    </ul>
-
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const inherit = require('../tools.js').inherit;
+const PWMOutputDevice = require('./PWMOutputDevice.js').PWMOutputDevice;
+const DigitalOutputDevice = require('./DigitalOutputDevice.js').DigitalOutputDevice;
+const OutputDevice = require('./OutputDevice.js').OutputDevice;
+const CompositeDevice = require('../devices.js').CompositeDevice;
+const exc = require('../exc.js');
+
+exports.Motor = Motor;
+
+/**
+ * Represents a generic motor connected to a bi-directional motor driver circuit (i.e.  an `H-bridge`_).
+ * Attach an `H-bridge`_ motor controller to your Pi; connect a power source (e.g. a battery pack or the 5V pin) to the controller; connect the outputs
+ * of the controller board to the two terminals of the motor; connect the inputs of the controller board to two GPIO pins.
+ *
+ * @param {int} forward - The GPIO pin that the forward input of the motor driver chip is connected to.
+ * @param {int} backward - The GPIO pin that the backward input of the motor driver chip is connected to.
+ * @param {boolean} [pwm] - If ``true`` (the default), construct {@link PWMOutputDevice} instances for the motor controller pins, allowing both direction and variable speed control. If ``False``, construct {@link DigitalOutputDevice} instances, allowing only direction control.
+ * @class
+ * @augments CompositeDevice
+ * @throws GPIOPinMissing - If either Forward or Backward pin is not provided.
+ */
+function Motor(forward, backward, pwm) {
+    if (forward === undefined || backward === undefined) {
+        throw new exc.GPIOPinMissing('Forward and Backward pins must be provided');
+    }
+    if (pwm === undefined || pwm === true) {
+        CompositeDevice.call(this,undefined, [['forward_device', new PWMOutputDevice(forward)],
+            ['backward_device', new PWMOutputDevice(backward)]]);
+    } else {
+        CompositeDevice.call(this, undefined, [['forward_device', new DigitalOutputDevice(forward)],
+            ['backward_device', new DigitalOutputDevice(backward)]]);
+    }
+}
+
+Motor.prototype = inherit(CompositeDevice.prototype);
+Motor.prototype.constructor = Motor;
+
+/**
+ * Close down the output devices and release the pins.
+ */
+Motor.prototype.close = function() {
+    if (this.forward_device !== undefined) {
+        this.forward_device.close();
+        this.forward_device = undefined;
+    }
+
+    if (this.backward_device !== undefined) {
+        this.backward_device.close();
+        this.backward_device = undefined;
+    }
+    OutputDevice.prototype.close.call(this);
+};
+
+/**
+ *
+ * @returns {boolean} - If true then the forward and backward devices are undefined.
+ */
+Motor.prototype.closed = function() {
+    return (this.forward_device === undefined &amp;&amp; this.backward_device === undefined);
+};
+/**
+ * Gets and Sets the motor speed between -1 (full backwards) and 1 (full forwards).
+ *
+ * @param {int} [value] - Motor speed.
+ * @returns {number} - If value is undefined then returns the current speed.
+ * @throws OutputDeviceBadValue - If the value is defined but not between 1 and -1.
+ */
+Motor.prototype.value = function(value) {
+    if (value === undefined) {
+        return this.forward_device.value() - this.backward_device.value();
+    }
+
+    if (value > 1 || value &lt; -1) {
+        throw new exc.OutputDeviceBadValue("Motor value must be between -1 and 1, actual=:" + value);
+    }
+
+    if (value > 0) {
+        this.forward(value);
+    } else if (value &lt; 0) {
+        this.backward(-value);
+    } else {
+        this.stop();
+    }
+};
+/**
+ *
+ * @returns {boolean} - If the motor is currently running then ``true`` otherwise ``false``.
+ */
+Motor.prototype.is_active = function() {
+    /*
+
+     */
+    return this.value() !== 0;
+};
+
+/**
+ * Drive the motor forwards.
+ *
+ * @param {float} speed - The speed at which the motor should turn. Can be any value between 0 (stopped)
+ * and the default 1 (maximum speed) if ``pwm`` was ``true`` when the class was constructed (and only 0 or 1 if not).
+ *
+ * @throws ValueError - When the speed is less than 0 or greater than 1.
+ * @throws ValueError - When the speed is between 0 and 1 on non-pwm motors.
+ */
+Motor.prototype.forward = function(speed) {
+    if (speed === undefined) {
+        speed = 1;
+    }
+
+    if (speed &lt; 0 || speed > 1) {
+        throw new exc.ValueError('forward speed must be between 0 and 1');
+    }
+
+    if (this.forward_device instanceof DigitalOutputDevice &amp;&amp; speed !== 1 &amp;&amp; speed !== 0) {
+        throw new exc.ValueError('forward speed must be 0 or 1 with non-PWM Motors');
+    }
+
+    this.backward_device.off();
+    this.forward_device.value(speed);
+};
+
+/**
+ * Drive the motor backwards.
+ *
+ * @param {float} speed - The speed at which the motor should turn. Can be any value between 0 (stopped)
+ * and the default 1 (maximum speed) if ``pwm`` was ``true`` when the class was constructed (and only 0 or 1 if not).
+ *
+ * @throws ValueError - When the speed is less than 0 or greater than 1.
+ * @throws ValueError - When the speed is between 0 and 1 on non-pwm motors.
+ */
+Motor.prototype.backward = function(speed) {
+    if (speed === undefined) {
+        speed = 1;
+    }
+
+    if (speed &lt; 0 || speed > 1) {
+        throw new exc.ValueError('backward speed must be between 0 and 1');
+    }
+
+    if (this.backward_device instanceof DigitalOutputDevice &amp;&amp; speed !== 1 &amp;&amp; speed !== 0) {
+        throw new exc.ValueError('backward speed must be 0 or 1 with non-PWM Motors');
+    }
+
+    this.forward_device.off();
+    this.backward_device.value(speed);
+};
+
+/**
+ *     Reverse the current direction of the motor. If the motor is currently
+ *     idle this does nothing. Otherwise, the motor's direction will be
+ *     reversed at the current speed.
+ */
+Motor.prototype.reverse = function() {
+    this.value(-1 * this.value());
+};
+
+/**
+ * Stop the motor.
+ */
+Motor.prototype.stop = function() {
+    this.forward_device.off();
+    this.backward_device.off();
+};
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TrafficLights - Documentation</title>
+    <title>output_devices/LED.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,301 +27,56 @@
 
 <div id="main">
     
-    <h1 class="page-title">TrafficLights</h1>
+    <h1 class="page-title">output_devices/LED.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        TrafficLights
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-
-    <h4 class="name" id="TrafficLights"><span class="type-signature"></span>new TrafficLights<span class="signature">(red, amber, green, _options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="boards.js.html">boards.js</a>, <a href="boards.js.html#line349">line 349</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Represents a traffic light device containing red, amber, and green LEDs.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>red</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the red LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>amber</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the amber LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>green</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the green LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>_options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Options for device:
-* pwm: default: false. If true, creates PWMLED instances, else LED.
-* initial_value: default: false. If false, all LEDs will be off initially, if true the device will be switched on initialled.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li>LEDBoards</li>
-    </ul>
-
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const inherit = require('../tools.js').inherit;
+const DigitalOutputDevice = require('./DigitalOutputDevice.js').DigitalOutputDevice;
+
+exports.LED = LED;
+
+/**
+ * Represents a light emitting diode (LED).
+ *
+ * Connect the cathode (short leg, flat side) of the LED to a ground pin; connect the anode (longer leg) to a limiting resistor; connect the other side of the limiting resistor to a GPIO pin (the limiting resistor can be placed either side of the LED).
+ *
+ * @example const LED = require('gpiozero').LED;
+ *          var led = new LED(17);
+ *          led.on();
+ *
+ * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the LED is connected to.
+ * @param {boolean} [active_high] - If ``True`` (the default), the LED will operate normally with the circuit described above. If ``False`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin (via a limiting resistor).
+ * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
+ * If `undefined`, the device will be left in whatever state the pin is found in when configured for output (warning: this can be on).  If `true`, the device will be switched on initially.
+ * @augments DigitalOutputDevice
+ * @class
+ *
+ */
+function LED(pin, active_high, initial_value) {
+    DigitalOutputDevice.call(this, pin, active_high, initial_value);
+}
+
+LED.prototype = inherit(DigitalOutputDevice.prototype);
+LED.prototype.constructor = LED;
+/**
+ * Friendly name for is_active.
+ *
+ * @returns {boolean} - Is true is LED is lit.
+ */
+LED.prototype.is_lit = function() {
+    return this.is_active();
+};
+
+</code></pre>
+        </article>
+    </section>
 
 
 
