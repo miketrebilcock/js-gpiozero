@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>TrafficLights - Documentation</title>
+    <title>devices/Device.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,301 +27,69 @@
 
 <div id="main">
     
-    <h1 class="page-title">TrafficLights</h1>
+    <h1 class="page-title">devices/Device.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        TrafficLights
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-
-    <h4 class="name" id="TrafficLights"><span class="type-signature"></span>new TrafficLights<span class="signature">(red, amber, green, _options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="boards.js.html">boards.js</a>, <a href="boards.js.html#line349">line 349</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Represents a traffic light device containing red, amber, and green LEDs.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>red</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the red LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>amber</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the amber LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>green</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The GPIO pin that the green LED is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>_options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Options for device:
-* pwm: default: false. If true, creates PWMLED instances, else LED.
-* initial_value: default: false. If false, all LEDs will be off initially, if true the device will be switched on initialled.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li>LEDBoards</li>
-    </ul>
-
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const exc = require('../exc.js');
+
+/**
+ *  Represents a single device of any type; GPIO-based, SPI-based, I2C-based,
+ *  etc. This is the base class of the device hierarchy. It defines the
+ *  basic services applicable to all devices (specifically the {@link Device#is_active|is_active}
+ *  property, the {@link Device#value|value} property, and the {@link Device#close|close} method).
+ *
+ * @class
+ */
+function Device() {
+// eslint-disable-next-line no-empty-function
+}
+/**
+ * Returns a value representing the device's state. Frequently, this is a
+ * boolean value, or a number between 0 and 1 but some devices use larger
+ * ranges (e.g. -1 to +1) and composite devices usually use tuples to
+ * return the states of all their subordinate components.
+ */
+Device.prototype.value = function() {
+
+    throw new exc.NotImplementedError();
+};
+
+/**
+ *  Returns `true` if the device is currently active and `false`
+ *  otherwise. This property is usually derived from `value` attribute. Unlike
+ *  `value` attribute, this is *always* a boolean.
+ */
+Device.prototype.is_active = function() {
+
+    return (this.value !== undefined);
+};
+/**
+ * Internal method to check if device is available.
+ *
+ * @private
+ */
+Device.prototype._check_open = function() {
+    if (this.closed()) {
+        throw new exc.DeviceClosed('is closed or uninitialized');
+    }
+};
+/**
+ * @abstract
+ */
+Device.prototype.close = function() {
+    return;
+};
+
+exports.Device = Device;</code></pre>
+        </article>
+    </section>
 
 
 

@@ -1,4 +1,4 @@
-const Device = require('../devices.js').Device;
+const Device = require('../devices/Device.js').Device;
 const exc = require('../exc.js');
 const inherit = require('../tools.js').inherit;
 const PWMLED = require ('./PWMLED.js').PWMLED;

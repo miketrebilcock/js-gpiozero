@@ -4,7 +4,7 @@ const extend = require('./tools.js').extend;
 const PWMLED = require('./output_devices/PWMLED.js').PWMLED;
 const LED = require('./output_devices/LED.js').LED;
 const exc = require('./exc.js');
-const CompositeDevice = require('./devices.js').CompositeDevice;
+const CompositeDevice = require('./devices/CompositeDevice.js').CompositeDevice;
 const OutputDevice = require('./output_devices/OutputDevice.js').OutputDevice;
 /**
  *  Extends {@link CompositeDevice} with {@link CompositeDevice#on|on}, {@link CompositeDevice#off|off},

@@ -1,5 +1,6 @@
 const exc = require('./exc.js');
-const devices = require('./devices.js');
+const GPIODeviceClass = require('./devices/GPIODevice.js').GPIODevice;
+const CompositeDeviceClass = require('./devices/CompositeDevice.js').CompositeDevice;
 const OutputDeviceClass = require ('./output_devices/OutputDevice.js').OutputDevice;
 const DigitalOutputDeviceClass = require ('./output_devices/DigitalOutputDevice.js').DigitalOutputDevice;
 const PWMOutputDeviceClass = require ('./output_devices/PWMOutputDevice.js').PWMOutputDevice;
@@ -19,8 +20,8 @@ module.exports = {
 	,PinPWMUnsupported : exc.PinPWMUnsupported
 	,PinInputState 	: exc.PinInputState
 
-	,CompositeDevice : devices.CompositeDevice
-	,GPIODevice 		: devices.GPIODevice
+	,CompositeDevice    : CompositeDeviceClass
+	,GPIODevice 		: GPIODeviceClass
 
 
 	,OutputDevice       : OutputDeviceClass

@@ -2,7 +2,7 @@ const inherit = require('../tools.js').inherit;
 const PWMOutputDevice = require('./PWMOutputDevice.js').PWMOutputDevice;
 const DigitalOutputDevice = require('./DigitalOutputDevice.js').DigitalOutputDevice;
 const OutputDevice = require('./OutputDevice.js').OutputDevice;
-const CompositeDevice = require('../devices.js').CompositeDevice;
+const CompositeDevice = require('../devices/CompositeDevice.js').CompositeDevice;
 const exc = require('../exc.js');
 
 exports.Motor = Motor;

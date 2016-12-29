@@ -1,4 +1,4 @@
-const GPIODevice = require('../devices.js').GPIODevice;
+const GPIODevice = require('../devices/GPIODevice.js').GPIODevice;
 const Lock = require('rwlock');
 const inherit = require('../tools.js').inherit;
 
