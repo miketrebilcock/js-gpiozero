@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/DigitalOutputDevice.js - Documentation</title>
+    <title>boards/PiTraffic.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/DigitalOutputDevice.js</h1>
+    <h1 class="page-title">boards/PiTraffic.js</h1>
     
 
     
@@ -37,44 +37,33 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const OutputDevice = require ('./OutputDevice.js').OutputDevice;
-const inherit = require('../tools.js').inherit;
-
-exports.DigitalOutputDevice = DigitalOutputDevice;
+            <pre class="prettyprint source linenums"><code>const TrafficLights = require ('./TrafficLights.js').TrafficLights;
+const inherit = require ('../tools.js').inherit;
+const extend = require ('../tools.js').extend;
 
 /**
- * Represents a generic output device with typical on/off behaviour. This class extends {@link OutputDevice}
- * with a {@link DigitalOutputDevice#blink|blink} method which toggles the device state without further interaction.
+ * Represents the {@link http://lowvoltagelabs.com/products/pi-traffic/|Low Voltage Labs PI-TRAFFIC} vertical traffic lights board when attached to GPIO pins 9, 10, and 11.
+ * There's no need to specify the pins if the PI-TRAFFIC is connected to the default pins (9, 10, 11).
  *
- * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to.
- * @param {boolean} [active_high] - If `true` (the default), the {@link OutputDevice#on|on} method will set the GPIO to HIGH.
- * If `false`, the {@link OutputDevice#on|on} method will set the GPIO to LOW (the {@link OutputDevice#off|off} method always does the opposite).
- * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
- * If `undefined`, the device will be left in whatever state the pin is found in when configured for output (warning: this can be on).  If `true`, the device will be switched on initially.
- *
- * @throws GPIOPinMissing - When pin is undefined.
+ * @param {Object} [_options] - Device Options:
+ * * pwm: default: false. If true, creates PWMLED instances, else LED.
+ * * initial_value: default: false. If false, all LEDs will be off initially, if true the device will be switched on initialled.
  * @class
- * @augments OutputDevice
+ * @augments TrafficLights
  */
-function DigitalOutputDevice(pin, active_high, initial_value) {
-    OutputDevice.call(this, pin, active_high, initial_value);
+function PiTraffic(_options){
+    "use strict";
+    const defaults = {
+        pwm: false,
+        initial_value: false
+    };
+    this.options = extend(defaults, _options);
+    TrafficLights.call(this, 9,10,11, this.options);
 }
 
-DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
-DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
-
-/**
- * Make the device turn on and off repeatedly.
- *
- * @param {float} on_time - Number of seconds on. Defaults to 1 second.
- * @param {float} off_time - Number of seconds off. Defaults to 1 second.
- * @param {int} n - Number of times to blink; ``None`` (the default) means forever.
- * @param {@callback} callback - Function to be called upon completion in the form (error, data).
- */
-DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
-    this._pin.blink(on_time, off_time, n, callback);
-};
-</code></pre>
+exports.PiTraffic = PiTraffic;
+PiTraffic.prototype = inherit(TrafficLights.prototype);
+PiTraffic.prototype.constructor = PiTraffic;</code></pre>
         </article>
     </section>
 

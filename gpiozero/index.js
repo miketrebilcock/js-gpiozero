@@ -4,13 +4,15 @@ const CompositeDeviceClass = require('./devices/CompositeDevice.js').CompositeDe
 const OutputDeviceClass = require ('./output_devices/OutputDevice.js').OutputDevice;
 const DigitalOutputDeviceClass = require ('./output_devices/DigitalOutputDevice.js').DigitalOutputDevice;
 const PWMOutputDeviceClass = require ('./output_devices/PWMOutputDevice.js').PWMOutputDevice;
+const CompositeOutputDeviceClass = require('./output_devices/CompositeOutputDevice.js').CompositeOutputDevice;
 const LEDClass = require ('./output_devices/LED.js').LED;
 const RGBLEDClass = require ('./output_devices/RGBLED.js').RGBLED;
 const PWMLEDClass = require ('./output_devices/PWMLED.js').PWMLED;
 const BuzzerClass = require ('./output_devices/Buzzer.js').Buzzer;
 const MotorClass = require ('./output_devices/Motor.js').Motor;
 const tools = require('./tools.js');
-const boards = require('./boards.js');
+const TrafficLightsClass = require('./boards/TrafficLights.js').TrafficLights;
+const PiTrafficClass = require('./boards/PiTraffic.js').PiTraffic;
 
 //noinspection JSUnresolvedVariable
 module.exports = {
@@ -27,6 +29,7 @@ module.exports = {
 	,OutputDevice       : OutputDeviceClass
 	,DigitalOutputDevice: DigitalOutputDeviceClass
 	,PWMOutputDevice    : PWMOutputDeviceClass
+    ,CompositeOutputDevice : CompositeOutputDeviceClass
 
 	,LED 	: LEDClass
 	,Buzzer : BuzzerClass
@@ -34,9 +37,8 @@ module.exports = {
 	,PWMLED : PWMLEDClass
 	,RGBLED : RGBLEDClass
 
-    ,CompositeOutputDevice : boards.CompositeOutputDevice
-	,TrafficLights : boards.TrafficLights
-	,PiTraffic: boards.PiTraffic
+	,TrafficLights : TrafficLightsClass
+	,PiTraffic: PiTrafficClass
 
 	,with_close : tools.with_close
 	,inherit : tools.inherit

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/DigitalOutputDevice.js - Documentation</title>
+    <title>boards/LEDCollection.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/DigitalOutputDevice.js</h1>
+    <h1 class="page-title">boards/LEDCollection.js</h1>
     
 
     
@@ -37,44 +37,73 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const OutputDevice = require ('./OutputDevice.js').OutputDevice;
-const inherit = require('../tools.js').inherit;
+            <pre class="prettyprint source linenums"><code>const inherit = require ('../tools.js').inherit;
+const extend = require ('../tools.js').extend;
+const CompositeOutputDevice = require ('../output_devices/CompositeOutputDevice.js').CompositeOutputDevice;
+const PWMLED = require('../output_devices/PWMLED.js').PWMLED;
+const LED = require('../output_devices/LED.js').LED;
 
-exports.DigitalOutputDevice = DigitalOutputDevice;
+exports.LEDCollection = LEDCollection;
 
 /**
- * Represents a generic output device with typical on/off behaviour. This class extends {@link OutputDevice}
- * with a {@link DigitalOutputDevice#blink|blink} method which toggles the device state without further interaction.
+ * Abstract base class for @link{LEDBoard} and @link{LEDBarGraph}.
  *
- * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to.
- * @param {boolean} [active_high] - If `true` (the default), the {@link OutputDevice#on|on} method will set the GPIO to HIGH.
- * If `false`, the {@link OutputDevice#on|on} method will set the GPIO to LOW (the {@link OutputDevice#off|off} method always does the opposite).
- * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
- * If `undefined`, the device will be left in whatever state the pin is found in when configured for output (warning: this can be on).  If `true`, the device will be switched on initially.
- *
- * @throws GPIOPinMissing - When pin is undefined.
+ * @param {Array} [_pins] - Array of pins that LEDs are connect to.
+ * @param {Array} [_kwpins] - Array of tuples listing names for each pin eg [['red',17], ['amber',22]].
+ * @param {Object} [_options] - Set options for the Collection:
+ * *     pwm: Default: false, If true, creates PWMLED instances for each pin, else LED.
+ * *     active_high: Default: true, If true, the on method will set all the associated pins to HIGH.
+ *                                  If false, the on method will set all pins to LOW
+ *                                  (the `off` method always does the opposite).
+ * *    initial_value: If false, all LEDs will be off initially, if true the device will be Switched on initialled.
+ * @augments CompositeOutputDevice
  * @class
- * @augments OutputDevice
  */
-function DigitalOutputDevice(pin, active_high, initial_value) {
-    OutputDevice.call(this, pin, active_high, initial_value);
+function LEDCollection(_pins, _kwpins, _options) {
+    "use strict";
+    const defaults = {
+        pwm: false,
+        active_high: true,
+        initial_value: false,
+    };
+    this.options = extend(defaults, _options);
+    this._leds = [];
+    this._kwleds = [];
+    let i;
+    if (_pins !== undefined) {
+        for (i = 0; i &lt; _pins.length; i++) {
+            this._leds.push(this.options.pwm ? new PWMLED(_pins[i]) : new LED(_pins[i]));
+        }
+    }
+
+    if (_kwpins !== undefined) {
+        for (i = 0; i &lt; _kwpins.length; i++) {
+            this._kwleds.push([
+                _kwpins[i][0],
+                this.options.pwm ? new PWMLED(_kwpins[i][1]) : new LED(_kwpins[i][1])
+            ]);
+        }
+    }
+    CompositeOutputDevice.call(this, this._leds, this._kwleds);
 }
 
-DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
-DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
+LEDCollection.prototype = inherit(CompositeOutputDevice.prototype);
+LEDCollection.prototype.constructor = LEDCollection;
 
 /**
- * Make the device turn on and off repeatedly.
- *
- * @param {float} on_time - Number of seconds on. Defaults to 1 second.
- * @param {float} off_time - Number of seconds off. Defaults to 1 second.
- * @param {int} n - Number of times to blink; ``None`` (the default) means forever.
- * @param {@callback} callback - Function to be called upon completion in the form (error, data).
+ * @returns {Array} - A flat array of tuples of all LEDs contained in this collection (and all sub-collections).
  */
-DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
-    this._pin.blink(on_time, off_time, n, callback);
+LEDCollection.prototype.leds = function (){
+    return this._leds;
 };
-</code></pre>
+
+/**
+ *
+ * @returns {boolean} Indicates whether the device is active high (true) or low (false).
+ */
+LEDCollection.prototype.active_high = function (){
+    return this[0].active_high;
+};</code></pre>
         </article>
     </section>
 

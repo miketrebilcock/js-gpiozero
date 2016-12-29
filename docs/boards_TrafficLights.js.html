@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/DigitalOutputDevice.js - Documentation</title>
+    <title>boards/TrafficLights.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/DigitalOutputDevice.js</h1>
+    <h1 class="page-title">boards/TrafficLights.js</h1>
     
 
     
@@ -37,44 +37,44 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const OutputDevice = require ('./OutputDevice.js').OutputDevice;
-const inherit = require('../tools.js').inherit;
+            <pre class="prettyprint source linenums"><code>const LEDBoard = require ('./LEDBoard.js').LEDBoard;
+const inherit = require ('../tools.js').inherit;
+const extend = require ('../tools.js').extend;
+const exc = require('../exc.js');
 
-exports.DigitalOutputDevice = DigitalOutputDevice;
+exports.TrafficLights = TrafficLights;
 
 /**
- * Represents a generic output device with typical on/off behaviour. This class extends {@link OutputDevice}
- * with a {@link DigitalOutputDevice#blink|blink} method which toggles the device state without further interaction.
+ * Represents a traffic light device containing red, amber, and green LEDs.
  *
- * @param {(int | Pin)} pin - The GPIO pin (in BCM numbering) or an instance of Pin that the device is connected to.
- * @param {boolean} [active_high] - If `true` (the default), the {@link OutputDevice#on|on} method will set the GPIO to HIGH.
- * If `false`, the {@link OutputDevice#on|on} method will set the GPIO to LOW (the {@link OutputDevice#off|off} method always does the opposite).
- * @param {boolean} [initial_value] - If `false` (the default), the device will be off initially.
- * If `undefined`, the device will be left in whatever state the pin is found in when configured for output (warning: this can be on).  If `true`, the device will be switched on initially.
- *
- * @throws GPIOPinMissing - When pin is undefined.
+ * @param {number} red - The GPIO pin that the red LED is attached to.
+ * @param {number} amber - The GPIO pin that the amber LED is attached to.
+ * @param {number} green - The GPIO pin that the green LED is attached to.
+ * @param {Object} [_options] - Options for device:
+ * * pwm: default: false. If true, creates PWMLED instances, else LED.
+ * * initial_value: default: false. If false, all LEDs will be off initially, if true the device will be switched on initialled.
+ * @augments LEDBoards
  * @class
- * @augments OutputDevice
  */
-function DigitalOutputDevice(pin, active_high, initial_value) {
-    OutputDevice.call(this, pin, active_high, initial_value);
+function TrafficLights(red, amber, green, _options) {
+    "use strict";
+    const defaults = {
+        pwm: false,
+        initial_value: false
+    };
+    this.options = extend(defaults, _options);
+
+    if (red === undefined ||
+        amber === undefined ||
+        green === undefined) {
+        throw new exc.GPIOPinMissing('Pins must be provided for all LEDs');
+    }
+    this.devices = [['red', red],['amber',amber],['green',green]];
+    LEDBoard.call(this,undefined, this.devices, this.options);
 }
 
-DigitalOutputDevice.prototype = inherit(OutputDevice.prototype);
-DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
-
-/**
- * Make the device turn on and off repeatedly.
- *
- * @param {float} on_time - Number of seconds on. Defaults to 1 second.
- * @param {float} off_time - Number of seconds off. Defaults to 1 second.
- * @param {int} n - Number of times to blink; ``None`` (the default) means forever.
- * @param {@callback} callback - Function to be called upon completion in the form (error, data).
- */
-DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
-    this._pin.blink(on_time, off_time, n, callback);
-};
-</code></pre>
+TrafficLights.prototype = inherit(LEDBoard.prototype);
+TrafficLights.prototype.constructor = TrafficLights;</code></pre>
         </article>
     </section>
 
