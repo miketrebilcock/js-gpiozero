@@ -1,35 +1,42 @@
 const exc = require('./exc.js');
 const devices = require('./devices.js');
-const output_devices = require('./output_devices.js');
+const OutputDeviceClass = require ('./output_devices/OutputDevice.js').OutputDevice;
+const DigitalOutputDeviceClass = require ('./output_devices/DigitalOutputDevice.js').DigitalOutputDevice;
+const PWMOutputDeviceClass = require ('./output_devices/PWMOutputDevice.js').PWMOutputDevice;
+const LEDClass = require ('./output_devices/LED.js').LED;
+const RGBLEDClass = require ('./output_devices/RGBLED.js').RGBLED;
+const PWMLEDClass = require ('./output_devices/PWMLED.js').PWMLED;
+const BuzzerClass = require ('./output_devices/Buzzer.js').Buzzer;
+const MotorClass = require ('./output_devices/Motor.js').Motor;
 const tools = require('./tools.js');
 const boards = require('./boards.js');
 
 //noinspection JSUnresolvedVariable
 module.exports = {
-	GPIOPinMissing	: exc.GPIOPinMissing,
-	GPIOPinInUse 	: exc.GPIOPinInUse,
-	OutputDeviceBadValue : exc.OutputDeviceBadValue,
-	PinPWMUnsupported : exc.PinPWMUnsupported,
-	PinInputState 	: exc.PinInputState,
+	GPIOPinMissing	: exc.GPIOPinMissing
+	,GPIOPinInUse 	: exc.GPIOPinInUse
+	,OutputDeviceBadValue : exc.OutputDeviceBadValue
+	,PinPWMUnsupported : exc.PinPWMUnsupported
+	,PinInputState 	: exc.PinInputState
 
-	CompositeDevice : devices.CompositeDevice,
-	GPIODevice 		: devices.GPIODevice,
+	,CompositeDevice : devices.CompositeDevice
+	,GPIODevice 		: devices.GPIODevice
 
 
-	OutputDevice: output_devices.OutputDevice,
-	DigitalOutputDevice: output_devices.DigitalOutputDevice,
-	PWMOutputDevice : output_devices.PWMOutputDevice,
+	,OutputDevice       : OutputDeviceClass
+	,DigitalOutputDevice: DigitalOutputDeviceClass
+	,PWMOutputDevice    : PWMOutputDeviceClass
 
-	LED 	: output_devices.LED,
-	Buzzer 	: output_devices.Buzzer,
-	Motor	: output_devices.Motor,
-	PWMLED 	: output_devices.PWMLED,
-	RGBLED 	: output_devices.RGBLED,
+	,LED 	: LEDClass
+	,Buzzer : BuzzerClass
+	,Motor	: MotorClass
+	,PWMLED : PWMLEDClass
+	,RGBLED : RGBLEDClass
 
-    CompositeOutputDevice : boards.CompositeOutputDevice,
-	TrafficLights : boards.TrafficLights,
-	PiTraffic: boards.PiTraffic,
+    ,CompositeOutputDevice : boards.CompositeOutputDevice
+	,TrafficLights : boards.TrafficLights
+	,PiTraffic: boards.PiTraffic
 
-	with_close : tools.with_close,
-	inherit : tools.inherit
+	,with_close : tools.with_close
+	,inherit : tools.inherit
 };

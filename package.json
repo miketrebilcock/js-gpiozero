@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0-development",
+  "version": "1.0.0-beta",
   "name": "js-gpiozero",
   "description": "A simple interface to GPIO devices with Raspberry Pi using nodejs",
   "main": "./gpiozero/index.js",

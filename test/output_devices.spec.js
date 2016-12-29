@@ -1,13 +1,13 @@
 /*global it describe afterEach */
 
-const expect = require("chai").expect;
-const assert = require("chai").assert;
-const gz = require("../gpiozero/");
-const mp = require("../gpiozero/pins/mock.js");
-const isclose = require("../gpiozero/compat.js").isclose;
-const with_close = require ("../gpiozero/tools.js").with_close;
+const expect = require('chai').expect;
+const assert = require('chai').assert;
+const gz = require('../gpiozero/index.js');
+const mp = require('../gpiozero/pins/mock.js');
+const isclose = require('../gpiozero/compat.js').isclose;
+const with_close = require ('../gpiozero/tools.js').with_close;
 
-describe("output_devices", () => {
+describe('output_devices', () => {
 
     afterEach(() => {
         mp.clear_pins();

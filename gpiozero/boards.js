@@ -1,11 +1,11 @@
 const ReadWriteLock = require('rwlock');
 const inherit = require('./tools.js').inherit;
 const extend = require('./tools.js').extend;
-const PWMLED = require('./output_devices.js').PWMLED;
-const LED = require('./output_devices.js').LED;
+const PWMLED = require('./output_devices/PWMLED.js').PWMLED;
+const LED = require('./output_devices/LED.js').LED;
 const exc = require('./exc.js');
 const CompositeDevice = require('./devices.js').CompositeDevice;
-const OutputDevice = require('./output_devices.js').OutputDevice;
+const OutputDevice = require('./output_devices/OutputDevice.js').OutputDevice;
 /**
  *  Extends {@link CompositeDevice} with {@link CompositeDevice#on|on}, {@link CompositeDevice#off|off},
  *  and {@link CompositeDevice#toggle|toggle} methods for controlling subordinate output devices
