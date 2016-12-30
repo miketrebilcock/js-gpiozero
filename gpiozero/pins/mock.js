@@ -25,9 +25,9 @@ function MockPin(number) {
         this._function = 'input';
         this._state = false;
         this._pull = 'floating';
-        this._bounce = undefined;
+        this._bounce = null;
         this._edges = 'both';
-        this._when_changed = undefined;
+        this._when_changed = null;
         this.clear_states();
         return this;
     }
@@ -38,6 +38,10 @@ function MockPin(number) {
 }
 MockPin.prototype = inherit(Pin.prototype);
 MockPin.prototype.constructor = MockPin;
+
+MockPin.prototype.when_changed = function(next) {
+    this._when_changed = next;
+}
 
 MockPin.prototype.clear_states = function() {
     this._last_change = (new Date()).getTime();
@@ -116,8 +120,8 @@ MockPin.prototype.number = function() {
 
 MockPin.prototype.assert_states = function(expected) {
     // Tests that the pin went through the expected states (a list of values)
-    for (var i = 0, len = expected.length; i < len; i++) {
-        var actual = this.state_history()[i].state;
+    for (let i = 0, len = expected.length; i < len; i++) {
+        const actual = this.state_history()[i].state;
         assert(isclose(actual, expected[i], undefined, 10), actual + " not equal to " + expected[i]);
     }
 };
@@ -129,8 +133,8 @@ MockPin.prototype.assert_states_and_times = function(expected) {
     // environment on a Pi 1)
     assert(expected.length <= this.state_history().length, 'Expected length:' + expected.length + ' Actual length:' + this.state_history().length);
 
-    for (var i = 0; i < expected.length; i++) {
-        var actual = this.state_history()[i].state;
+    for (let i = 0; i < expected.length; i++) {
+        let actual = this.state_history()[i].state;
         assert(isclose(actual, expected[i].state, 0.05, undefined), actual + " not equal to " + expected[i].state);
 
         if (expected[i].time === 0) {
@@ -159,27 +163,25 @@ MockPin.prototype.pull = function (value) {
 
 MockPin.prototype.drive_high = function () {
     assert(this._function === 'input', 'Pin function is not set to input');
-    this._change_state(true);
+    if (this._change_state(true)) {
+        if (['both', 'rising'].indexOf(this._edges) !== -1) {
+            if(this._when_changed !== null) {
+                this._when_changed();
+            }
+        }
+    }
 };
 
 MockPin.prototype.drive_low = function () {
     assert(this._function === 'input', 'Pin function is not set to input');
-    this._change_state(false);
+    if (this._change_state(false)) {
+        if (['both', 'rising'].indexOf(this._edges) !== -1) {
+            if(this._when_changed !== null) {
+                this._when_changed();
+            }
+        }
+    }
 };
-
-/*
- def drive_high(self):
- assert self._function == 'input'
- if self._change_state(True):
- if self._edges in ('both', 'rising') and self._when_changed is not None:
- self._when_changed()
-
- def drive_low(self):
- assert self._function == 'input'
- if self._change_state(False):
- if self._edges in ('both', 'falling') and self._when_changed is not None:
- self._when_changed()
- */
 
 exports.MockPin = MockPin;
 

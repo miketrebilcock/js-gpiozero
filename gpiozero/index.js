@@ -6,6 +6,7 @@ const DigitalOutputDeviceClass = require ('./output_devices/DigitalOutputDevice.
 const PWMOutputDeviceClass = require ('./output_devices/PWMOutputDevice.js').PWMOutputDevice;
 const CompositeOutputDeviceClass = require('./output_devices/CompositeOutputDevice.js').CompositeOutputDevice;
 const InputDeviceClass = require ('./input_devices/InputDevice.js').InputDevice;
+const DigitalInputDeviceClass = require ('./input_devices/DigitalInputDevice.js').DigitalInputDevice;
 const LEDClass = require ('./output_devices/LED.js').LED;
 const RGBLEDClass = require ('./output_devices/RGBLED.js').RGBLED;
 const PWMLEDClass = require ('./output_devices/PWMLED.js').PWMLED;
@@ -34,6 +35,7 @@ module.exports = {
     ,CompositeOutputDevice : CompositeOutputDeviceClass
 
     ,InputDevice        : InputDeviceClass
+    ,DigitalInputDevice : DigitalInputDeviceClass
 
 	,LED 	: LEDClass
 	,Buzzer : BuzzerClass

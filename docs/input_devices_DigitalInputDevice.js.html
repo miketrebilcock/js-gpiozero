@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/Buzzer.js - Documentation</title>
+    <title>input_devices/DigitalInputDevice.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/Buzzer.js</h1>
+    <h1 class="page-title">input_devices/DigitalInputDevice.js</h1>
     
 
     
@@ -37,41 +37,44 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const inherit = require('../tools.js').inherit;
-const DigitalOutputDevice = require('./DigitalOutputDevice.js').DigitalOutputDevice;
+            <pre class="prettyprint source linenums"><code>const InputDevice = require('./InputDevice.js').InputDevice;
+const inherit = require('../tools.js').inherit;
+const _extend_object = require('../tools.js')._extend_object;
+const EventsMixin = require ('../Mixins/EventsMixin.js').EventsMixin;
 
-exports.Buzzer = Buzzer;
+exports.DigitalInputDevice = DigitalInputDevice;
+
 /**
- * Represents a digital buzzer component.
+ * Represents a generic input device with typical on/off behaviour.
  *
- * @example const Buzzer = require ('gpiozero').Buzzer;
- *          bz = new Buzzer(3);
- *          bz.on();
+ * This class extends {@link InputDevice|InputDevice} with machinery to fire the active
+ * and inactive events for devices that operate in a typical digital manner
+ * straight forward on / off states with (reasonably) clean transitions between the two.
  *
- * @param {int | Pin} pin -  The GPIO pin which the buzzer is attached to.
- * @param {boolean} active_high - If ``true`` (the default), the buzzer will operate normally with the circuit described above.
- * If ``false`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin.
- * @param {boolean} initial_value - If ``false`` (the default), the buzzer will be silent initially.
- * If ``undefined``, the buzzer will be left in whatever state the pin is found in
- * when configured for output (warning: this can be on).  If ``true``, the buzzer will be switched on initially.
+ * @param {int} pin - The GPIO pin (in Broadcom numbering) that the device is connected to.
+ * @param {boolean} [pull_up] - If `true`, the pin will be pulled high with an internal resistor. If
+ * `false` (the default), the pin will be pulled low.
+ * @param {float} [bounce_time] - Specifies the length of time (in seconds) that the component will
+ * ignore changes in state after an initial change. This defaults to
+ * `undefined` which indicates that no bounce compensation will be performed.
  * @class
- * @augments DigitalOutputDevice
+ * @augments InputDevice
  */
-function Buzzer(pin, active_high, initial_value) {
-    DigitalOutputDevice.call(this, pin, active_high, initial_value);
+function DigitalInputDevice(pin, pull_up, bounce_time) {
+    InputDevice.call(this, pin, pull_up);
+    _extend_object(this, EventsMixin.prototype);
+    EventsMixin.call(this);
+    this._pin.bounce = bounce_time;
+    this._pin.edges = 'both';
+    const that = this;
+    this._pin.when_changed( ()=>{ that._fire_events();});
+    //Call _fire_events once to set initial state of events
+    this._fire_events();
+
 }
 
-Buzzer.prototype = inherit(DigitalOutputDevice.prototype);
-Buzzer.prototype.constructor = Buzzer;
-
-/**
- * Make the buzzer switch on and off once a second.
- */
-Buzzer.prototype.beep = function() {
-    this.blink();
-};
-
-</code></pre>
+DigitalInputDevice.prototype = inherit(InputDevice.prototype);
+DigitalInputDevice.prototype.constructor = DigitalInputDevice;</code></pre>
         </article>
     </section>
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Buzzer - Documentation</title>
+    <title>DigitalInputDevice - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Buzzer</h1>
+    <h1 class="page-title">DigitalInputDevice</h1>
     
 
     
@@ -40,7 +40,7 @@
 <header>
     
         <h2>
-        Buzzer
+        DigitalInputDevice
         </h2>
         
     
@@ -53,7 +53,7 @@
 
     
 
-    <h4 class="name" id="Buzzer"><span class="type-signature"></span>new Buzzer<span class="signature">(pin, active_high, initial_value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="DigitalInputDevice"><span class="type-signature"></span>new DigitalInputDevice<span class="signature">(pin, pull_up<span class="signature-attributes">opt</span>, bounce_time<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -65,7 +65,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_Buzzer.js.html">output_devices/Buzzer.js</a>, <a href="output_devices_Buzzer.js.html#line21">line 21</a>
+        <a href="input_devices_DigitalInputDevice.js.html">input_devices/DigitalInputDevice.js</a>, <a href="input_devices_DigitalInputDevice.js.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -105,235 +105,11 @@
 
 
 <div class="description">
-    Represents a digital buzzer component.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>const Buzzer = require ('gpiozero').Buzzer;
-         bz = new Buzzer(3);
-         bz.on();</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>pin</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-|
-
-<span class="param-type"><a href="Pin.html">Pin</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The GPIO pin which the buzzer is attached to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>active_high</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">If ``true`` (the default), the buzzer will operate normally with the circuit described above.
-If ``false`` you should wire the cathode to the GPIO pin, and the anode to a 3V3 pin.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>initial_value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">If ``false`` (the default), the buzzer will be silent initially.
-If ``undefined``, the buzzer will be left in whatever state the pin is found in
-when configured for output (warning: this can be on).  If ``true``, the buzzer will be switched on initially.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li><a href="DigitalOutputDevice.html">DigitalOutputDevice</a></li>
-    </ul>
-
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="active_high"><span class="type-signature"></span>active_high<span class="signature">(value<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_OutputDevice.js.html">output_devices/OutputDevice.js</a>, <a href="output_devices_OutputDevice.js.html#line86">line 86</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="OutputDevice.html#active_high">OutputDevice#active_high</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    This property can be set after construction; be warned that changing it
-will invert <a href="OutputDevice.html#value">value</a> (i.e. changing this property doesn't change
-the device's pin state - it just changes how that state is interpreted).
+    Represents a generic input device with typical on/off behaviour.
+
+This class extends <a href="InputDevice.html">InputDevice</a> with machinery to fire the active
+and inactive events for devices that operate in a typical digital manner
+straight forward on / off states with (reasonably) clean transitions between the two.
 </div>
 
 
@@ -373,7 +149,38 @@ the device's pin state - it just changes how that state is interpreted).
 
         <tr>
             
-                <td class="name"><code>value</code></td>
+                <td class="name"><code>pin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The GPIO pin (in Broadcom numbering) that the device is connected to.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pull_up</code></td>
             
 
             <td class="type">
@@ -399,9 +206,43 @@ the device's pin state - it just changes how that state is interpreted).
 
             
 
-            <td class="description last">When ``true``, the <a href="OutputDevice.html#value">value</a> property is ``true`` when the device's
-<a href="OutputDevice.html#pin">pin</a> is high. When ``false`` the <a href="OutputDevice.html#value">value</a> property is
-``true`` when the device's pin is low (i.e. the value is inverted).</td>
+            <td class="description last">If `true`, the pin will be pulled high with an internal resistor. If
+`false` (the default), the pin will be pulled low.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bounce_time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Specifies the length of time (in seconds) that the component will
+ignore changes in state after an initial change. This defaults to
+`undefined` which indicates that no bounce compensation will be performed.</td>
         </tr>
 
     
@@ -423,291 +264,34 @@ the device's pin state - it just changes how that state is interpreted).
 
 
 
-        
-            
+    
+    </div>
 
     
-
-    <h4 class="name" id="beep"><span class="type-signature"></span>beep<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_Buzzer.js.html">output_devices/Buzzer.js</a>, <a href="output_devices_Buzzer.js.html#line31">line 31</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Make the buzzer switch on and off once a second.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="blink"><span class="type-signature"></span>blink<span class="signature">(on_time, off_time, n, {@callback})</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_DigitalOutputDevice.js.html">output_devices/DigitalOutputDevice.js</a>, <a href="output_devices_DigitalOutputDevice.js.html#line35">line 35</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="DigitalOutputDevice.html#blink">DigitalOutputDevice#blink</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Make the device turn on and off repeatedly.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
+        <h3 class="subsection-title">Extends</h3>
 
         
 
-        
 
-        <th class="last">Description</th>
-    </tr>
-    </thead>
+    <ul>
+        <li><a href="InputDevice.html">InputDevice</a></li>
+    </ul>
 
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>on_time</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">float</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Number of seconds on. Defaults to 1 second.</td>
-        </tr>
 
     
 
-        <tr>
-            
-                <td class="name"><code>off_time</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">float</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Number of seconds off. Defaults to 1 second.</td>
-        </tr>
+    
 
     
 
-        <tr>
-            
-                <td class="name"><code>n</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Number of times to blink; ``None`` (the default) means forever.</td>
-        </tr>
+     
 
     
 
-        <tr>
-            
-                <td class="name"><code>{@callback}</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">callback - Function to be called upon completion in the form (error, data).</td>
-        </tr>
+    
 
     
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <h3 class="subsection-title">Methods</h3>
 
         
             
@@ -1017,184 +601,6 @@ the device's pin state - it just changes how that state is interpreted).
 
     
 
-    <h4 class="name" id="off"><span class="type-signature"></span>off<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_OutputDevice.js.html">output_devices/OutputDevice.js</a>, <a href="output_devices_OutputDevice.js.html#line70">line 70</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="OutputDevice.html#off">OutputDevice#off</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Turns the device off.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="on"><span class="type-signature"></span>on<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_OutputDevice.js.html">output_devices/OutputDevice.js</a>, <a href="output_devices_OutputDevice.js.html#line62">line 62</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="OutputDevice.html#on">OutputDevice#on</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Turns the device on.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
     <h4 class="name" id="pin"><span class="type-signature"></span>pin<span class="signature">()</span><span class="type-signature"> &rarr; {undefined|*|int|<a href="Pin.html">Pin</a>}</span></h4>
 
     
@@ -1313,7 +719,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
 
     
 
-    <h4 class="name" id="toggle"><span class="type-signature"></span>toggle<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="pull_up"><span class="type-signature"></span>pull_up<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -1325,7 +731,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_OutputDevice.js.html">output_devices/OutputDevice.js</a>, <a href="output_devices_OutputDevice.js.html#line110">line 110</a>
+        <a href="input_devices_InputDevice.js.html">input_devices/InputDevice.js</a>, <a href="input_devices_InputDevice.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -1336,7 +742,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
     
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="OutputDevice.html#toggle">OutputDevice#toggle</a>
+        <a href="InputDevice.html#pull_up">InputDevice#pull_up</a>
     </li></ul></dd>
     
 
@@ -1370,7 +776,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
 
 
 <div class="description">
-    Reverse the state of the device. If it's on, turn it off; if it's off, turn it on.
+    If ``true``, the device uses a pull-up resistor to set the GPIO pin "high" by default.
 </div>
 
 
@@ -1509,7 +915,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
 
     
 
-    <h4 class="name" id="value"><span class="type-signature"></span>value<span class="signature">(value<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean|float}</span></h4>
+    <h4 class="name" id="value"><span class="type-signature"></span>value<span class="signature">()</span><span class="type-signature"> &rarr; {int|Boolean}</span></h4>
 
     
 
@@ -1521,7 +927,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="output_devices_OutputDevice.js.html">output_devices/OutputDevice.js</a>, <a href="output_devices_OutputDevice.js.html#line99">line 99</a>
+        <a href="devices_GPIODevice.js.html">devices/GPIODevice.js</a>, <a href="devices_GPIODevice.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -1532,7 +938,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
     
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="OutputDevice.html#value">OutputDevice#value</a>
+        <a href="GPIODevice.html#value">GPIODevice#value</a>
     </li></ul></dd>
     
 
@@ -1575,70 +981,6 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
 
 
 
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-|
-
-<span class="param-type">float</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">When supplied the device output is changed to the value.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
 
 
 
@@ -1655,7 +997,7 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
 
         
 <div class="param-desc">
-    - When value is undefined, the function returns the current value of the device.
+    - Current value of the pin.
 </div>
 
 
@@ -1666,10 +1008,10 @@ to discover the GPIO pin (in BCM numbering) that the device is connected to.
     </dt>
     <dd>
         
-<span class="param-type">boolean</span>
+<span class="param-type">int</span>
 |
 
-<span class="param-type">float</span>
+<span class="param-type">Boolean</span>
 
 
     </dd>

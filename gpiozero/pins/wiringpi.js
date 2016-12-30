@@ -98,6 +98,9 @@ WiringPiPin.prototype.constructor = WiringPiPin;
 WiringPiPin.prototype.toString = function() {
     return "GPIO " + this._number.toString();
 };
+WiringPiPin.prototype.when_changed = function(next) {
+    this._when_changed = next;
+}
 
 WiringPiPin.prototype.number = function() {
     return this._number();

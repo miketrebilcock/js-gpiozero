@@ -56,14 +56,32 @@ describe('input_devices', () => {
                 }).to.throw(gz.PinFixedPull);
         });
     });
-
+    context('digital_input_device', ()=> {
+        it('is event activated', () => {
+            let event = false;
+            const pin = new mp.MockPin(2);
+            with_close(new gz.DigitalInputDevice(pin), (device) => {
+                device.when_activated = function (){
+                    event = true;
+                };
+                assert (event === false, "Event is not set to false");
+                pin.drive_high();
+                assert (event === true, "Event is not set to true");
+            });
+        });
+        it('is event activated', () => {
+            let event = false;
+            const pin = new mp.MockPin(2);
+            with_close(new gz.DigitalInputDevice(pin), (device) => {
+                device.when_deactivated = function (){
+                    event = true;
+                };
+                assert (event === false, "Event is not set to false");
+                pin.drive_high();
+                assert (event === false, "Event is not set to false");
+                pin.drive_low();
+                assert (event === true, "Event is not set to true");
+            });
+        });
+    });
 });
-
-/*
-
-
- def test_input_pulled_up():
- pin = MockPulledUpPin(2)
- with pytest.raises(PinFixedPull):
- InputDevice(pin, pull_up=False)
- */
