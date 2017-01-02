@@ -30,7 +30,7 @@ DigitalOutputDevice.prototype.constructor = DigitalOutputDevice;
  * @param {float} on_time - Number of seconds on. Defaults to 1 second.
  * @param {float} off_time - Number of seconds off. Defaults to 1 second.
  * @param {int} n - Number of times to blink; ``None`` (the default) means forever.
- * @param {@callback} callback - Function to be called upon completion in the form (error, data).
+ * @param {callback} callback - Function to be called upon completion in the form (error, data).
  */
 DigitalOutputDevice.prototype.blink = function(on_time, off_time, n, callback) {
     this._pin.blink(on_time, off_time, n, callback);

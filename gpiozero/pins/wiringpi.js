@@ -1,7 +1,7 @@
-var wpi = require("wiring-pi"),
-    p = require("./index.js"),
-    exc = require("../exc.js"),
-    inherit = require('../tools.js').inherit;
+const wpi = require("wiring-pi");
+const p = require("./index.js");
+const exc = require("../exc.js");
+const inherit = require('../tools.js').inherit;
 
 var _PINS = {},
     WIRING_PI,
@@ -114,7 +114,7 @@ WiringPiPin.prototype.close = function() {
 
 WiringPiPin.prototype.output_with_state = function(state) {
     this._pull = 'floating';
-    wpi.pinMode(this._number, wpi.OUT);
+    this.pin_function ('output');
     wpi.digitalWrite(this._number, state);
 };
 
