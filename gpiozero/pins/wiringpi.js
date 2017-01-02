@@ -185,11 +185,10 @@ WiringPiPin.prototype.frequency = function(value) {
     if (value === -1) {
         this._frequency = undefined;
         this._pwm = undefined;
-        this._change_state(0.0);
+        wpi.pwmToneWrite(this._number, 0);
     } else {
         if (this._frequency === undefined) {
             this._pwm = wpi.pinMode(this._number, wpi.PWM_OUTPUT);
-            this._change_state(0.0);
         }
         wpi.pwmToneWrite(this._number, value);
         this._frequency = value;
