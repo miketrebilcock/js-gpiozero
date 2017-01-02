@@ -2,6 +2,7 @@ const wpi = require("wiring-pi");
 const p = require("./index.js");
 const exc = require("../exc.js");
 const inherit = require('../tools.js').inherit;
+const Pin = require("./index.js").Pin;
 
 var _PINS = {},
     WIRING_PI,
@@ -192,6 +193,60 @@ WiringPiPin.prototype.frequency = function(value) {
         }
         wpi.pwmToneWrite(this._number, value);
         this._frequency = value;
+    }
+};
+
+WiringPiPin.prototype.blink = function(on_time, off_time, fade_in_time, fade_out_time, n, fps, callback) {
+
+    if(this._pwm === undefined) {
+        Pin.prototype.blink.call(this, on_time, off_time, n, callback);
+        return;
+    }
+    this.on_time = (on_time === undefined ? 1 : on_time);
+    this.off_time = (off_time === undefined ? 1 : off_time);
+    this.fade_in_time = (fade_in_time === undefined ? 0 : fade_in_time);
+    this.fade_out_time = (fade_out_time === undefined ? 0 : fade_out_time);
+    this.fps = (fps === undefined ? 50 : fps);
+    this.n = (n === undefined ? 0 : n);
+    this.sequence = [];
+    this.blink_callback = callback;
+    var i = 0;
+
+    if (this.fade_in_time > 0) {
+        for (i = 0; i < this.fps * this.fade_in_time; i++) {
+            this.sequence.push({
+                value: i * (1 / this.fps) / this.fade_in_time,
+                delay: 1 / this.fps
+            });
+        }
+    }
+    this.sequence.push({
+        value: 1,
+        delay: this.on_time
+    });
+
+    if (this.fade_out_time > 0) {
+        for (i = 0; i < this.fps * this.fade_out_time; i++) {
+            this.sequence.push({
+                value: 1 - (i * (1 / this.fps)) / this.fade_out_time,
+                delay: 1 / this.fps
+            });
+        }
+    }
+    this.sequence.push({
+        value: 0,
+        delay: this.off_time
+    });
+
+    if (this.n > 0) {
+        for (i = 0; i < (this.n - 1); i++) {
+            this.sequence = this.sequence.concat(this.sequence);
+        }
+
+        var nextStep = this.sequence.pop();
+        this.state(nextStep.value);
+        var that = this;
+        this._blink_timer = setTimeout(that._run_blink, nextStep.delay, this.sequence, this);
     }
 };
 /*
