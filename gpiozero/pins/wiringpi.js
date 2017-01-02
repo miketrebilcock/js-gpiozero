@@ -249,6 +249,17 @@ WiringPiPin.prototype.blink = function(on_time, off_time, fade_in_time, fade_out
         this._blink_timer = setTimeout(that._run_blink, nextStep.delay, this.sequence, this);
     }
 };
+
+WiringPiPin.prototype._run_blink = function(sequence, that) {
+    if (sequence.length > 0) {
+        var nextStep = sequence.pop();
+        that.state(nextStep.value);
+        that._blink_timer = setTimeout(that._run_blink, nextStep.delay, sequence, that);
+    } else if (that.blink_callback !== undefined) {
+        that.blink_callback();
+    }
+};
+
 /*
 
     def _get_bounce(self):
