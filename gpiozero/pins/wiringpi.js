@@ -140,6 +140,7 @@ WiringPiPin.prototype.pin_function = function(value) {
     if (value === 'input' || value === 'output') {
         wpi.pinMode(this._number, GPIO_FUNCTIONS[value]);
         wpi.pullUpDnControl(this._number, GPIO_PULL_UPS[this._pull]);
+        this._function = value;
     } else {
         throw exc.PinInvalidFunction('invalid function " + value + " for pin ' + this._number.toString());
     }
