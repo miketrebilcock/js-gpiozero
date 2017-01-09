@@ -477,36 +477,31 @@ PiBoardInfo.prototype.from_revision = function (revision) {
             'CM':   CM_BOARD,
             'Zero': this.pcb_revision === '1.2' ? ZERO12_BOARD : ZERO13_BOARD
         }[this.model]: BPLUS_BOARD;
-        return this;
+    } else {
+        const info = PI_REVISIONS[revision];
+        if(info!==undefined) {
+            this.model = info.model;
+            this.pcb_revision = info.pcb_revision;
+            this.released = info.released;
+            this.soc = info.soc;
+            this.memory = info.memory;
+            this.manufacturer = info.manufacturer;
+            this.storage = info.storage;
+            this.usb = info.usb;
+            this.ethernet = info.ethernet;
+            this.wifi = info.wifi;
+            this.bluetooth = info.bluetooth;
+            this.csi = info.csi;
+            this.dsi = info.dsi;
+            this.headers = info.headers;
+            this.board = info.board;
+        }
+        return false;
     }
-    return false;
+    return this;
 }
 
 /*
- from_revision(cls, revision):
- if revision & 0x800000:
- try:
- # Old-style revision, use the lookup table
- try:
- (
- model,
- pcb_revision,
- released,
- soc,
- manufacturer,
- memory,
- storage,
- usb,
- ethernet,
- wifi,
- bluetooth,
- csi,
- dsi,
- headers,
- board,
- ) = PI_REVISIONS[revision]
- except KeyError:
- raise PinUnknownPi('unknown old-style revision "%x"' % revision)
  headers = {
  header: HeaderInfo(name=header, rows=max(header_data) // 2, columns=2, pins={
  number: PinInfo(
