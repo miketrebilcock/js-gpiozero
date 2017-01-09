@@ -1,6 +1,6 @@
 const Device = require ('./Device.js').Device;
 const inherit = require('../tools.js').inherit;
-const wiringpi = require('../pins/wiringpi.js').WiringPiPin;
+const PiGPIOPin = require('../pins/pigpio.js').PiGPIOPin;
 const ReadWriteLock = require('rwlock');
 const exc = require('../exc.js');
 
@@ -57,7 +57,7 @@ function GPIODevice(pin) {
         throw new exc.GPIOPinMissing('No pin given');
     }
     if (Number.isInteger(pin)) {
-        pin = new wiringpi(pin);
+        pin = new PiGPIOPin(pin);
     }
 
     _PINS_LOCK.readLock((release) => {

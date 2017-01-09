@@ -18,9 +18,8 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
-    "node-constants": "0.0.2",
-    "rwlock": "5.0.0",
-    "wiring-pi": "^2.2.1"
+    "js-pigpio": "^1.0.0",
+    "rwlock": "5.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -1,28 +1,20 @@
-const pigpio = require('js-pigpiod');
+const pigpio = require('js-pigpio');
 const p = require("./index.js");
-const exc = require("../exc.js");
 const inherit = require('../tools.js').inherit;
 const Pin = require("./index.js").Pin;
 
-let _CONNECTIONS = []; // maps (host, port) to (connection, pi_info)
-let _PINS = [];
+const _CONNECTIONS = []; // maps (host, port) to (connection, pi_info)
+const _PINS = [];
 
 /**
  *
- * Uses the `pigpio` library to interface to the Pi's GPIO pins. The pigpio
- * library relies on a daemon (``pigpiod``) to be running as root to provide
- * access to the GPIO pins, and communicates with this daemon over a network
- * socket.
+ * Uses the library {@link https://www.npmjs.com/package/js-pigpio|js-pigpio} to interface to the Pi's GPIO pins. The pigpio library relies on a daemon {@link http://abyz.co.uk/rpi/pigpio/|pigpiod}  to be running as root to provide access to the GPIO pins, and communicates with this daemon over a network socket.
  *
- * While this does mean only the daemon itself should control the pins, the
- * architecture does have several advantages:
+ * While this does mean only the daemon itself should control the pins, the architecture does have several advantages:
+ * * Pins can be remote controlled from another machine (the other machine doesn't even have to be a Raspberry Pi; it simply needs the `pigpio`_ client library installed on it),
+ * * The daemon supports hardware PWM via the DMA controller.
+ * * Your script itself doesn't require root privileges; it just needs to be able to communicate with the daemon.
  *
- * * Pins can be remote controlled from another machine (the other
- * machine doesn't even have to be a Raspberry Pi; it simply needs the `pigpio`_ client library installed on it)
- * * The daemon supports hardware PWM via the DMA controller
- * * Your script itself doesn't require root privileges; it just needs to be able to communicate with the daemon
- *
- * You can construct pigpiod pins manually like so::
  * @example
  * from gpiozero.pins.pigpiod import PiGPIOPin
  * from gpiozero import LED
@@ -30,16 +22,20 @@ let _PINS = [];
  *
  * This is particularly useful for controlling pins on a remote machine. To
  * accomplish this simply specify the host (and optionally port) when
- * constructing the pin::
+ * constructing the pin.
  *
  * @example
  * from gpiozero.pins.pigpiod import PiGPIOPin
  * from gpiozero import LED
  * from signal import pause
- * led = LED(PiGPIOPin(12, host='192.168.0.2'))
+ * led = LED(PiGPIOPin(12, '192.168.0.2',5000)
  *
- * pigpio: {@link http://abyz.co.uk/rpi/pigpio/}
- * @constructor
+ * @param {number} number - GPIO Pin.
+ * @param {string} [host] - IP address of remote server defaults to localhost.
+ * @param {string} [port] - Port of remote server.
+ * @returns {PiGPIOPin} - An instance of a PiGPIOPin.
+ *
+ * @class
  */
 function PiGPIOPin (number, host, port) {
     if (host === undefined) {
@@ -83,9 +79,9 @@ function pi_info (host, port) {
 
     if(_connection === undefined) {
         const connection = pigpio.pi(host, port);
-        const revision = '%04x' % connection.get_hardware_revision();
+        const revision = connection.get_hardware_revision();
         const info = pi_info(revision);
-       _CONNECTIONS[host+':'+port] = {connection:connection, info: info};
+       _CONNECTIONS[host+':'+port] = {connection, info};
        return info;
     }
     return _connection.info;
