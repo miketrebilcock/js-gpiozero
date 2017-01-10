@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/PWMLED.js - Documentation</title>
+    <title>PiGPIOPin - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,56 +27,302 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/PWMLED.js</h1>
+    <h1 class="page-title">PiGPIOPin</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const inherit = require('../tools.js').inherit;
-const PWMOutputDevice = require('./PWMOutputDevice.js').PWMOutputDevice;
+        <h2>
+        PiGPIOPin
+        </h2>
+        
+    
+</header>
 
-exports.PWMLED = PWMLED;
+<article>
+    <div class="container-overview">
+    
+        
 
-/**
- * Represents a light emitting diode (LED) with variable brightness.
- *
- * A typical configuration of such a device is to connect a GPIO pin to the
- * anode (long leg) of the LED, and the cathode (short leg) to ground, with
- * an optional resistor to prevent the LED from burning out.
- *
- * @param {int} pin - The GPIO pin which the LED is attached to.
- * @param {boolean} [active_high] - If ``true`` (the default), the {@link PWMLED#on|on} method will set the GPIO to HIGH.
- * If ``false``, the {@link PWMLED#on|on} method will set the GPIO to LOW (the {@link PWMLED#off|off} method always does
- * the opposite).
- * @param {float} [initial_value] - If ``0`` (the default), the LED will be off initially. Other values
- * between 0 and 1 can be specified as an initial brightness for the LED. Note that ``undefined`` cannot be specified
- * (unlike the parent class) as there is no way to tell PWM not to alter the state of the pin.
- * @param {int} [frequency] - The frequency (in Hz) of pulses emitted to drive the LED. Defaults to 100Hz.
- * @class
- * @augments PWMOutputDevice
- */
-function PWMLED(pin, active_high, initial_value, frequency) {
-    PWMOutputDevice.call(this, pin, active_high, initial_value, frequency);
-}
+    
 
-PWMLED.prototype = inherit(PWMOutputDevice.prototype);
-PWMLED.prototype.constructor = PWMLED;
+    <h4 class="name" id="PiGPIOPin"><span class="type-signature"></span>new PiGPIOPin<span class="signature">(number, host<span class="signature-attributes">opt</span>, port<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="PiGPIOPin.html">PiGPIOPin</a>}</span></h4>
 
-/**
- *
- * @returns {boolean} - Alias for {@link PWMOutputDevice#is_active|is_active}.
- */
-PWMLED.prototype.is_lit = function() {
-    return this.is_active();
-};
-</code></pre>
-        </article>
-    </section>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pins_pigpio.js.html">pins/pigpio.js</a>, <a href="pins_pigpio.js.html#line40">line 40</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Uses the library <a href="https://www.npmjs.com/package/js-pigpio">js-pigpio</a> to interface to the Pi's GPIO pins. The pigpio library relies on a daemon <a href="http://abyz.co.uk/rpi/pigpio/">pigpiod</a>  to be running as root to provide access to the GPIO pins, and communicates with this daemon over a network socket.
+
+While this does mean only the daemon itself should control the pins, the architecture does have several advantages:
+* Pins can be remote controlled from another machine (the other machine doesn't even have to be a Raspberry Pi; it simply needs the `pigpio`_ client library installed on it),
+* The daemon supports hardware PWM via the DMA controller.
+* Your script itself doesn't require root privileges; it just needs to be able to communicate with the daemon.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>from gpiozero.pins.pigpiod import PiGPIOPin
+from gpiozero import LED
+led = LED(PiGPIOPin(12))
+
+This is particularly useful for controlling pins on a remote machine. To
+accomplish this simply specify the host (and optionally port) when
+constructing the pin.</code></pre>
+
+    <pre class="prettyprint"><code>from gpiozero.pins.pigpiod import PiGPIOPin
+from gpiozero import LED
+from signal import pause
+led = LED(PiGPIOPin(12, '192.168.0.2',5000)</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>number</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">GPIO Pin.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>host</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">IP address of remote server defaults to localhost.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>port</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Port of remote server.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - An instance of a PiGPIOPin.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="PiGPIOPin.html">PiGPIOPin</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

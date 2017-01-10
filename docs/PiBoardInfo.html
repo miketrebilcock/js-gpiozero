@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>output_devices/PWMLED.js - Documentation</title>
+    <title>PiBoardInfo - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,56 +27,617 @@
 
 <div id="main">
     
-    <h1 class="page-title">output_devices/PWMLED.js</h1>
+    <h1 class="page-title">PiBoardInfo</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const inherit = require('../tools.js').inherit;
-const PWMOutputDevice = require('./PWMOutputDevice.js').PWMOutputDevice;
+        <h2>
+        PiBoardInfo
+        </h2>
+        
+    
+</header>
 
-exports.PWMLED = PWMLED;
+<article>
+    <div class="container-overview">
+    
+        
 
-/**
- * Represents a light emitting diode (LED) with variable brightness.
- *
- * A typical configuration of such a device is to connect a GPIO pin to the
- * anode (long leg) of the LED, and the cathode (short leg) to ground, with
- * an optional resistor to prevent the LED from burning out.
- *
- * @param {int} pin - The GPIO pin which the LED is attached to.
- * @param {boolean} [active_high] - If ``true`` (the default), the {@link PWMLED#on|on} method will set the GPIO to HIGH.
- * If ``false``, the {@link PWMLED#on|on} method will set the GPIO to LOW (the {@link PWMLED#off|off} method always does
- * the opposite).
- * @param {float} [initial_value] - If ``0`` (the default), the LED will be off initially. Other values
- * between 0 and 1 can be specified as an initial brightness for the LED. Note that ``undefined`` cannot be specified
- * (unlike the parent class) as there is no way to tell PWM not to alter the state of the pin.
- * @param {int} [frequency] - The frequency (in Hz) of pulses emitted to drive the LED. Defaults to 100Hz.
- * @class
- * @augments PWMOutputDevice
- */
-function PWMLED(pin, active_high, initial_value, frequency) {
-    PWMOutputDevice.call(this, pin, active_high, initial_value, frequency);
-}
+    
 
-PWMLED.prototype = inherit(PWMOutputDevice.prototype);
-PWMLED.prototype.constructor = PWMLED;
+    <h4 class="name" id="PiBoardInfo"><span class="type-signature"></span>new PiBoardInfo<span class="signature">()</span><span class="type-signature"></span></h4>
 
-/**
- *
- * @returns {boolean} - Alias for {@link PWMOutputDevice#is_active|is_active}.
- */
-PWMLED.prototype.is_lit = function() {
-    return this.is_active();
-};
-</code></pre>
-        </article>
-    </section>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pins_data.js.html">pins/data.js</a>, <a href="pins_data.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    This class represents information about a particular model of Raspberry Pi.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="physical_pin"><span class="type-signature"></span>physical_pin<span class="signature">(pin_function)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pins_data.js.html">pins/data.js</a>, <a href="pins_data.js.html#line544">line 544</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Return the physical pin supporting the specified *function*. If no pins
+support the desired *function*, this function raises <a href="PinNoPins.html">PinNoPins</a>.
+If multiple pins support the desired *function*, PinMultiplePins
+will be raised (use <a href="PiBoardInfo.html#physical_pins">physical_pins</a> if you expect multiple pins
+in the result, such as for electrical ground).
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pin_function</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The pin function you wish to search for. Usually this is something
+like "GPIO9" for Broadcom GPIO pin 9.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - An array of objects containing {header, pin}.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="physical_pins"><span class="type-signature"></span>physical_pins<span class="signature">(pin_function)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pins_data.js.html">pins/data.js</a>, <a href="pins_data.js.html#line519">line 519</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Return the physical pins supporting the specified *function* as objects
+of `{header, pin_number}` where *header* is a string specifying the
+header containing the *pin_number*. Note that the return value is a
+array. Use <a href="PiBoardInfo.html#physical_pin">physical_pin</a> if you
+are expecting a single return value.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pin_function</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The pin function you wish to search for. Usually this is something
+like "GPIO9" for Broadcom GPIO pin 9, or "GND" for all the pins connecting to electrical ground.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - An array of objects containing {header, pin}.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="pulled_up"><span class="type-signature"></span>pulled_up<span class="signature">(pin_function)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pins_data.js.html">pins/data.js</a>, <a href="pins_data.js.html#line564">line 564</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Returns a bool indicating whether a physical pull-up is attached to
+the pin supporting the specified *function*. Either <a href="PinNoPins.html">PinNoPins</a>
+or PinMultiplePins may be raised if the function is not
+associated with a single pin.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pin_function</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The pin function you wish to search for. Usually this is something
+like "GPIO9" for Broadcom GPIO pin 9.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Indicating if the pin is pulled up.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
