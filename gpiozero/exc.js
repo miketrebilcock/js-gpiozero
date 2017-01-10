@@ -52,6 +52,12 @@ GPIOPinInUse.prototype = inherit(GPIODeviceError.prototype);
 GPIOPinInUse.prototype.constructor = GPIOPinInUse;
 exports.GPIOPinInUse = GPIOPinInUse;
 
+/**
+ * Base class for errors related to pin implementations.
+ *
+ * @param {string} message - Error message.
+ * @class
+ */
 function PinError(message) {
     GPIOZeroError.call(this, message !== undefined?message:"Base class for errors related to pin implementations");
 }
@@ -99,9 +105,48 @@ PinPWMUnsupported.prototype.constructor = PinPWMUnsupported;
 exports.PinPWMUnsupported = PinPWMUnsupported;
 
 function PinFixedPull(message) {
-    AttributeError.call(this, message !== undefined?message:"PError raised when attempting to set the pull of a pin with fixed pull-up");
+    AttributeError.call(this, message !== undefined?message:"Error raised when attempting to set the pull of a pin with fixed pull-up");
 }
 
 PinFixedPull.prototype = inherit(AttributeError.prototype);
 PinPWMUnsupported.prototype.constructor = PinFixedPull;
 exports.PinFixedPull = PinFixedPull;
+
+/**
+ * Error raised when gpiozero doesn't recognize a revision of the Pi.
+ *
+ * @param {string} message - Error message.
+ * @class
+ */
+function PinUnknownPi(message) {
+    PinError.call(this, message !== undefined?message:"Error raised when gpiozero doesn't recognize a revision of the Pi");
+}
+PinUnknownPi.prototype = inherit(PinError.prototype);
+PinUnknownPi.prototype.constructor = PinUnknownPi;
+exports.PinUnknownPi = PinUnknownPi;
+
+/**
+ * Error raised when multiple pins support the requested function.
+ *
+ * @param {string} message - Error message.
+ * @class
+ */
+function PinMutliplePins(message) {
+    PinError.call(this, message !== undefined?message:"Error raised when multiple pins support the requested function");
+}
+PinMutliplePins.prototype = inherit(PinError.prototype);
+PinMutliplePins.prototype.constructor = PinMutliplePins;
+exports.PinMultiplePins = PinMutliplePins;
+
+/**
+ * Error raised when no pins support the requested function.
+ *
+ * @param {string} message - Error message.
+ * @class
+ */
+function PinNoPins(message) {
+    PinError.call(this, message !== undefined?message:"Error raised when no pins support the requested function");
+}
+PinNoPins.prototype = inherit(PinError.prototype);
+PinNoPins.prototype.constructor = PinMutliplePins;
+exports.PinNoPins = PinNoPins;

@@ -1,4 +1,6 @@
-
+const PinUnknownPi = require('../exc.js').PinUnknownPi;
+const PinMultiplePins = require('../exc.js').PinMultiplePins;
+const PinNoPins = require('../exc.js').PinNoPins;
 
 /**
  * This class represents information about a particular model of Raspberry Pi.
@@ -187,8 +189,8 @@ const CM_BOARD = `
 // Pin maps for various board revisions and headers
 
 const REV1_P1 = {
-    1:  {func: V3_3,   pullup: false}, 2:  {V5,     pullup: false},
-    3:  {func: GPIO0,  pullup: true},  4:  {V5,     pullup: false},
+    1:  {func: V3_3,   pullup: false}, 2:  {func: V5,     pullup: false},
+    3:  {func: GPIO0,  pullup: true},  4:  {func: V5,     pullup: false},
     5:  {func: GPIO1,  pullup: true},  6:  {func: GND,    pullup: false},
     7:  {func: GPIO4,  pullup: false}, 8:  {func: GPIO14, pullup: false},
     9:  {func: GND,    pullup: false}, 10: {func: GPIO15, pullup: false},
@@ -496,38 +498,70 @@ PiBoardInfo.prototype.from_revision = function (revision) {
             this.headers = info.headers;
             this.board = info.board;
         }
-        return false;
+    }
+    if (this.model === undefined) {
+        throw new PinUnknownPi("Revision :" + revision + " did not map to a known Pi.");
     }
     return this;
 }
 
-/*
- headers = {
- header: HeaderInfo(name=header, rows=max(header_data) // 2, columns=2, pins={
- number: PinInfo(
- number=number, function=function, pull_up=pull_up,
- row=row + 1, col=col + 1)
- for number, (function, pull_up) in header_data.items()
- for row, col in (divmod(number, 2),)
- })
- for header, header_data in headers.items()
- }
- return cls(
- '%04x' % revision,
- model,
- pcb_revision,
- released,
- soc,
- manufacturer,
- memory,
- storage,
- usb,
- ethernet,
- wifi,
- bluetooth,
- csi,
- dsi,
- headers,
- board,
- )
+/**
+ * Return the physical pins supporting the specified *function* as objects
+ * of `{header, pin_number}` where *header* is a string specifying the
+ * header containing the *pin_number*. Note that the return value is a
+ * array. Use {@link PiBoardInfo#physical_pin|physical_pin} if you
+ * are expecting a single return value.
+ *
+ * @param {string} pin_function - The pin function you wish to search for. Usually this is something
+ * like "GPIO9" for Broadcom GPIO pin 9, or "GND" for all the pins connecting to electrical ground.
+ * @returns {Object} - An array of objects containing {header, pin}.
  */
+PiBoardInfo.prototype.physical_pins = function(pin_function) {
+    const result = [];
+    for (const prop in this.headers) {
+        const header = prop;
+        for (const pin in this.headers[prop])
+        {
+            if (this.headers[prop][pin].func === pin_function) {
+                result.push({header, pin});
+            }
+        }
+    }
+    return result;
+};
+
+/**
+ * Return the physical pin supporting the specified *function*. If no pins
+ * support the desired *function*, this function raises {@link PinNoPins}.
+ * If multiple pins support the desired *function*, {@link PinMultiplePins}
+ * will be raised (use {@link PiBoardInfo#physical_pins|physical_pins} if you expect multiple pins
+ * in the result, such as for electrical ground).
+ *
+ * @param {string} pin_function - The pin function you wish to search for. Usually this is something
+ * like "GPIO9" for Broadcom GPIO pin 9.
+ * @returns {Object} - An array of objects containing {header, pin}.
+ */
+PiBoardInfo.prototype.physical_pin = function(pin_function) {
+    const result = this.physical_pins(pin_function);
+    if (result.length > 1) {
+        throw new PinMultiplePins();
+    } else if (result.length === 0) {
+        throw new PinNoPins();
+    }
+    return result.pop();
+};
+
+/**
+ * Returns a bool indicating whether a physical pull-up is attached to
+ * the pin supporting the specified *function*. Either {@link PinNoPins}
+ * or {@link PinMultiplePins} may be raised if the function is not
+ * associated with a single pin.
+ *
+ * @param {string} pin_function - The pin function you wish to search for. Usually this is something
+ * like "GPIO9" for Broadcom GPIO pin 9.
+ * @returns {boolean} - Indicating if the pin is pulled up.
+ */
+PiBoardInfo.prototype.pulled_up = function (pin_function) {
+    const pin =  this.physical_pin(pin_function);
+    return this.headers[pin.header][pin.pin].pullup;
+};
