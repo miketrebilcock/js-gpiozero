@@ -2,9 +2,22 @@ const pigpio = require('js-pigpio');
 const p = require("./index.js");
 const inherit = require('../tools.js').inherit;
 const Pin = require("./index.js").Pin;
+const PiBoardInfo = require("./data.js").PiBoardInfo;
 
 const _CONNECTIONS = []; // maps (host, port) to (connection, pi_info)
 const _PINS = [];
+/*
+const GPIO_EDGES = {
+    'both':    pigpio.EITHER_EDGE,
+    'rising':  pigpio.RISING_EDGE,
+    'falling': pigpio.FALLING_EDGE,
+}*/
+
+const GPIO_PULL_UPS = {
+    'up':       pigpio.PUD_UP,
+    'down':     pigpio.PUD_DOWN,
+    'floating': pigpio.PUD_OFF,
+};
 
 /**
  *
@@ -48,17 +61,17 @@ function PiGPIOPin (number, host, port) {
     if (old_pin === undefined) {
         Pin.call(this);
 
-        _PINS[number+':'+host+':'+port] = this;
         this._number = number;
         this._host = host;
         this._port = port;
         this._function = 'input';
         this._state = false;
-        this._pull = 'floating';
         this._bounce = null;
-        this._edges = 'both';
+        this._edges =  pigpio.EITHER_EDGE;
         this._when_changed = null;
-        pi_info(host, port);
+        this._callback = null;
+        this.pi_info(host, port);
+        _PINS[number+':'+host+':'+port] = this;
         return this;
     }
 }
@@ -68,24 +81,38 @@ PiGPIOPin.prototype.constructor = PiGPIOPin;
 
 exports.PiGPIOPin = PiGPIOPin;
 
-function pi_info (host, port) {
+PiGPIOPin.prototype.pi_info = function (host, port) {
     if (host === undefined) {
         host = process.env.PIGPIO_ADDR || 'localhost';
     }
     if (port === undefined) {
         port =  process.env.PIGPIO_PORT || '8888';
     }
-    const _connection = _CONNECTIONS[host+':'+ port];
+    let connection = _CONNECTIONS[host+':'+ port];
 
-    if(_connection === undefined) {
-        const connection = pigpio.pi(host, port);
-        const revision = connection.get_hardware_revision();
-        const info = pi_info(revision);
-       _CONNECTIONS[host+':'+port] = {connection, info};
-       return info;
+    if(connection === undefined) {
+        const that = this;
+        connection = pigpio.pi(host, port, (err) => {
+            if (err !== undefined) {
+                throw new Error(err);
+            }
+            connection.get_hardware_revision((err,data)=> {
+                const info = PiBoardInfo(data);
+                that._connection = connection;
+                that._pi_info = info;
+                that._pi_info.physical_pin('GPIO' + that._number); //Cause an error if not valid
+                that._pull =  that._pi_info.pulled_up('GPIO' + that._number)?'up':'floating';
+                that._connection.set_mode(this._number, pigpio.INPUT);
+                that._connection.set_pull_up_down(that._number, GPIO_PULL_UPS[this._pull]);
+                that._connection.set_glitch_filter(that._number, 0);
+                _CONNECTIONS[host + ':' + port] = {connection, info};
+            });
+        });
+    } else {
+        this._connection = connection.connection;
+        this._pi_info = connection._info;
     }
-    return _connection.info;
-}
+};
  /*
 class PiGPIOPin(Pin):
 """
@@ -100,54 +127,10 @@ GPIO_FUNCTIONS = {
     'alt5':    pigpio.ALT5,
 }
 
-GPIO_PULL_UPS = {
-    'up':       pigpio.PUD_UP,
-    'down':     pigpio.PUD_DOWN,
-    'floating': pigpio.PUD_OFF,
-}
-
-GPIO_EDGES = {
-    'both':    pigpio.EITHER_EDGE,
-    'rising':  pigpio.RISING_EDGE,
-    'falling': pigpio.FALLING_EDGE,
-}
 
 GPIO_FUNCTION_NAMES = {v: k for (k, v) in GPIO_FUNCTIONS.items()}
 GPIO_PULL_UP_NAMES = {v: k for (k, v) in GPIO_PULL_UPS.items()}
 GPIO_EDGES_NAMES = {v: k for (k, v) in GPIO_EDGES.items()}
-
-def __new__(
-    cls, number, host=os.getenv('PIGPIO_ADDR', 'localhost'),
-    port=int(os.getenv('PIGPIO_PORT', 8888))):
-try:
-return cls._PINS[(host, port, number)]
-except KeyError:
-    self = super(PiGPIOPin, cls).__new__(cls)
-cls.pi_info(host, port) # implicitly creates connection
-self._connection, self._pi_info = cls._CONNECTIONS[(host, port)]
-try:
-self._pi_info.physical_pin('GPIO%d' % number)
-except PinNoPins:
-    warnings.warn(
-        PinNonPhysical(
-            'no physical pins exist for GPIO%d' % number))
-self._host = host
-self._port = port
-self._number = number
-self._pull = 'up' if self._pi_info.pulled_up('GPIO%d' % number) else 'floating'
-self._pwm = False
-self._bounce = None
-self._when_changed = None
-self._callback = None
-self._edges = pigpio.EITHER_EDGE
-try:
-self._connection.set_mode(self._number, pigpio.INPUT)
-except pigpio.error as e:
-raise ValueError(e)
-self._connection.set_pull_up_down(self._number, self.GPIO_PULL_UPS[self._pull])
-self._connection.set_glitch_filter(self._number, 0)
-cls._PINS[(host, port, number)] = self
-return self
 
 def __repr__(self):
 if self._host == 'localhost':
@@ -279,18 +262,5 @@ if value is not None:
     self._callback = self._connection.callback(
         self._number, self._edges,
         lambda gpio, level, tick: value())
-
-@classmethod
-def pi_info(
-    cls, host=os.getenv('PIGPIO_ADDR', 'localhost'),
-    port=int(os.getenv('PIGPIO_PORT', 8888))):
-try:
-connection, info = cls._CONNECTIONS[(host, port)]
-except KeyError:
-    connection = pigpio.pi(host, port)
-revision = '%04x' % connection.get_hardware_revision()
-info = pi_info(revision)
-cls._CONNECTIONS[(host, port)] = (connection, info)
-return info
 
 */
