@@ -379,12 +379,11 @@ const PI_REVISIONS = {
     0x13:     {model: 'B+',pcb_revision:   '1.2',released: '2015Q1',soc: 'BCM2835',manufacturer: 'Egoman',ram:    512,storage:  'MicroSD',usb: 4, ethernet:  1, wifi:  false, bluetooth: false, csi: 1, dsi:  1, headers: {'P1': PLUS_P1},                board: BPLUS_BOARD  },
     0x14:     {model: 'CM',pcb_revision:   '1.1',released: '2014Q2',soc: 'BCM2835',manufacturer: 'Embest',ram:    512,storage:  'eMMC',   usb: 1, ethernet:  0, wifi:  false, bluetooth: false, csi: 2, dsi:  2, headers: {'SODIMM': CM_SODIMM},          board: CM_BOARD     },
     0x15:     {model: 'A+',pcb_revision:   '1.1',released: '2014Q4',soc: 'BCM2835',manufacturer: 'Embest',ram:    256,storage:  'MicroSD',usb: 1, ethernet:  0, wifi:  false, bluetooth: false, csi: 1, dsi:  1, headers: {'P1': PLUS_P1},                board: APLUS_BOARD  }
-}
+};
 
 
-PiBoardInfo.prototype.from_revision = function (revision) {
-    this.revision = revision;
-    const _revision = parseInt(revision,16);
+PiBoardInfo.prototype.from_revision = function (_revision) {
+    this.revision = _revision;
     if (_revision  & 0x800000) {
     // New-style revision, parse information from bit-pattern:
     //
@@ -416,7 +415,7 @@ PiBoardInfo.prototype.from_revision = function (revision) {
                 2 : '2.0',
             }[_revision & 0x0f];
         } else {
-            this.pcb_revision = '1.' + (revision & 0x0f);
+            this.pcb_revision = '1.' + (_revision & 0x0f);
         }
 
         this.released = {
@@ -480,7 +479,7 @@ PiBoardInfo.prototype.from_revision = function (revision) {
             'Zero': this.pcb_revision === '1.2' ? ZERO12_BOARD : ZERO13_BOARD
         }[this.model]: BPLUS_BOARD;
     } else {
-        const info = PI_REVISIONS[revision];
+        const info = PI_REVISIONS[_revision];
         if(info!==undefined) {
             this.model = info.model;
             this.pcb_revision = info.pcb_revision;
@@ -500,10 +499,10 @@ PiBoardInfo.prototype.from_revision = function (revision) {
         }
     }
     if (this.model === undefined) {
-        throw new PinUnknownPi("Revision :" + revision + " did not map to a known Pi.");
+        throw new PinUnknownPi("Revision :" + _revision + " did not map to a known Pi.");
     }
     return this;
-}
+};
 
 /**
  * Return the physical pins supporting the specified *function* as objects

@@ -19,6 +19,24 @@ const GPIO_PULL_UPS = {
     'floating': pigpio.PUD_OFF,
 };
 
+const GPIO_FUNCTIONS = {
+    'input':   pigpio.INPUT,
+    'output':  pigpio.OUTPUT,
+    'alt0':    pigpio.ALT0,
+    'alt1':    pigpio.ALT1,
+    'alt2':    pigpio.ALT2,
+    'alt3':    pigpio.ALT3,
+    'alt4':    pigpio.ALT4,
+    'alt5':    pigpio.ALT5,
+};
+
+const GPIO_FUNCTION_NAMES = {};
+for(var name in GPIO_FUNCTIONS) {
+    var value = GPIO_FUNCTIONS[name];
+    GPIO_FUNCTIONS[value] = GPIO_FUNCTIONS[name];
+}
+//GPIO_FUNCTION_NAMES = {v: k for (k, v) in GPIO_FUNCTIONS.items()}
+
 /**
  *
  * Uses the library {@link https://www.npmjs.com/package/js-pigpio|js-pigpio} to interface to the Pi's GPIO pins. The pigpio library relies on a daemon {@link http://abyz.co.uk/rpi/pigpio/|pigpiod}  to be running as root to provide access to the GPIO pins, and communicates with this daemon over a network socket.
@@ -113,20 +131,54 @@ PiGPIOPin.prototype.pi_info = function (host, port) {
         this._pi_info = connection._info;
     }
 };
- /*
-class PiGPIOPin(Pin):
-"""
-GPIO_FUNCTIONS = {
-    'input':   pigpio.INPUT,
-    'output':  pigpio.OUTPUT,
-    'alt0':    pigpio.ALT0,
-    'alt1':    pigpio.ALT1,
-    'alt2':    pigpio.ALT2,
-    'alt3':    pigpio.ALT3,
-    'alt4':    pigpio.ALT4,
-    'alt5':    pigpio.ALT5,
+
+/**
+ * If we're shutting down, the connection may have disconnected itself
+ * already. Unfortunately, the connection's "connected" property is
+ * rather buggy - disconnecting doesn't set it to False! So we're
+ * naughty and check an internal variable instead...
+ */
+PiGPIOPin.prototype.close = function () {
+    if (this._connection.sl.s !== undefined) {
+        this.frequency(null);
+        this.when_changed(null);
+        this.pin_function('input')
+        this.pull('up');
+        if (this._pi_info.pulled_up('GPIO'+this.number)) {
+            this.pull('up');
+        } else {
+            this.pull('floating');
+        }
+    }
+};
+
+/*
+ def _get_function(self):
+ return self.GPIO_FUNCTION_NAMES[self._connection.get_mode(self._number)]
+
+ def _set_function(self, value):
+ if value != 'input':
+ self._pull = 'floating'
+ try:
+ self._connection.set_mode(self._number, self.GPIO_FUNCTIONS[value])
+ except KeyError:
+ raise PinInvalidFunction('invalid function "%s" for pin %r' % (value, self))
+
+ */
+
+PiGPIOPin.prototype.pin_function = function (value) {
+    // need to check if this is a callback function
+    if (value === undefined) {
+        const callback = value;
+        return GPIO_FUNCTION_NAMES[this._connection.get_mode(this._number, callback)];
+    }
+    if(value !== 'input') {
+        this._pull = 'floating';
+    }
+    this._connection.set_mode(this._number, GPIO_FUNCTIONS[value]);
 }
 
+ /*
 
 GPIO_FUNCTION_NAMES = {v: k for (k, v) in GPIO_FUNCTIONS.items()}
 GPIO_PULL_UP_NAMES = {v: k for (k, v) in GPIO_PULL_UPS.items()}
@@ -150,27 +202,6 @@ return self._port
 def number(self):
 return self._number
 
-def close(self):
-# If we're shutting down, the connection may have disconnected itself
-# already. Unfortunately, the connection's "connected" property is
-# rather buggy - disconnecting doesn't set it to False! So we're
-# naughty and check an internal variable instead...
-if self._connection.sl.s is not None:
-    self.frequency = None
-self.when_changed = None
-self.function = 'input'
-self.pull = 'up' if self._pi_info.pulled_up('GPIO%d' % self.number) else 'floating'
-
-def _get_function(self):
-return self.GPIO_FUNCTION_NAMES[self._connection.get_mode(self._number)]
-
-def _set_function(self, value):
-if value != 'input':
-self._pull = 'floating'
-try:
-self._connection.set_mode(self._number, self.GPIO_FUNCTIONS[value])
-except KeyError:
-    raise PinInvalidFunction('invalid function "%s" for pin %r' % (value, self))
 
 def _get_state(self):
 if self._pwm:
