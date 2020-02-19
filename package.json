@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "codecov": "^1.0.1",
+    "codecov": "^3.6.5",
     "cz-conventional-changelog": "^1.2.0",
     "docdash": "^0.4.0",
     "eslint": "^3.12.2",
