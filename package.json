@@ -26,7 +26,7 @@
     "codecov": "^3.6.5",
     "cz-conventional-changelog": "^1.2.0",
     "docdash": "^0.4.0",
-    "eslint": "^3.12.2",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-config-node": "^1.6.0",
     "eslint-plugin-import": "^2.2.0",
