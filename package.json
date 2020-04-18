@@ -5,10 +5,10 @@
   "main": "./gpiozero/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/i-am-digital/js-gpiozero.git"
+    "url": "https://github.com/miketrebilcock/js-gpiozero.git"
   },
   "bugs": {
-    "url": "https://github.com/i-am-digital/js-gpiozero/issues"
+    "url": "https://github.com/miketrebilcock/js-gpiozero/issues"
   },
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov",
@@ -45,10 +45,10 @@
     "raspberrypi",
     "bcm2835"
   ],
-  "author": "Mike Trebilcock <mike@iamdigital.uk>",
+  "author": "Mike Trebilcock <mike@trebilcock.net>",
   "contributors": [],
   "license": "ISC",
-  "homepage": "https://i-am-digital.github.io/js-gpiozero",
+  "homepage": "https://miketrebilcock.github.io/js-gpiozero/",
   "directories": {
     "doc": "docs",
     "test": "tests"
