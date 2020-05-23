@@ -33,7 +33,7 @@
     "eslint-plugin-jsdoc": "2.4.0",
     "istanbul": "0.4.5",
     "jsdoc": "3.6.4",
-    "mocha": "3.5.3",
+    "mocha": "7.2.0",
     "mocha-eslint": "3.0.1",
     "semantic-release": "6.3.6"
   },
