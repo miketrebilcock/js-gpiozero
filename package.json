@@ -22,7 +22,7 @@
     "wiring-pi": "^2.2.1"
   },
   "devDependencies": {
-    "chai": "3.5.0",
+    "chai": "4.3.10",
     "codecov": "3.6.5",
     "cz-conventional-changelog": "1.2.0",
     "docdash": "0.4.0",
