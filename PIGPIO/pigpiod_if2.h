@@ -1672,7 +1672,7 @@ int store_script(int pi, char *script);
 /*D
 This function stores a script for later execution.
 
-See [[http://abyz.co.uk/rpi/pigpio/pigs.html#Scripts]] for details.
+See [[http://abyz.me.uk/rpi/pigpio/pigs.html#Scripts]] for details.
 
 . .
     pi: >=0 (as returned by [*pigpio_start*]).

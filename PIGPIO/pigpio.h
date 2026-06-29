@@ -3614,7 +3614,7 @@ int gpioStoreScript(char *script);
 /*D
 This function stores a null terminated script for later execution.
 
-See [[http://abyz.co.uk/rpi/pigpio/pigs.html#Scripts]] for details.
+See [[http://abyz.me.uk/rpi/pigpio/pigs.html#Scripts]] for details.
 
 . .
 script: the text of the script

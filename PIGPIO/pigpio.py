@@ -3,7 +3,7 @@ pigpio is a Python module for the Raspberry which talks to
 the pigpio daemon to allow control of the general purpose
 input outputs (GPIO).
 
-[http://abyz.co.uk/rpi/pigpio/python.html]
+[http://abyz.me.uk/rpi/pigpio/python.html]
 
 *Features*
 
@@ -4113,7 +4113,7 @@ class pi():
       """
       Store a script for later execution.
 
-      See [[http://abyz.co.uk/rpi/pigpio/pigs.html#Scripts]] for
+      See [[http://abyz.me.uk/rpi/pigpio/pigs.html#Scripts]] for
       details.
 
       script:= the script text as a series of bytes.
