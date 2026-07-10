@@ -35,7 +35,7 @@
     "jsdoc": "3.6.4",
     "mocha": "3.5.3",
     "mocha-eslint": "3.0.1",
-    "semantic-release": "6.3.6"
+    "semantic-release": "17.2.3"
   },
   "keywords": [
     "wiringPi",
